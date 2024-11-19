@@ -1,0 +1,176 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+
+\title{Lecture 5}
+\author{Gidon Rosalki}
+\date{2024-11-17}
+
+
+\begin{document}
+\maketitle
+\section{The assignment problem}\label{sec:The assignment problem} % (fold)
+Given $n$ letters, and $n$ envelopes, we put every letter into an envelope,
+without looking what we put where.
+\begin{enumerate}
+    \item What is the probability that no letter is put into its envelope?
+    \item What is the probability that exactly $r \leq n$ letters are put into
+        their envelopes?
+\end{enumerate}
+
+\begin{enumerate}
+    \item We will consider every letter and envelope as numbered from $1$ to $n$.
+        $\Omega = S_n = \left\{\sigma : [n] \to [n] | \sigma \text{is one to one, and "on"}\right\}$, with uniform probability.
+        For example $S_3 = \left\{123, 132, 231, 213, 312, 321\right\}$. \\
+        Let us write $B_i = \left\{\left(x_i\right)_{i = 1}^n | x_i = i\right\}$
+        for every $1 \leq i \leq n$, the event that the $i$-th letter is sent to
+        its recipient. $A = \left\{\text{No letter arrive at its recipient}\right\}$,
+        so $A^c = \text{There is a letter that arrives at its recipient} = \displaystyle\bigcup_{i \in [n]}^{}B_i$ .
+        So $\p(A^c) = \p \left(\displaystyle\bigcup_{i \in [n]}^{}B_i = \displaystyle\sum_{k \in [n]}^{}(-1)^{k + 1} \displaystyle\sum_{I \subseteq [n] \land |I| = k}^{}\p \left(B_I\right)\right)$.
+        The size of $B_I$ is the number of permutations of $[n] \setminus I$, which is $\left(n - |I|\right)!$.
+        We will write $A_n$ to be the event that no letter within the $n$ is
+        put into the correct envelope. Therefore, we get that $A_n^c = \displaystyle\bigcup_{i = 1}^{n}$. \\
+        According to IEP
+        \begin{align*} % TODO Check against the pdf, possible got something wrong in the $1 - p(A^c)$ section
+            \p\left(A_n^c\right) &= \p \left(\displaystyle\bigcup_{i = 1}^{n}B_i\right) \\
+                        &= \displaystyle\sum_{k = 1}^{n} \left(-1\right)^{k + 1} \displaystyle\sum_{I subseteq [n],|I| = k}^{} \p \left(B_I\right) \\
+                        &= \displaystyle\sum_{k = 1}^{n} (-1)^{k + 1} \displaystyle\sum_{I \subseteq [n],|I|}^{}\displaystyle\frac{(n - k)!}{n!} \\
+                        &= \displaystyle\sum_{k = 1}^{n}(-1)^{k + 1} \binom{n}{k} \displaystyle\frac{(n - k)!}{n!} \\
+                        &= \displaystyle\sum_{k = 1}^{n} \displaystyle\frac{(-1)^{k + 1}}{k!} \\
+            \p(A) &= 1 - \p \left(A_n^c\right) \\
+                  &= \displaystyle\frac{(-1)^0}{0!} + \displaystyle\sum_{k = 1}^{n}\displaystyle\frac{(-1)^k}{k!} \\
+                  &= \displaystyle\frac{k = 1}{n} \displaystyle\frac{(-1)^k}{k!} \xrightarrow[]{n \to \infty} \displaystyle\frac{1}{e}
+        \end{align*}
+
+        A nice conclusion is that the number of permutation where there is no fixed point for
+        every $n$:
+        \begin{align*}
+            \p(A_n) & = \displaystyle\sum_{k = 0}^{n} \displaystyle\frac{(-1)^k}{k!} \\
+            \displaystyle\frac{|A_n|}{|\Omega|} &= % TODO complete
+        \end{align*}
+    \item For $I \subseteq [n]$ we will write $D_I = B_I \cap \left(\displaystyle\bigcap_{i \notin I}^{}B_i^c\right)$.
+        This is the event that exactly the letters in the set $I$ made it to their
+        destination. \\
+        If $I \ne J \subseteq [n]$ then $D_I \cap D_J = \emptyset$ \\
+        $D_I = (n - |I|)! \displaystyle\sum_{k = 0}^{n - |I|}\displaystyle\frac{(-1)^k}{k!}$ \\
+        So, the event "exactly $r$ letters arrive at their destination" is $\sqcup D_I$, the disjoint union
+        \begin{align*}
+            \p \left(\bigsqcup_{|I| = r}D_I\right) &= \displaystyle\sum_{|I| = r}^{} \p \left(D_I\right) \\
+                                                   &= \displaystyle\sum_{|I| = r}^{} \displaystyle\frac{\left(n - r\right)!}{n!} \displaystyle\sum_{k = 0}^{n - r} \displaystyle\frac{(-1)^k}{k!} \\
+                                                   &= \binom{n}{r} \displaystyle\frac{\left(n - r\right)!}{n!} \displaystyle\sum_{k = 0}^{n - r} \displaystyle\frac{(-1)^k}{k!} \\
+                                                   &= \displaystyle\frac{1}{r!} \displaystyle\sum_{k = 0}^{n - r} \displaystyle\frac{(-1)^k}{k!} \xrightarrow[]{n \to \infty} \displaystyle\frac{1}{r! e}
+        \end{align*}
+\end{enumerate}
+
+% section The assignment problem (end)
+
+\section{Conditional probability}\label{sec:Conditional probability} % (fold)
+\begin{definition}[3.1 Conditional probability]
+    Let there be $\left(\Omega, \F, \p\right)$. Let $B \in \F$ such that $\p(B) > 0$.
+    The \textbf{conditional probability} that $A \in \F$ in $B$ is defined as
+    \[
+        \p \left(A | B\right) = \displaystyle\frac{\p \left(A \cap B\right)}{\p \left(B\right)}
+    \]
+\end{definition}
+
+\begin{theorem}[3.2]
+    Let $\left(\Omega, \F, \p\right)$ be a probability space, and let $B \in \F$
+    such that $\p(B) > 0$. \underline{Then} the function $\p_B : \F \to \R^+$
+    which is defined by $\p_B(A) = \p(A | B)$ is a probability function on $\left(\Omega, \F\right)$
+
+    \begin{proof}
+        $\p_B(\Omega) = \p(\Omega | B) = \displaystyle\frac{\p(\Omega \cap B)}{\p(B)} = \displaystyle\frac{\p(B)}{\p(B)} = 1$. \\
+        Let there be disjoint $\left(A_n\right)_{n \in \N}$. $\p_B \left(\bigsqcup_{n \in \N} A_n\right) = \p \left(\displaystyle\bigcup_{n \in \N}^{}A_n | B\right)
+        = \displaystyle\frac{\p \left(\left(\displaystyle\bigsqcup_{n \in \N}^{}A_n\right) \cap B\right)}{\p(B)}
+        = \displaystyle\frac{\p \left(\bigsqcup_{n \in \N} \left(A_n \cap B\right)\right)}{\p(B)}
+        = \displaystyle\frac{\displaystyle\sum_{n \in \N}^{}\p \left(A_n \cap B\right)}{\p(B)} = \displaystyle\sum_{n \in \N}^{} \displaystyle\frac{\p \left(A_n \cap B\right)}{\p(B)}
+        = \displaystyle\sum_{n \in \N}^{} \p \left(A_n | B\right) = \displaystyle\sum_{n \in \N}^{}\p_B(A_n)$
+
+    \end{proof}
+
+    Conclusion: Given $\left(\Omega, \F, \p\right)$, and an event $B : \p(B) > 0$, then
+    $\p_B = \p \left(. | B\right)$ is a probability function on $\Omega$, which
+    is to say $\left(\Omega, \F, \p_B\right)$ is also a probability space.
+\end{theorem}
+
+\subsubsection{Example}\label{sec:Example} % (fold)
+There are 5 yellow balls, 10 white balls, and 10 black balls in a jug. We draw 1 ball.
+$\Omega = [25] \land Y = [5] \land W = [15] \setminus [5] \land B = [25] \setminus [15] $.
+Additionally $\p(Y) = \displaystyle\frac{5}{25} = \displaystyle\frac{1}{5} \land \p(W) = \p(B) = \displaystyle\frac{10}{25} = \displaystyle\frac{2}{5}$.
+What's the probability that the drawn ball is yellow? $\p(Y) = \displaystyle\frac{1}{5}$.
+What's the probability that the drawn ball is yellow, if we are given that it is
+not black? $\p(Y | B^c) = \displaystyle\frac{\p(Y \cap B^c)}{\p(B^c) = \displaystyle\frac{\p([5])}{\p([15])}} = \displaystyle\frac{\displaystyle\frac{1}{5}}{\displaystyle\frac{15}{25}} = \displaystyle\frac{1}{3}$
+
+We throw 2 fair dice. What is the probability that the sum is 8? $\left\{\left(2, 6\right), \left(3, 5\right), \left(4, 4\right), \left(5, 3\right), \left(6, 2\right)\right\} \implies \p(E) = \displaystyle\frac{5}{36}$. \\
+What is the probability that the sum is 8, if it is known that the first die threw 3?
+Let us write $T_1 = \left(3, .\right)$
+$\p(E | T_1) = \displaystyle\frac{\p(E \cap T_1}{\p(T_1)} = \displaystyle\frac{\p \left(\left(3, 5\right)\right)}{\p \left(T_1\right)} = \displaystyle\frac{\displaystyle\frac{1}{36}}{\displaystyle\frac{6}{36}} = \displaystyle\frac{1}{6}$. \\
+What is the probability that the total is 8, if it is known that at least one of the dice rolled a 3?
+$T_2 = \left(3, .\right) \cup \left(., 3\right) \land |T_2| = 11$.
+So $\p(E | T_2) = \displaystyle\frac{\p \left(E \cap T_2\right)}{\p \left(T_2\right)} = \displaystyle\frac{\displaystyle\frac{2}{36}}{\displaystyle\frac{11}{36}} = \displaystyle\frac{2}{11}$
+
+Addition: Given the uniform probability space $\left(\Omega, \F, \p\right)$, and $B$ is
+a non-empty event, then $\p_B(A) = \p(A|B)$ is induced from the point probability function
+\[
+    p_B(\omega) = \begin{cases}
+        \displaystyle\frac{1}{|B|}, &\text{ if } \omega \in B\\
+        0, &\text{ if } \omega \notin B\\
+
+    \end{cases}
+\]
+The proof is left as an exercise for the reader.
+% subsubsection Example (end)
+
+\begin{theorem}[3.11]
+    Probability space $\left(\Omega, \F, \p\right)$. Let $B \in \F$ such that $\p(B) > 0$,
+    then $\p(A | B) \p(B) = \p(A \cap B)$
+
+    \begin{proof}
+        Follows directly from the definition:
+        $\p(A | B) = \displaystyle\frac{\p(A \cap B)}{\p(B)} $
+    \end{proof}
+
+\end{theorem}
+
+\begin{theorem}[3.14]
+    Probability space $\left(\Omega, \F, \p\right)$. Let $A B \in \F$ such that
+    $\p(A cap B) > 0$. We will write $\p'(D) = \p(D | A) \land \p''(D) = \p'(D | B)$.
+    Then for all $D \in \F$:
+    \[
+        \p''(D) = \p(D | A \cap B)
+    \]
+
+    \begin{proof}
+        \begin{align*}
+            \p''(D) &= \p'(D | B) = \displaystyle\frac{\p'(D \cap B)}{\p'(B)} \\
+                    &= \displaystyle\frac{\p(D \cap B | A}{\p(B | A)} \\
+                    &= \displaystyle\frac{\frac{\p((D \cap B) \cap A)}{\p(A)}}{\frac{\p(B \cap A)}{\p(A)}} \\
+                    &= \displaystyle\frac{\p(D \cap \left(B \cap A\right))}{\p(B \cap A)} \\
+                    &= \p(D | A \cap B)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+% section Conditional probability (end)
+
+\end{document}

@@ -1,0 +1,201 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{cancel}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+
+\title{Lecture 4}
+\author{Gidon Rosalki}
+\date{2024-11-11}
+
+
+\begin{document}
+\maketitle
+\section{Union block for 2 elements}\label{sec:Union block for 2 elements} % (fold)
+This is continued from yesterday's lecture. \\
+
+\subsubsection{Example}\label{sec:Example} % (fold)
+\begin{theorem}[]
+    The probability of it raining tomorrow is $0.7$, and the probability that Tal
+    will go to work tomorrow is $0.5$. Prove that the probability of it raining, and
+    of Tal going to work is at least $0.2$.
+
+    \begin{proof}
+        \begin{align*}
+            \Omega &= \left\{R, \cancel{R}\right\} \times \left\{W, \cancel{W}\right\} \\
+            \p(\left\{R, \cancel{R}\right\} \times \left\{W\right\}) &= 0.5 \\
+            \p(\left\{R\right\} \times \left\{W, \cancel{W}\right\}) &= 0.5 \\
+        \end{align*}
+        So $\p((R, W))$, we cannot calculate, but we can calculate the inverse:
+        $\p((R, W)^c) = \p(\left\{\cancel{R}\right\} \times \left\{W, \cancel{W}\right\} \bigcup \left\{R, \cancel{R}\right\}, \times \left\{\cancel{W}\right\})
+        \leq \p(\left\{\cancel{R}\right\} \times \left\{W, \cancel{W}\right\}) + \p(\left\{R, \cancel{R}\right\}, \times \left\{\cancel{W}\right\})
+        = 0.3 + 0.5 = 0.8$
+        So, since $\p((R, W)) = 1 = \p((R, W)^c) \geq 1 - 0.8 = 0.2$
+    \end{proof}
+
+\end{theorem}
+
+\begin{theorem}[Boole inequality]
+    $\left(\Omega, \F, \p\right)$, Let there be $A_i \in \F$ events, for $1 \leq i \leq m$,
+    where $m \in \N$. Then: \[
+        \p \left(\bigcup_{i = 1}^m A_i\right) \leq \displaystyle\sum_{i = 1}^{m}\p(A_i)
+    \]
+
+    \begin{proof}
+        Induction on the number of events $m$. \\
+        $m = 1$ - Nothing to prove. \\
+        $m = 2$ - Previous theorem covers 2 \\
+        We will assume for $m$, and prove for $m + 1$ events $(A_i)_{i \in [m + 1]}$ \\
+
+        $\p \left(\bigcup_{i \in [m+1]}\right) = \p \left((\bigcup_{i \in [m]} A_i) \bigcup A_{m + 1}\right)
+        \leq \p(\bigcup_{i \in [m]} A_i) + \p(A_{m + 1}) \leq \displaystyle\sum_{i \in [m]}^{}\p(A_i) + \p(A_{m + 1})
+        = \displaystyle\sum_{i \in [m + 1]}^{}\p(A_i)$
+    \end{proof}
+\end{theorem}
+Returning to the birthday paradox, we choose randomly (with repeats) $n$ numbers within $[m]$,
+where $m, n \in \N$. Find the upper limit on the probability of the event that a certain
+number is chosen twice. \\
+\textit{ Sol. } Out probability space is $[m]^n$, with uniform probability. We will
+write $B_{ij} = \left\{\left(x_k\right)_{k = 1}^n \in \Omega | x_i = x_j\right\}$,
+the event that the $i$-th number, and the $j$-th number are the same. $|B_{ij}| = m^{n - 1}$,
+because we have $n - 1$ choices: The choice for $i$ dictates also $j$. Therefore,
+$\p(B_{ij}) = \displaystyle\frac{m^{n - 1}}{m^n} = \displaystyle\frac{1}{m}$ for every
+$1 \leq i < j \leq n$. The union $\bigcup_{i < j}B_{ij}$ is the event who's probability
+we want to limit.
+\[
+    \p \left(\bigcup_{i < j} B_{ij}\right) \leq \displaystyle\sum_{i < j}^{}\p \left(B_{ij}\right) = \displaystyle\sum_{j = 1}^{n}\displaystyle\sum_{i = 1}^{j - 1}\displaystyle\frac{1}{m}
+    = \displaystyle\frac{n(n - 1)}{2m}
+\]
+
+% subsubsection Example (end)
+
+% section Union block for 2 elements (end)
+
+\section{Continuity of the probability function}\label{sec:Continuity of the probability function} % (fold)
+\begin{definition}
+    A countable collection of events $\left(A_n\right)_{n = 1}^\infty$ is called
+    \textbf{rising} (\textbf{descending}) if for every $n \in \N$ it is true that
+    $A_n \subseteq A_{n + 1}$ ($A_{n + 1} \subseteq A_n$)
+
+\end{definition}
+
+\begin{theorem}[]
+    Let there be a probability space $\left(\Omega, \F, \p\right)$.
+    Let $\left(A_n\right)_{n \in \N}$ be a rising event series. \textbf{then}
+    $\p \left(\bigcup_n A_n\right) = \displaystyle\lim_{n \to \infty} \p \left(A_n\right)$
+
+    \begin{proof}[Proof ]
+        We will define $B_1 = A_1$, and for every $n > 1$ we will define $B_n = A_n \setminus A_{n - 1}$.
+        $\displaystyle\bigcup_{i = 1}^n A_i = \displaystyle\bigsqcup{i = 1}^n B_i$.
+        Also $\bigcup_{i \in [n]} A_i = \bigsqcup{i \in [n]} B_i$.
+        So, $\p \left(\bigcup_{n \in \N} A_n\right) = \p \left(\bigsqcup_{n \in \N} B_n\right) = \displaystyle\sum_{n \in \N}^{}\p \left(B_n\right)
+        = \displaystyle\lim_{n \to \infty} \displaystyle\sum_{n \in [k]}^{}\p(B_n) = \displaystyle\lim_{k \to \infty} \p \left(\bigsqcup_{n \in [k]} B_n\right)
+        = \displaystyle\lim_{k \to \infty} \p \left(\bigcup_{n \in [k]} A_n\right) = \displaystyle\lim_{n \to \infty} \p \left(A_n\right)$
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[Conclusion from previous]
+    Let there be $\left(\Omega, \F, \p\right)$. Let $\left(A_n\right)_{n \in \N}$
+    be a descending event series. \textbf{then} $\p \left(\bigcap_n A_n\right) = \displaystyle\lim_{n \to \infty} \p(A_n)$
+
+    \begin{proof}[Proof ]
+        $\p \left(\bigcap_{n \in \N} A_n\right) = 1 - \p \left( \left(\bigcap_{n \in \N} A_n\right)^c\right)
+        = 1 - \p \left(\bigcup_{n \in \N} A_n^c\right) = 1 - \displaystyle\lim_{n \to \infty} \p \left(A_n^c\right)
+        = \displaystyle\lim_{n \to \infty} \left(1 - \p \left(A_n^c\right)\right)
+        = \displaystyle\lim_{n \to \infty} \p \left(A_n\right)$
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[]
+    Let there be $\left(\Omega, \F, \p\right)$. Let $\left(A_n\right)_{n \in \N}$
+    be an event series. \textbf{then} $\p \left(\bigcup_n A_n\right) \leq \displaystyle\sum_{n}^{} \p(A_n)$
+
+    \begin{proof}
+        We will write $B_n = \bigcup_{i = 1}^n A_i$, and then $\left(B_n\right)_{n \in \N}$
+        is a rising series of events, and it is true that
+        $\displaystyle\bigcup_{i = 1}^n B_i = B_n = \displaystyle\bigcup_{i = 1}^n A_i$, $\displaystyle\bigcup_{n \in \N} B_n = \displaystyle\bigcup_{n \in \N} A_n$
+        So: $\p \left(\displaystyle\bigcup_n A_n\right) = \p \left(\displaystyle\bigcup_n B_n\right) = \displaystyle\lim_{n \to \infty} \p \left(B_n\right)
+        = \displaystyle\lim{n \to \infty} \p \left(\displaystyle\bigcup_{i = 1}^n A_i\right) \leq \displaystyle\lim_{n \to \infty} \displaystyle\sum_{i = 1}^{n}\p \left(A_i\right)
+        = \displaystyle\sum_{n}^{}\p \left(A_n\right)$
+    \end{proof}
+
+\end{theorem}
+% section Continuity of the probability function (end)
+
+\section{Inclusion exclusion principle}\label{sec:Inclusion exclusion principle} % (fold)
+The notes here are a little thin, since this was studied in discrete maths, and
+in exercise 0.
+\begin{theorem}[IEP]
+    Let there be $\left(\Omega, \F, \p\right)$, and let there be $A, B, C \in \F$. \textbf{then}
+    \[
+        \p \left(A \cup B\right) = \p(A) + \p(B) - \p(A \cap B)
+    \]
+    \[
+        \p \left(A \cup B \cup C\right) = \p(A) + \p(B) - \p(A \cap B) - \p(A \cap C) - \p(B \cap C) + \p(A \cap B \cap C)
+    \]
+
+    \begin{proof}[Proof ]
+        $\p(A \cup B) = \p(A \sqcup (B \setminus A)) = \p(A) + \p(B \setminus A) = \p(A) + \p(B) - \p(A \cap B)$. \\
+
+        $\p \left(A \cup B \cup C\right) = \p \left(A \cup B\right) + \p(C) - \p \left(\left(A \cup B\right) \cap C\right)
+        = \p(A) + \p(B) - \p \left(A \cap B\right) + \p(C) - \p \left(\left(A \cap C\right) \cup \left(B \cap C\right)\right)$
+        The last term is equal to $\p \left(A \cap C\right) + \p \left(B \cap C\right) - \p \left(\left(A \cap C\right) \cap \left(B \cap C\right)\right)$
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[]
+    (We're not going to use this much) \\
+
+    If $\left(\Omega, \F, \p\right)$, given $A_1, \dots, A_n \in \F$, and the
+    set $I \subseteq [n]$, we will write $A_I = \displaystyle\bigcap_{i \in I}^{}A_i$
+
+\end{definition}
+So overall, the IEP can be written as $\p \left(\displaystyle\bigcup_{i = 1}^{n}A_i\right) =
+\displaystyle\sum_{k = 1}^{n}(-1)^{k + 1} \displaystyle\sum_{I \subseteq [n],|I|=k}^{}\p \left(A_I\right)$
+% section Inclusion exclusion principle (end)
+\section{The assignment problem}\label{sec:The assignment problem} % (fold)
+Given $n$ letters, and $n$ envelopes, we put every letter into an envelope,
+without looking what we put where.
+\begin{enumerate}
+    \item What is the probability that no letter is put into its envelope?
+    \item What is the probability that exactly $r \leq n$ letters are put into
+        their envelopes?
+\end{enumerate}
+
+\begin{enumerate}
+    \item We will consider every letter and envelope as numbered from $1$ to $n$.
+        $\Omega = S_n = \left\{\sigma : [n] \to [n] | \sigma \text{is one to one, and "on"}\right\}$, with uniform probability.
+        For example $S_3 = \left\{123, 132, 231, 213, 312, 321\right\}$. \\
+        Let us write $B_i = \left\{\left(x_i\right)_{i = 1}^n | x_i = i\right\}$
+        for every $1 \leq i \leq n$, the event that the $i$-th letter is sent to
+        its recipient. $A = \left\{\text{No letter arrive at its recipient}\right\}$,
+        so $A^c = \text{There is a letter that arrives at its recipient} = \displaystyle\bigcup_{i \in [n]}^{}B_i$ .
+        So $\p(A^c) = \p \left(\displaystyle\bigcup_{i \in [n]}^{}B_i = \displaystyle\sum_{k \in [n]}^{}(-1)^{k + 1} \displaystyle\sum_{I \subseteq [n] \land |I| = k}^{}\p \left(B_I\right)\right)$.
+        The size of $B_I$ is the number of permutations of $[n] \setminus I$, which is $\left(n - |I|\right)!$.
+        % TODO incomplete, finish from the slideshow pdf
+\end{enumerate}
+
+% section The assignment problem (end)
+
+
+\end{document}

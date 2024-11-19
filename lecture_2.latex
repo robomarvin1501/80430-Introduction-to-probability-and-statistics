@@ -1,0 +1,168 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+
+\title{Lecture 2}
+\author{Gidon Rosalki}
+\date{2024-11-04}
+
+
+\begin{document}
+\maketitle
+ Given a bowl of $n$ balls, with $k < n$ colours. We draw a ball.
+
+\begin{definition}[Point probability function]
+ Let there be an event space $\Omega$. The function $p: \Omega \to [0, 1]$ is a
+ \textbf{point probability function} if $\displaystyle\sum_{\omega \in \Omega}^{}p_\omega = 1$
+\end{definition}
+
+\begin{definition}[Support]
+ The \textbf{support} of $p$ is the set $Supp(p) = \{\omega \in \Omega | p_\omega > 0\}$
+\end{definition}
+
+\begin{theorem}[]
+    If $\left(\Omega, p\right)$ is an event space with a point probability function,
+    \textbf{then} the function defined as $\p_p(A) = \displaystyle\sum_{\omega \in A}^{}p_\omega$
+    is a probability function which is supported by $Supp(p)$.
+
+    Proof: Such that $\p_p$ will be a probability function, it needs to enable
+    the two axioms:
+    \begin{enumerate}
+        \item $\p_p(\Omega) = 1$: $\p_p(\Omega) = \displaystyle\sum_{\omega \in \Omega}^{}p(\omega) = 1$ \\
+            Conclusion: $\forall A \leq \Omega\ \p_p(A) = \displaystyle\sum_{\omega \in A}^{}p(\omega) \leq \displaystyle\sum_{\omega \in \Omega}^{}p(\omega) = 1$
+        \item Let there be $(A_n)_{n \in \N}$ non intersecting events. We need
+            $\p_p \left(\sqcup_{n \in \N} A_n\right) = \displaystyle\sum_{n \in \N}^{}\p(A_n)$.
+        So, $\p_p(\cup_{n \in \N}A_n) = \displaystyle\sum_{\omega \in \cup_{n \in \N}A_n}^{}p(\omega) = \displaystyle\sum_{n \in \N}^{}\displaystyle\sum_{\omega \in A_n}^{}p(\omega) = \displaystyle\sum_{n \in \N}^{}\p(A_n)$
+    \end{enumerate}
+\end{theorem}
+
+\begin{definition}[Discrete probability]
+    If $\left(\Omega, \mathcal{F}, \p\right)$ is a probability space, and there exists
+    a point probability function $p$ such that $\p = \p_p$, then $\p$ is called
+    a \textbf{discrete probability function}, and the space a \textbf{discrete probability space}
+\end{definition}
+
+\begin{theorem}[]
+    Let there be $\left(\Omega, \mathcal{F}, \p\right)$ probability space. The following
+    requirements are equivalent:
+    \begin{enumerate}
+        \item $\left(\Omega, \mathcal{F}, \p\right)$ is a discrete probability space
+        \item There exists a countable set $Q$ Such that $\p(Q) = 1$
+        \item $\displaystyle\sum_{\omega \in \Omega}^{}\p \left(\left\{w\right\}\right) = 1$
+        \item $\forall A \in \mathcal{F} \implies \p(A) = \displaystyle\sum_{\omega \in A}^{}\p \left(\left\{\omega\right\}\right)$
+    \end{enumerate}
+\end{theorem}
+
+Examples: \\
+Bernoulli expperiment with the parameter $0 \leq \alpha \leq 1$. What if $\alpha \in \left\{0, 1\right\}$ \\
+\begin{definition}[Almost always]
+    If an event $A \in \mathcal{F}$ enables $\p(A) = 1$ we will say that $A$
+    occurs \textbf{almost always}
+\end{definition}
+
+Throwing a fair die \\
+Grabbing coloured balls from a bag \\
+Probability function with the sum $\displaystyle\sum_{n \in \N}^{}\displaystyle\frac{1}{n^2}$
+\begin{align*}
+    \displaystyle\sum_{n \in \N}^{}\displaystyle\frac{1}{n^2} &= \displaystyle\frac{\pi^2}{6} = c \\
+    p(n) &= \displaystyle\frac{1}{n^2} \cdot c^{-1} \\
+    \displaystyle\sum_{n \in \N}^{}p(n) = c^{-1} \displaystyle\sum_{n \in \N}^{}\displaystyle\frac{1}{n^2} &= c^{-1}c = 1
+\end{align*}
+For example:
+\begin{align*}
+    \p_p(2 \N) &= \displaystyle\sum_{n \in 2\N}^{}p(n) \\
+               &= \displaystyle\sum_{n \in \N}^{}p(2n) \\
+               &= \displaystyle\sum_{n \in \N}^{}\displaystyle\frac{c^{-1}}{(2n)^2} \\
+               &= c^{-1} \displaystyle\sum_{n \in \N}^{}\displaystyle\frac{1}{4n^2} \\
+               &= \displaystyle\frac{c^{-1}}{4} \displaystyle\sum_{n \in \N}^{}\displaystyle\frac{1}{n^2} \\
+               &= \displaystyle\frac{1}{4}
+\end{align*}
+
+\begin{definition}[Uniform probability space]
+    Let there be the discrete probability space $\left(\Omega, \mathcal{F}, \p\right)$. If for every
+    $\omega \ne \omega' \in \Omega$ such that $\p \left(\left\{\omega\right\}\right) = \p \left(\left\{\omega'\right\}\right)$
+    we will say that $\p \left(\left\{\omega\right\}\right)$ is a \textbf{uniform probability space}
+\end{definition}
+Why? Calculation of probability changes to be a calculation of size of groups. Additionally,
+it automatically brings symmetry to the results of the experiments.
+
+Example: Rolling two dice, what are the chances of getting 7? \\
+Solution: We will choose $\Omega = [6]^2$, every ordered pair of every possible outcome.
+We will note that $|\Omega| = 6^2 = 36$. The space is a uniform probability
+space from considering symmetry. The event that "The sum is 7" is the set $A = \left\{\left(1, 6\right), \left(2, 5\right), \left(3, 4\right), \left(4, 3\right), \left(5, 2\right), \left(6, 1\right)\right\}$.
+We can also say that the event space $\Omega = \left\{\left(i, j\right) | 1 \leq i \leq j \leq 6\right\}$,
+which is every possible pair without differing between the dice. This leaves us with
+the problem that there are then 2 possible ways to roll $\left(2, 3\right)$, where
+there is only one way to roll $\left(1, 1\right)$, so this probability space is
+\textbf{not} uniform.
+
+\textbf{Note}, a uniform probability space has to be \textbf{finite}. If the uniform
+infinite probability space $\left(\Omega, \mathcal{F}, \p\right)$ is countable, then $1 = \p(\Omega) = \displaystyle\sum_{\omega \in \Omega}^{}\p(\left\{\omega\right\})
+= \displaystyle\sum_{\omega \in \Omega}^{}c = \infty$. This is a contradiction,
+and thus $\Omega$ must be finite. $1 = \p(\Omega) = \displaystyle\sum_{\omega \in \Omega}^{}\p(\left\{\omega\right\}) = \displaystyle\sum_{\omega \in \Omega}^{}c = |\Omega|c
+\implies c = \displaystyle\frac{1}{|\Omega|} \implies \p(A) = \displaystyle\frac{|A|}{|\Omega|}$
+
+\section{Multiplicative space} % (fold)
+\label{sec:Multiplicative space}
+\begin{definition}[Multiplicative space]
+    Let there be $\left(\Omega_1, \mathcal{F}_1, \p_1\right)$ and $\left(\Omega_2, \mathcal{F}_2, \p_2\right)$,
+    uniform probability spaces. Their \textbf{multiplicative space} if created
+    from the event spaces $\Omega_1 \times \Omega_2$. The collection of events is
+    $\mathcal{F}_{\Omega_1 \times \Omega_2} = 2^{\Omega_1 \times \Omega_2}$,
+    and the probability function $p_1 \times p_2$ is defined as
+    $p_1 \times p_2(\omega_1, \omega_2) = p_1(\omega_1)p_2(\omega_2)$
+\end{definition}
+
+\begin{definition}[Marginal event]
+    According to the above symbols, $A_i \in \mathcal{F}_i$ where $i = 1,2$ the
+    events $A_1 \times \Omega_2$ and $\Omega_1 \times A_2$ are called \textbf{marginal events}.
+    The event $A_1 \times A_2$ is called the multiplicative event.
+\end{definition}
+
+\begin{theorem}[]
+    If $A_1 \times A_2$ is the multiplicative event, \textbf{then} $\p_{p_1 \times p_2}(A_1 \times A_2) = \p_1(A_1)\p_2(A_2)$
+
+    Proof:
+    \begin{align*}
+        \p_{p_1 \times p_2}(A_1 \times A_2) &= \displaystyle\sum_{(\omega_1, \omega_2) \in A_1 \times A_2}^{}(p_1 \times p_2)(\omega_1, \omega_2) \\
+                                            &= \displaystyle\sum_{\omega_1, \omega_2 \in A_1 \times A_2}^{}p_1(\omega_1) p_2(\omega_2) \\
+                                            &= \displaystyle\sum_{\omega_1 \in A_1}^{} \displaystyle\sum_{\omega_2 \in A_2}^{} p_1(\omega_1)p_2(\omega_2) \\
+                                            &= \displaystyle\sum_{\omega_1 \in A_1}^{}\left(p_1(\omega_1) \displaystyle\sum_{\omega_2 \in A_2}^{}p_2(\omega_2)\right) \\
+                                            &= \displaystyle\sum_{\omega_1 \in A_1}^{}p_1(\omega_1) \p_2(A_2) \\
+                                            &= \p_2(A_2)\p_1(A_1) \\
+    \end{align*}
+\end{theorem}
+
+\begin{definition}[Multiplicative space]
+    Let there be probability spaces $\left\{\left(\Omega_k, \mathcal{F}_k, \p_k\right)\right\}_{k \in [n]}$.
+    Their multiplicative space is given as $\Omega = \times_{k = 1}^n \Omega_k$ with
+    the probability function $p(\omega_1, \dots, \omega_n) = \Pi_{k =1}^n p_k(\omega_k)$ is
+    the collection of event spaces is $\mathcal{F} = 2^\Omega$% TODO
+\end{definition}
+
+Experiments with many steps: Draw a tree, multiply across branches, and add up the
+results.
+
+% section Multiplicative space (end)
+
+\end{document}

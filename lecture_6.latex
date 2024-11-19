@@ -1,0 +1,188 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\h}{\ensuremath{\mathcal{H}}}
+
+\title{Lecture 6}
+\author{Gidon Rosalki}
+\date{2024-11-18}
+
+
+\begin{document}
+\maketitle
+\section{New perspective on the complete probability formula}\label{sec:New perspective on the complete probability formula} % (fold)
+\begin{theorem}[]
+    $\left(\Omega, \F, \p\right)$. Let there be $\mathcal{B} \subseteq \F$ a countable
+    division. Then
+    \[
+        \forall A \in \F\ \p(A) = \displaystyle\sum_{B \in \mathcal{B} : \p(B) > 0}^{} \p(B) \p(A | B)
+    \]
+\end{theorem}
+
+Example: Nes Milano (There is a story, but cba to copy it all out. Part of the point
+of translating a story to maths is lost, but ah well.) \\
+$\Omega = \left\{0, 1, 2\right\} \times \left\{W, L\right\}$. Our event
+is $W = \left\{0, 1, 2\right\} \times \left\{W\right\}$. If we write $H_k = \left(k, .\right)$,
+then $\left\{H_k\right\}_{k = 0, 1, 2}$ is a division of $\Omega$ with probabilities:
+$\p \left(H_0\right) = 0.1,\ \p \left(H_1\right) = 0.4,\ \p \left(H_2\right) = 0.5$.
+More things that we are given: $\p \left(W | H_0\right) = 1,\ \p \left(W | H_1\right) = 0.6,\ \p \left(W | H_2\right) = 0$. \\
+In conclusion: $\p \left(., W\right) = \displaystyle\sum_{k = 0}^{2} \p \left(H_k\right) \p \left(\left(., W\right) | H_k\right) = 0.1 \cdot 1 + 0.4 \cdot 0.6 + 0.5 \cdot 0 = 0.34$
+% section New perspective on the complete probability formula (end)
+
+\section{Bayes theorem}\label{sec:Bayes theorem} % (fold)
+Let us consider the chaining theorem, which says as follows: $\p \left(A \cap B\right) = \p \left(B\right) \p \left(A | B\right)$.
+If it is true that $\p \left(A\right) > 0$ then we can divide by it, and get
+the Bayes theorem, and also the inverse formula.
+\begin{theorem}[Bayes]
+    \[
+        \p \left(B | A\right) = \p \left(A | B\right) \displaystyle\frac{\p \left(B\right)}{\p \left(A\right)} \left(\Leftrightarrow \p \left(B | A\right) \p \left(A\right) = \p \left(A | B\right) \p \left(B\right)\right)
+    \]
+
+    \begin{proof}
+
+        $\displaystyle\frac{\p \left(A \cap B\right)}{\p \left(A\right)} = \displaystyle\frac{\p \left(B\right) \p \left(A | B\right)}{\p \left(A\right)}$
+        and $\displaystyle\frac{\p \left(A \cap B\right)}{\p \left(A\right)} = \p \left(B | A\right) = \displaystyle\frac{\p \left(B\right)}{\p \left(A\right)} \p \left(A | B\right)$
+
+    \end{proof}
+\end{theorem}
+
+Example for symbols, a man is infected. $\h_0$ is the hypothesis that he is healthy,
+$\h_1$ that he is sick. The results of the test is meant to update $\h_1$.
+
+\subsubsection{Rosencrancz and Guildenstern}\label{sec:Rosencrancz and Guildenstern} % (fold)
+Goldenstern has a coin, and Rosencrancz believes that it is fair, but belives that there
+is a chance of $10^{-6}$ that it is weighted to always produce heads. Goldenstern
+tosses the coin, and it turns up $H$ 30 tinmes in a row. How should Rosencrancz
+update his belief concerning the fairness of the coin?
+
+\textit{ Sol. } $\Omega = \left\{F, M\right\} \times \left\{H, T\right\}^{30}$.
+The hypotheses that the coin is fair, which is to say $\h_0 = \left(F, .\right) \land \h_1 = \left(M, .\right)$.
+we will also write that $B = \left\{F, M\right\} \times \left\{H\right\}^{30}$
+the event that Heads comes up 30 times in a row. \\
+$\p(\h_1) = 10 ^{-6},\ \p(B | \h_1) = 1,\ \p(B | \h_0) = 2^{-30}$. We are
+looking for $\p \left(\h_1 | B\right)$. We can caluclate $\p(B)$ with the complete
+probability formula:
+\[
+    \p \left(B\right) = \p \left(B | \h_1\right) \p \left(\h_1\right) + \p \left(B | \h_0\right) \p \left(\h_0\right) = 1 \cdot 10^{-6} + 2^{-30} \left(1 - 10^{-6}\right)
+\]
+So
+\[
+    \p \left(\h_1 | B\right) = \p \left(B | \h_1\right) \displaystyle\frac{\p \left(\h_1\right)}{\p \left(B\right)} = 1 \cdot \displaystyle\frac{10^{-6}}{ \p \left(B\right)} \approx 1 - \displaystyle\frac{1}{1073}
+\]
+% subsubsection Rosencrancz and Guildenstern (end)
+
+\subsubsection{Diagnosis with illness}\label{sec:Diagnosis with illness} % (fold)
+For some ilnness there is a presence of $1\%$ in the population. A person is
+checked to see if they carry the virus. The check has a probability of
+$\alpha$ for a false positive, and $\beta$ for a false negative. The
+check came out positive, what is the probability that the person is in fact sick?
+
+\textit{ Sol. } $\Omega = \left\{S, H\right\} \times \left\{+, -\right\}$. $\h_0 = \left(H, .\right),\ \h_1 = \left(S, .\right)$.
+We will write our event $B = \left\{S, H\right\} \times \left\{+\right\} = \left(., +\right)$
+that our result is in fact positive. \\
+$\p \left(\h_1\right) = 0.01,\ \p \left(B | \h_1\right) = 1 - \beta,\ \p \left(B | \h_0\right) = \alpha$.
+We are looking for $\p \left(\h_1 | B\right)$. So:
+\[
+    \p \left(B\right) = \p \left(B | \h_1\right) \p \left(\h_1\right) + \p \left(B | \h_0\right) \p \left(\h_0\right) = 0.01 (1 - \beta) + 0.99 \alpha
+\]
+So
+\[
+    \p \left(\h_1 | B\right) = \p \left(B | \h_1\right) \displaystyle\frac{\p \left(\H_1\right)}{\p \left(B\right)} = \displaystyle\frac{0.01(1 - \beta)}{0.01(1 - \beta) + 0.99 \alpha}
+\]
+
+Real example: \\
+$\Omega = \left\{S, H\right\} \times \left\{+, -\right\}$. $\h_0 = \left(H, .\right),\ \h_1 = \left(S, .\right)$.
+We will write our event $B = \left\{S, H\right\} \times \left\{+\right\} = \left(., +\right)$
+that our result is in fact positive. \\
+$\p \left(\h_1\right) = 0.01,\ \p \left(B | \h_1\right) = 0.95,\ \p \left(B | \h_0\right) = 0.05$.
+We are looking for $\p \left(\h_1 | B\right)$. So:
+\[
+    \p \left(B\right) = \p \left(B | \h_1\right) \p \left(\h_1\right) + \p \left(B | \h_0\right) \p \left(\h_0\right) = 0.01 \cdot 0.95 + 0.99 \cdot 0.05
+\]
+So
+\[
+    \p \left(\h_1 | B\right) = \p \left(B | \h_1\right) \displaystyle\frac{\p \left(\H_1\right)}{\p \left(B\right)} = \displaystyle\frac{0.01 \cdot 0.95}{0.059} \approx 0.16
+\]
+Since the classic example is AIDS, then a positive result means you have an
+$16\%$ chance of actually being sick. Which is why we do more than 1 test.
+
+% subsubsection Diagnosis with illness (end)
+% section Bayes theorem (end)
+
+\section{Non dependent events}\label{sec:Non dependent events} % (fold)
+Example: Throw 2 dice, what is the chance that their sum is 7? $\p(A) = \displaystyle\frac{1}{6}$ \\
+If we know that the result of the first die is $1$, what is the probability that the sum is 7? $\p \left(A | B\right)
+= \displaystyle\frac{\p \left(A \cap B\right)}{\p \left(B\right)} - \displaystyle\frac{\p \left(\left\{1, 6\right\}\right)}{\displaystyle\frac{1}{6}} = \displaystyle\frac{\displaystyle\frac{1}{36}}{\displaystyle\frac{1}{6}} = \displaystyle\frac{1}{6}$
+
+\begin{definition}[3.26]
+    $\left(\Omega, \F, \p\right)$. Let there be $A, B \in \F$, and $B$ is \textbf{independent}
+    if $\p \left(A \cap B\right) = \p \left(A\right) \p \left(B\right)$
+\end{definition}
+This definition is \textbf{not} symmetrical! If for example $\p \left(B\right) > 0$, then
+we can express the independence as $\p \left(A | B\right) = \p \left(B\right)$.
+A multiplicative space is a perfect example of independence.
+
+Independence does not mean that two events to not affect each other: \\
+Example: Throw a fair die, $\Omega = [6]$, with uniform probability.
+We will write $A = \left\{i \in [6] | i < 3\right\} = \left\{1, 2\right\}$, $
+E = \left\{i \in [6] | i \% 2 = 0\right\} = \left\{2, 4, 6\right\}$.
+$\p(A) = \displaystyle\frac{|\left\{1, 2\right\}|}{|[6]|} = \displaystyle\frac{1}{3}$ % TODO complete when uploaded to moodle
+
+\begin{theorem}[3.30]
+    $\left(\Omega, \F, \p\right)$. $A, B \in \F$ independent. Then:
+    \begin{enumerate}
+        \item $A$ is independent with $\Omega$ and $\emptyset$
+        \item $\p \left(B\right) > 0 \implies \p \left(A | B\right) = \p \left(A\right)$
+        \item $\p \left(A \cap B^c\right) = \p \left(A\right) \p \left(B^c\right)$
+    \end{enumerate}
+
+    \begin{proof}[Proof ]
+        \begin{enumerate}
+            \item $\p \left(A \cap \Omega\right) = \p (A) = \p (A) \cdot 1 = \p(A) \p(\Omega)$. $
+                \p (A \cap \emptyset) = \p(\emptyset) = 0 = 0 \cdot p(A) = \p(\emptyset) \p(A)$
+            \item $\p(A | B) = \displaystyle\frac{\p(A \cap B)}{\p(B)} = \displaystyle\frac{\p(A) \p(B)}{\p(B)} = \p(A)$
+            \item $\p(A) = \p \left(\left(A \cap B\right) \sqcup \left(A \cap B^c\right)\right) \p \left(A \cap B\right) + \p \left(A \cap B^c\right)$.
+                $\p \left(A \cap B^c\right) = \p \left(A\right) - \p \left(A \cap B\right) = \p \left(A\right) - \p \left(A\right) \p \left(B\right) = \p \left(A\right) \left(1 - \p \left(B\right)\right) = \p \left(A\right) \p \left(B^c\right)$
+        \end{enumerate}
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[3.34]
+    $\left(\Omega, \F, \p\right)$, and $A, B_1, \dots, B_k \in \F$. A is independent of the collection
+    $\left\{B_i\right\}_{i \in [k]}$ if for every $I \subseteq [k]$ it is true that
+    $A$ and $\displaystyle\bigcap_{i \in I}^{}B_i$ are independent
+\end{definition}
+
+Let us return to dice. If we throw two fair dice $\Omega = [6]^2$, with uniform probability.
+$A = \left(4, .\right),\ B_1 = \left\{\left(\cdot, 2k\right) | 1 \leq k \leq 3\right\},\ B_2 = \left\{\left(\cdot, j\right) | j > 3\right\}$.
+Show that $A$ is independent of $\left\{B_1, B_2\right\}$, but $B_1$ is dependent on $B_2$.
+
+\textit{ Sol. }$\p(A) = \displaystyle\frac{1}{6} \land \p(B_1) = \displaystyle\frac{1}{2} \land \p(B_2) = \displaystyle\frac{1}{2}$.
+$\p(A \cap B_1) = \p(\left\{\left(4, 2k \right) | k \in [3]\right\} = \displaystyle\frac{1}{12} = \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{2}$.
+Additionally $\p \left(A \cap B_2\right) = \p \left(\left\{\left(4, j\right) | 6 \geq j > 3\right\}\right) = \displaystyle\frac{1}{12} = \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{2}$.
+$\p \left(A \cap B_1 \cap B_2\right) = \p \left(\left\{\left(4, 4\right), \left(4, 6\right)\right\}\right) = \displaystyle\frac{1}{18} = \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{3}$.
+Finally $\p \left(B_1 \cap B_2\right) = \displaystyle\frac{1}{3} \ne \displaystyle\frac{1}{2} \cdot \displaystyle\frac{1}{2}$.
+So $A$ is independent of $\left\{B_1, B_2\right\}$, but $B_1$ is dependent on $B_2$
+% section Non dependent events (end)
+\end{document}

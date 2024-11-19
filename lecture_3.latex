@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+
+\title{Lecture 3}
+\author{Gidon Rosalki}
+\date{2024-11-10}
+
+
+\begin{document}
+\maketitle
+
+\section{Definitions reminder}\label{sec:Definitions reminder} % (fold)
+\begin{definition}[Event space]
+    The \textbf{event space} is a non-empty set: $\Omega$
+\end{definition}
+
+% TODO remainder of the definitions at the beginning of the slides
+\begin{definition}[Events]
+
+\end{definition}
+
+\subsubsection{Example of the multiplicative space}\label{sec:Example of the multiplicative space} % (fold)
+We toss a coin, with a probability of $0 \leq p \leq 1$ that the result is H, $n$
+times. What is the probability that we get exactly $0 \leq k \leq n$ heads? \\
+Solution: $\forall 1 \leq l \leq n\ \Omega_l = \left\{H, T\right\} \implies \Omega = \times_{l \in [n]} \Omega_l = \left\{H, T\right\}^n$ \\
+$A_k = \left\{\text{There are exactly $k$ heads}\right\} = \left\{(\omega_1, \dots, \omega_n) \in \Omega | \exists I \subseteq [n] : |I| = k \land
+\forall i \in I\ \omega_i = H \land \forall i \notin I\ \omega_i = T\right\}$. \\
+$(\forall \omega \in A_k\ p(\omega) = \Pi_{i \in I}p \cdot \Pi_{i \notin I}(1 - p) = p^k(1-p)^{n - k})$.
+So $A_k = \sqcup_{I \subseteq [n] \land |I| = k} \left\{(\omega_1, \dots, \omega_n) | \forall i \in I\ \omega_i = H \land \forall i \notin I \omega_i = T\right\}$.
+Therefore $\p(A_k) = \displaystyle\sum_{I \subseteq [n] \land |I| = k}^{} \p \left(\left\{\left(\omega_i, \dots, \omega_n\right) | \forall i \in I\ \omega_i = H \land \forall i \notin I\ \omega_i = T\right\}\right)
+= \displaystyle\sum_{I \subseteq [n] \land |I| = k}^{}p^k (1-p)^{n - k} = \binom{n}{k} \cdot p^k(1-p)^{n-k}$
+where $\binom{n}{k}$ is the amount of $I \subseteq [n]$ of size $k$.
+
+\begin{theorem}[Birthday problem]
+    What is the chance that given $n$ people, 2 of them have the same birthday? \
+
+    \begin{proof}[Proof ]
+        $\Omega = [365]^n\ A = \left\{\text{There are 2 people with the same birthday}\right\} =
+        \left\{\left(\omega_1, \dots, \omega_n\right) | \exists i \ne j : \omega_i \ne \omega_j \right\}$.
+        We may instead write $A^c = \left\{\text{For every 2 people, they have different birthdays}\right\} = \left\{(\omega_1, \dots, \omega_n) | \forall i \ne j \in [n]\ \omega_i \ne \omega_j\right\}$.
+        $\p(A^c) = \displaystyle\frac{|A^c|}{|\Omega|} = \displaystyle\frac{365 \cdot 364 \cdot \dots \cdot (365 - n + 1)}{365^n} = \Pi_{i = 1}^n (1 - \displaystyle\frac{i -1 }{m})$.
+        Neat trick with $\ln$: $\ln(\p(A^c)) = \displaystyle\sum_{i = 1}^{n}\ln(1 - \displaystyle\frac{i - 1}{m})$.
+        $\ln(1 + x) \leq x \implies \ln \left(\p(A^c)\right) \leq \displaystyle\sum_{i = 1}^{n} - \displaystyle\frac{i - 1}{m} = \displaystyle\frac{-1}{m} \displaystyle\sum_{i = 1}^{n}(i - 1)
+        = \displaystyle\frac{-n(n - 1)}{2m} = - \displaystyle\frac{1}{m} \cdot \binom{n}{2}$. \\
+        So, $\p(A^c) \leq e^{- \displaystyle\frac{1}{m}\cdot \binom{n}{2}} \implies \p(A) \geq 1 - e^{-\displaystyle\frac{1}{m} \cdot \binom{n}{2}}$.
+        As long as the number of pairs is large with respect to $m$, which is to say that $n$ is large with respect
+        to $\sqrt{2m}$, the probability for the existence of a pair approaches $1$.
+
+        So we get that for $n = 23 \implies \p(A) = 0.507$.
+    \end{proof}
+\end{theorem}
+% subsubsection Example of the multiplicative space (end)
+% section Definitions reminder (end)
+
+\section{The complete probability formula}\label{sec:The complete probability formula} % (fold)
+In concept, there is a similarity to multiplicative spaces, we split up the problem
+to "easier" ones.
+
+\begin{definition}[Division]
+    Let there be $\left(\Omega, \F, \p\right)$. A \textbf{division} of $\Omega$ is the collection of
+    disjoint events $(A_i)_{i \in I}$ such that $\cup_{i \in I} A_i = \Omega$.
+    If $I$ (set of indices) is countable, we will say that this is a \textbf{countable division}
+\end{definition}
+
+\begin{theorem}[Complete probability]
+    Let there be $(\Omega, \F, \p)$. Let $(A_i)_{i \in I}$ be a countable division.
+    Let $B \in \F$, \textbf{then}
+    \[
+        \p(B) = \displaystyle\sum_{i \in I}^{}\p(B \cap A_i)
+    \]
+
+    \begin{proof}[Proof ]
+        $(A_i)_{i \in I}$ are disjoint sets, which is to say $\forall i \ne j \in I\ A_i \cap A_j = \emptyset$. \\
+        $(B \cap A_i) \cap (B \cap A_j) \subseteq B \cap (A_i \cap A_j) = B \cap \emptyset = \emptyset \implies (B \cap A_i)_{i \in I} $
+        are disjoint sets. \\
+        $\cup_{i \in I}(B \cap A_i) = B$. $x \in B\ \sqcup_{i \in I}A_i = \Omega \implies \exists i \in I\ x \in A_i \implies x \in B \cap A_i
+        \implies x \in \cup_{i \in I} B \cap A_i$. So, $x \in \cup_{i \in I}(B \cap A_i)
+        \implies \exists i \in I\ x \in B \cap A_i \implies x \in B$. \\
+        So $\p(B) = \p(\sqcup_{i \in I} B \cap A_i) = \displaystyle\sum_{i \in I}^{}\p(B \cap A_i)$
+    \end{proof}
+\end{theorem}
+Example: We throw 2 fair dice, one with 6 faces, one with 12 faces. What is the probability
+that the result of the large die is lower than the result of the small die? \\
+$\Omega = [6] \times [12]$, which is uniform. $B = \left\{\left(i, j\right) \in [6] \times [12] | i > j\right\}$
+Let us define $A_i = \left\{\left(i, j\right) | j \in [12]\right\} = \left\{i\right\} \times [12]\ \forall i \in [6]$.
+So $\p(B) = \displaystyle\sum_{i \in [6]}^{}\p(B \cap A_i) = \displaystyle\sum_{i \in [6]}^{}\displaystyle\frac{|B \cap A_i|}{|\Omega|}$
+where $|B \cap A_i| = i - 1\ \forall i \in [6]$ since there are $i - 1$ numbers that are smaller
+than $i$, and larger than 0, and so $= \displaystyle\frac{1}{72}\displaystyle\sum_{i \in [6]}^{}(i - 1) = \displaystyle\frac{6 \cdot 5}{2 \cdot 72} = \displaystyle\frac{5}{24}$
+
+Example: Given a die with 6 faces, such that the probability of $1 \leq i \leq 6$ is
+$p_i = \displaystyle\frac{i}{21}$. We throw this die 5 times. What is the probability
+that the result of the first throw does not happen in the rest of the throws? \\
+$\Omega = [6]^5$, multiplicative space with respect to the different point probabilities $p$. \\
+$B = \left\{\left(a_1, \dots, a_5\right) | a_1 \ne a_i\ \forall i > 1\right\}$ \\
+$A_i = \left\{i\right\} \times [6]^4\ i \in [6]$. $\p(B \cap A_i) = \p(\left\{(i, a_2, \dots, a_5) | a)j \ne i\ \forall j > i\right\})
+= \p\left(\left\{i\right\} \times \left([6] \setminus \left\{i\right\}\right)^4\right) = \displaystyle\frac{i}{21}\left(1 - \displaystyle\frac{i}{21}\right)^4$.
+Thus, $\p(B) = \displaystyle\sum_{i \in [6]}^{}\p(B \cap A_i) = \displaystyle\sum_{i \in [6]}^{}\displaystyle\frac{i}{21}\left(1 - \displaystyle\frac{i}{21}\right)^4 \approx 0.417$
+
+To conclude: A division separates for us the probability space to more comfortable
+sections to analyse (with respect to the question, naturally). \\
+The complete probability formula enables us to use the separation in order to facilitate
+the requested probability.
+% section The complete probability formula (end)
+
+\section{Union block for two events}\label{sec:Union block for two events} % (fold)
+Concept: Sometimes it is easier to find limits for the probability of an event, rather
+than to calculate it precisely. Sometimes, this is also sufficient:
+
+\begin{theorem}[]
+    $(\Omega, \F, \p)$. Let $A, B \in \F$ events. Then: $\p(A \cup B) \leq \p(A) + \p(B)$.
+
+    \begin{proof}[Proof ]
+        % $len(A \cup B) \leq len(A) + len(B)$, from the triangle inequality.
+        $\p(A \cup B) = \p(A \sqcup (B \setminus A)) = \p(A) + \p(B \setminus A) \leq \p(A) + \p(B)$
+    \end{proof}
+\end{theorem}
+% section Union block for two events (end)
+
+\end{document}

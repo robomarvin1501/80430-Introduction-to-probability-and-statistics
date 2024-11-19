@@ -1,0 +1,167 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+
+\title{Lecture 1}
+\author{Gidon Rosalki}
+\date{2024-11-03}
+
+
+\begin{document}
+\maketitle
+
+Example questions: We roll two fair dice, and sum the result. What are the chances of:
+\begin{itemize}
+    \item Summing to 7?
+    \item All the results are $2 \leq k \leq 12$?
+    \item They sum to an even number
+    \item They sum to 5 if the first die is 3?
+    \item Sum to 5 if the first die came to 3?
+\end{itemize}
+
+What if we roll $n$ times:
+\begin{itemize}
+    \item $k$ times 5?
+    \item A run of $k$ throws where every throw is greater than the previous?
+    \item That there will not be 2 throws, one after the other, with the same result.
+\end{itemize}
+
+Rolling as many times as we like:
+\begin{itemize}
+    \item $k$ throws until the first time we get 6
+    \item That we will get 5 before 7?
+    \item That we won't get 3 at all?
+    \item $k$ times 7 until the first time we get 2?
+    \item That the running average of the throws converges? What's the limit?
+\end{itemize}
+
+What is statistics?
+\begin{itemize}
+    \item Common statistics: Throwing dice, chance of numbers turning up.
+    \item Cognitive probability: How certain we are of something occurring (rain, snow)
+    \item Substantial probability: Think quantum mechanics.
+\end{itemize}
+In our course, it matters not. We just calculate probabilities, and all of the
+above will behave the same when considered with our beautiful mathematical axioms.
+
+\section{A little history} % (fold)
+\label{sec:A little history}
+We find in the records of ancient Egypt a game of chance by the name "Senet".
+The Egyptians wrote strategies to win this game of chance, so had clearly
+already began studying the statistics behind this even then.
+
+Near the end of the 15th century: Given a game where points are scored by throwing dice,
+where victory comes when he reaches 6 points. A game finishes with the score 5-3.
+How do we split up the bet?. Luca Fatchili said $\frac{5}{8}$ to the former,
+and $\frac{3}{8}$ to the other. Shablier de maara said in 1654 that instead
+it should be $\frac{1}{4}$ to $\frac{3}{4}$. So did Fermat. More discussion was had shortly afterwards.
+% section A little history (end)
+
+\section{Definitions} % (fold)
+\label{sec:Definitions}
+\begin{definition}[Experiment]
+    An \textbf{experiment} is the situation where every action can bring different results.
+\end{definition}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Experiment & Sample space & \\ \hline
+        Tossing a fiar coin & $\Omega = \{H, T\}$ & \\ \hline
+        An unfair coin & $\Omega = \{H, T\}$ & \\ \hline
+        Tossing 3 coins & $\Omega = \{H, T\}^3$ & \\ \hline
+        Flipping coins until getting heads & $\Omega = \N$ & \\ \hline
+        Landing angle of a spinner & $\Omega = [0, 2\pi)$ & \\ \hline
+        Throwing a die and flipping a coin. & $\Omega = \{H, T\} \times [6]$ & \\ \hline
+    \end{tabular}
+    \caption{}
+\end{table}
+
+\begin{definition}[Sample space]
+    A \textbf{sample space} is a non-empty set. We will often refer to this as
+    $\Omega$. \\
+    This often needs to refer to our experiment. For the same experiment it is
+    plausible to have different probability spaces
+\end{definition}
+
+\begin{definition}[]
+    $\{ H, T \}^3 = \{HHH, HHT, HTH, THH, HTT, THT, TTH, TTT \}$
+\end{definition}
+
+\begin{definition}[]
+    Let there be $\Omega$ probability space. The \textbf{event} is the sub group
+    $A \subseteq \Omega$. \\
+    If $A$ is an event, the \textbf{completion event} is $A^C = \Omega \setminus A$. \\
+    The collection of all the events is $\mathcal{F}$.
+\end{definition}
+If $\mathcal{F} = 2^\Omega$, why does it need a special symbol?
+
+\begin{definition}[Probability function]
+    Given a sample space $\Omega$, with the event collection $\mathcal{F}$,
+    the \textbf{probability function} is $\p: \mathcal{F} \to \left[0, 1\right]$,
+    that enables:
+    \begin{itemize}
+        \item $\p(\Omega) = 1$
+        \item If $(A_i)_{i \in \N}$ is the order of different events, then $\p(\cup_i A_i) = \displaystyle\sum_{i}^{}P(A_i)$.
+    \end{itemize}
+    $(\Omega, \mathcal{F}, \p)$ are called the \textbf{probability space}.
+\end{definition}
+
+\begin{theorem}[]
+    Let there be the probability space $(\Omega, \mathcal{F}, \p)$, probability space that enables
+    the following:
+    \begin{enumerate}
+        \item $\p(\emptyset) = 0$
+        \item For every finite collection $(A_i)_{i=1}^n$ of independent events,
+            it is true $\displaystyle\sum_{i=1}^{n}\p(A_i) = \p(\cup_{i=1}^n A_i)$
+        \item If $A, B \in \mathcal{F} : A \subseteq B \implies \p(A) \leq \p(B)$
+        \item For every event $A \in \mathcal{F}$ it is true that $\p(A^c) = 1-\p(A)$
+    \end{enumerate}
+
+    Proof:
+    \begin{enumerate}
+        \item We will write for every $n \in \N$ that $A_n = \emptyset$ and $\emptyset \cap \emptyset = \emptyset$.
+            This implies $A_n$ is in independent pairs, and additionally $\cup_{n \in \N} = \emptyset$
+            So: $\p(\emptyset) = \p(\cup_{n \in \N} A_n) = \displaystyle\sum_{n \in \N}^{}\p(A_n) = \displaystyle\sum_{n \in \N}^{}\p(\emptyset)$.
+            $\p(\emptyset) \in \left[0, 1\right] \implies \p(\emptyset) \geq 0$.
+            If $c = \p(\emptyset) > 0 \implies \displaystyle\sum_{n \in \N}^{}\p(\emptyset) = \displaystyle\sum_{n \in \N}^{}c = \infty$, and thus
+            contradiction to that $\p(\emptyset) \in \left[0, 1\right] \implies \p(\emptyset) = 0$.
+        \item We will write for every $k > n$ that $A_k = \emptyset$.
+            $\cup_{k \in \N} A_k = \cup_{k \in [n]} A_k \implies \p(\cup_{k \in \N} A_k) = \p(\cup_{k \in \N} A_k)$
+            So $A_k \cap A_l = \begin{cases}
+                \emptyset, &\text{ if } 1 \leq k \ne l\\
+                \emptyset \cap A_l, & \text{ if } l > n,k \in \N\\
+                A_k \cap \emptyset, & \text { if } k > n, l \in \N
+            \end{cases}
+                = \displaystyle\sum_{k \in \N}^{}\p(A_k)
+                = \displaystyle\sum_{k \in [n]}^{}P(A_k) + \displaystyle\sum_{k > n}^{}\p(A_k)$
+                where the second term is 0, thus we have achieved what we wanted.
+        \item $\p(B) = \p(A \sqcup (B \setminus A)) = \p(A) + \p(B \setminus A) \implies \p(A) \leq \p(B)$
+        \item $1 = \p(\Omega) = \p(A \sqcup A^c) = \p(A) + \p(A^c)$ Move across the
+            equals and there you go.
+    \end{enumerate}
+\end{theorem}
+
+% section Definitions (end)
+\end{document}

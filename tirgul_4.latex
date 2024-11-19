@@ -1,0 +1,120 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+
+\title{Tutorial 4}
+\author{Gidon Rosalki}
+\date{2024-11-19}
+
+
+\begin{document}
+\maketitle
+\section{Conditional probability}\label{sec:Conditional probability} % (fold)
+Let there be the probability space $\left(\Omega, \F, \p\right)$, and $A, B \in \F$,
+events, such that $\p \left(A\right) > 0$. Then it is true that $\p \left(B | A\right) = \displaystyle\frac{\p \left(B \cap A\right)}{\p \left(A\right)}$.
+
+\begin{exercise}
+    We throw 2 fair different dice, and it is given that the resultant sum is at
+    least 7.
+    \begin{enumerate}
+        \item What is the probability that the sum is at least 10?
+        \item It is also given that the first die rolled at least 5. What is the probability
+            that the sum is at least 10?
+    \end{enumerate}
+
+    \begin{proof}[Solution]
+        \begin{enumerate}
+            \item The event space is $\Omega = [6]^2$. We will write $B = \left\{\left(x, y\right) \in \Omega | x + y \geq 10\right\}$,
+                and $A = \left\{\left(x, y\right) \in \Omega | x + y \geq 7\right\}$.
+                We want to calculate $\p \left(B | A\right) = \displaystyle\frac{\p \left(B \cap A\right)}{\p \left(A\right)}$.
+                $|A| = |\left\{\left(1, 6\right), \left(2, 5\right), \left(2, 6\right), \dots\right\}| = 1 + 2 + 3 + 4 + 5 + 6 = 21$.
+                $B \cap A = B \implies |B| = |\left\{\left(4, 6\right), \left(5, 6\right), \left(5, 5\right), \left(6, 6\right), \left(6, 5\right), \left(6, 4\right)\right\}| = 6$.
+                So $\p \left(B | A\right) = \displaystyle\frac{6}{21} = \displaystyle\frac{2}{7}$.
+            \item $C = \left\{\left\{5, 6\right\} \times [6] | x + y \geq 10\right\}$, therefore
+                $C = \left\{\left(5, 2\right), \left(5, 3\right), \left(5, 4\right), \left(5, 5\right), \left(5, 6\right), \left(6, 1\right),
+                \left(6, 2\right), \left(6, 3\right), \left(6, 4\right), \left(6, 5\right), \left(6, 6\right)\right\} \implies
+                |C| = 11 \implies |B \cap C| = 5$. So, $\p \left(B | C\right) = \displaystyle\frac{\p \left(B \cap C\right)}{\p \left(C\right)}
+                = \displaystyle\frac{5}{11}$.
+        \end{enumerate}
+    \end{proof}
+\end{exercise}
+% section Conditional probability (end)
+
+\section{Complete probability formula}\label{sec:Complete probability formula} % (fold)
+\[
+    \p \left(B | A\right) = \displaystyle\frac{\p \left(A \cap B\right)}{\p \left(A\right)} \implies \p \left(A\right) \cdot \p \left(B | A\right) = \p \left(A \cap B\right)
+\]
+Given a division $\Omega = \displaystyle\bigcup_{k = 1}^{n} A_k$, and an event $B$,
+it is true that $\p \left(B\right) = \displaystyle\sum_{k = 1}^{n}\p \left(A_k \cap B\right)$.
+If it is true that $\p \left(A_k\right) > 0$, then $\p \left(B\right) = \displaystyle\sum_{k = 1}^{n}\p \left(A_k\right) \cdot \p \left(B | A_k\right)$.
+This formula is also called the \textbf{complete probability formula}. \\
+
+\begin{exercise}
+    6 children are playing football, and they need to chose a goalkeeper. Yehoshua, who is not playing,
+    suggests the following method: He will take 6 matches, break the head of one of them,
+    and then each child will take a random match without replacement. The child
+    with the broken headed match will be the goalkeeper. Is this a fair method
+    to chose the goalkeeper?
+
+    \begin{proof}[Solution]
+        We will write the children according to the order in which they chose matches.
+        We will calculate for every child the probability of the event $A_i$ -
+        the event that the child $i$ is the goalkeeper. \\
+        Firstly: $\p \left(A_1\right) = \displaystyle\frac{1}{6}$. Now,
+        $\Omega = A_1 \cup A_1^c$. From the complete probability formula:
+        $\p \left(A_2\right) = \p \left(A_1\right) \cdot \p \left(A_2 | A_1\right) + \p \left(A_1^c\right) \cdot \p \left(A_2 | A_1^c\right)
+        = \displaystyle\frac{1}{6} \cdot 0 + \displaystyle\frac{5}{6} \cdot \displaystyle\frac{1}{5} = \displaystyle\frac{1}{6}$ \\
+        $\p \left(A_3\right) = \p \left((A_1 \cup A_2)\right) \cdot \p \left(A_3 | (A_1 \cup A_2)\right) + \p \left((A_1 \cup A_2)^c\right) \cdot \p \left(A_3 | (A_1 \cup A_2)^c\right)
+        = \displaystyle\frac{1}{6} \cdot 0 + \displaystyle\frac{5}{6} \cdot \displaystyle\frac{1}{5} = \displaystyle\frac{1}{6}$ \\
+        And so on.
+    \end{proof}
+\end{exercise}
+
+\begin{exercise}
+    A polygraph test shows a lie with a reliability of $0.8$, and that one is
+    telling the truth with a reliability of $0.9$. It is known that the probability
+    that a person being checked will lie with a probability of $0.7$. What is the
+    probability that a person will be declared to be telling the truth?
+
+    \begin{proof}[Solution]
+        We will write $H_0$ - telling the truth, $H_1$ - lying, $H_0'$ -
+        detected truth, $H_1'$ - detected lie. \\
+        Our objective $\p \left(H_0'\right)$. we are given that $\p \left(H_1' | H_1\right) = 0.8,\
+        \p \left(H_0' | H_0\right) = 0.9,\ \p \left(H_1\right) = 0.7,\ \p \left(H_0\right) = 0.3$. \\
+        So: $\p \left(H_0'\right) = \p \left(H_0' | H_0\right) \cdot \p \left(H_0\right) + \p \left(H_0' | H_1\right) \cdot \p \left(H_1\right)
+        = 0.9 \cdot 0.3 + 0.2 \cdot 0.7 = 0.41$.
+    \end{proof}
+\end{exercise}
+% section Complete probability formula (end)
+
+\section{Bayesian probability}\label{sec:Bayesian probability} % (fold)
+Let there be a probability space $\left(\Omega, \F, \p\right)$. For the events
+$A, B \in \F$, where they both have a probability greater than 0, then:
+\[
+    \p \left(B | A\right) = \displaystyle\frac{\p \left(B\right)}{\p \left(A\right)} \cdot \p \left(A | B\right)
+\]
+% section Bayesian probability (end)
+
+\end{document}
