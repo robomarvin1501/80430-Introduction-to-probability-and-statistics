@@ -115,6 +115,37 @@ $A, B \in \F$, where they both have a probability greater than 0, then:
 \[
     \p \left(B | A\right) = \displaystyle\frac{\p \left(B\right)}{\p \left(A\right)} \cdot \p \left(A | B\right)
 \]
+
+\begin{exercise}
+    We will assume that there is an uncommon illness $D$, such that it has a
+    probability of occurrence in the population much less than 1: $\gamma << 1$.
+    Let there be a test $f$ which returns 3 different results:
+    \begin{itemize}
+        \item $f = 1$ - no suspicion of illness
+        \item $f = 2$ - low suspicion of illness
+        \item $f = 3$ - high suspicion of illness
+    \end{itemize}
+    Additionally, similarly to the previous example, we will write $H_0$ to mean
+    "healthy human", and $H_1$ to be "sick human". We will define
+    $\forall i \in [3]\ \p \left(f = i | H_0\right) = \alpha_i \land \p \left(f = i | H_1\right) = \beta_i$.
+    We will look at the following two cases for ill people:
+    \begin{enumerate}
+        \item The patient was diagnosed with $f = 3$
+        \item The patient was diagnosed with $f \in \left\{2, 3\right\}$
+    \end{enumerate}
+    For every exam, given that the exam found suspicion that the patient is sick,
+    what is the chance that they're healthy? And given that the exam found no suspicion
+    that the patient is sick, what are the chances that they are healthy?
+
+    \begin{proof}[Solution]
+        It is given that: $\alpha1 = \displaystyle\frac{4}{5},\ \beta_1 = \displaystyle\frac{1}{25},\ \beta_3 = 0.9,\ \gamma = 0.01$. \\
+        We need to find $\p \left(H_0 | \text{1-test} = T\right),\ \p \left(H_1 | \text{1-test} = F\right),\ \p \left(H_0 | \text{2-test} = T\right),\ \p \left(H_1 | \text{2-test} = F\right)$.
+        So $\p \left(f = i\right) = \gamma \beta_o + \left(1 - \gamma\right) \alpha_i$. \\
+        $\p \left(H_0 | \text{1-test} = T\right) = \p \left(H_0 | f = 3\right) = \displaystyle\frac{1 - \gamma}{\p \left(f = 3\right)} \cdot \p \left(f = 3 | H_0\right)
+        = \displaystyle\frac{1 - \gamma}{\gamma \beta_3 + \left(1 - \gamma\right) \alpha_3} \alpha_3$, and the rest similarly.
+
+    \end{proof}
+\end{exercise}
 % section Bayesian probability (end)
 
 \end{document}
