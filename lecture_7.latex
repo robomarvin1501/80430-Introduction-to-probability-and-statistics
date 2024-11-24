@@ -1,0 +1,189 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+
+\title{Lecture 7}
+\author{Gidon Rosalki}
+\date{2024-11-24}
+
+
+\begin{document}
+\maketitle
+\begin{definition}[3.26]
+    Let there be $\left(\Omega, \F, \p\right)$, and $A, B \in \F$. $A$ and $B$ are
+    \textbf{independent} if $\p \left(A \cap B\right) = \p \left(A\right) \p \left(B\right)$
+\end{definition}
+
+\begin{theorem}[3.30]
+    $\left(\Omega, \F, \p\right)$. $A, B \in \F$ independent. Then:
+    \begin{enumerate}
+        \item $A$ is independent with $\Omega$ and $\emptyset$
+        \item $\p \left(B\right) > 0 \implies \p \left(A | B\right) = \p \left(A\right)$
+        \item $\p \left(A \cap B^c\right) = \p \left(A\right) \p \left(B^c\right)$
+    \end{enumerate}
+
+    \begin{proof}[Proof ]
+        \begin{enumerate}
+            \item $\p \left(A \cap \Omega\right) = \p (A) = \p (A) \cdot 1 = \p(A) \p(\Omega)$. $
+                \p (A \cap \emptyset) = \p(\emptyset) = 0 = 0 \cdot p(A) = \p(\emptyset) \p(A)$
+            \item $\p(A | B) = \displaystyle\frac{\p(A \cap B)}{\p(B)} = \displaystyle\frac{\p(A) \p(B)}{\p(B)} = \p(A)$
+            \item $\p(A) = \p \left(\left(A \cap B\right) \sqcup \left(A \cap B^c\right)\right) \p \left(A \cap B\right) + \p \left(A \cap B^c\right)$.
+                $\p \left(A \cap B^c\right) = \p \left(A\right) - \p \left(A \cap B\right) = \p \left(A\right) - \p \left(A\right) \p \left(B\right) = \p \left(A\right) \left(1 - \p \left(B\right)\right) = \p \left(A\right) \p \left(B^c\right)$
+        \end{enumerate}
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[3.34]
+    $\left(\Omega, \F, \p\right)$, and $A, B_1, \dots, B_k \in \F$. A is independent of the collection
+    $\left\{B_i\right\}_{i \in [k]}$ if for every $I \subseteq [k]$ it is true that
+    $A$ and $\displaystyle\bigcap_{i \in I}^{}B_i$ are independent
+\end{definition}
+
+\begin{example}[3.35]
+    Let us return to dice. If we throw two fair dice $\Omega = [6]^2$, with uniform probability.
+    $A = \left(4, .\right),\ B_1 = \left\{\left(\cdot, 2k\right) | 1 \leq k \leq 3\right\},\ B_2 = \left\{\left(\cdot, j\right) | j > 3\right\}$.
+    Show that $A$ is independent of $\left\{B_1, B_2\right\}$, but $B_1$ is dependent on $B_2$.
+
+    \begin{proof}[Solution]
+            $\p(A) = \displaystyle\frac{1}{6} \land \p(B_1) = \displaystyle\frac{1}{2} \land \p(B_2) = \displaystyle\frac{1}{2}$.
+        $\p(A \cap B_1) = \p(\left\{\left(4, 2k \right) | k \in [3]\right\} = \displaystyle\frac{1}{12} = \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{2}$.
+        Additionally $\p \left(A \cap B_2\right) = \p \left(\left\{\left(4, j\right) | 6 \geq j > 3\right\}\right) = \displaystyle\frac{1}{12} = \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{2}$.
+        $\p \left(A \cap B_1 \cap B_2\right) = \p \left(\left\{\left(4, 4\right), \left(4, 6\right)\right\}\right) = \displaystyle\frac{1}{18} = \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{3}$.
+        Finally $\p \left(B_1 \cap B_2\right) = \displaystyle\frac{1}{3} \ne \displaystyle\frac{1}{2} \cdot \displaystyle\frac{1}{2}$.
+        So $A$ is independent of $\left\{B_1, B_2\right\}$, but $B_1$ is dependent on $B_2$
+    \end{proof}
+\end{example}
+
+\begin{theorem}[3.37]
+    Let there be $\left(\Omega, \F, \p\right)$, and $A, B_1, \dots, b_k \in \F$.
+    $A$ is independent of the collection $\left\{B_i\right\}_{i \in [k]}$ \textbf{if and only if}
+    $A$ is independent of the collection $\left\{B_i, B_i^c\right\}_{i \in [k]}$
+
+    \begin{proof}[Proof ]
+        Exercise % TODO
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[3.40]
+    Let there be $\left(\Omega, \F, \p\right)$. The events $\left\{A_i\right\}_{i \in [n]} \subseteq \F$
+    are \textbf{independent} if for all $I \subseteq [n]$ it is true that
+    $\p \left(\displaystyle\bigcap_{i \in I}^{}A_i\right) = \displaystyle\Pi_{i \in I} \p \left(A_i\right)$
+\end{definition}
+
+\begin{theorem}[3.42]
+    Let there be $\left(\Omega, \F, \p\right)$. The events $\left\{A_i\right\}_{i \in [n]} \subseteq \F$
+    are independent \textbf{if and only if} for all $j \in [n]$ the event $A_j$ is
+    independent of $\left\{A_i\right\}_{i \in [n] \setminus \left\{j\right\}}$
+\end{theorem}
+
+NOTE: Independence of a collection implies independence of an event in a collection,
+and NOT the other way.
+
+\begin{definition}[3.44]
+    Let there be $\left(\Omega, \F, \p\right)$. The events $\left\{A_i\right\}_{i \in [n] \subseteq \F}$
+    are in disjoint pairs if for every $i \ne j$, $A_i$ and $A_j$ are independent
+\end{definition}
+
+\begin{definition}[3.49]
+    Let there be $\left(\Omega, \F, \p\right)$. The collection of events $A \subseteq \F$
+    is independent if every its every finite subcollection of events is independent
+\end{definition}
+
+\begin{theorem}[3.52]
+    Let there be $\left(\Omega, \F, \p\right)$. Let there be $\left(A_n\right)_{n \in \N}$,
+    a collection of independent events. Then
+    \[
+        \p \left(\displaystyle\bigcap_{n}^{}A_n\right) = \displaystyle\Pi_{n} \p \left(A_n\right)
+    \]
+
+    \begin{proof}[Proof ]
+        We will define $B_n = \displaystyle\bigcap_{k \in [n]}^{} A_k$. $B_n$
+        is a series of descending events. Additionally, $\displaystyle\bigcap_{B_n}^{n \in [m]} = \displaystyle\bigcap_{n \in [m]}^{}A_n$,
+        and also $\displaystyle\bigcap_{n \in \N}^{}B_n = \displaystyle\bigcap_{n \in \N}^{}A_n$. \\
+        $\p \left(\displaystyle\bigcap_{n \in \N}^{}A_n\right) = \p \left(\displaystyle\bigcap_{n \in \N}^{}B_n\right) = \displaystyle\lim_{m \to \infty} \p \left(\displaystyle\bigcap_{n \in [m]}^{}B_n\right)
+            = \displaystyle\lim_{m \to \infty} \p \left(B_m\right) = \displaystyle\lim_{m \to \infty} \p \left(\displaystyle\bigcap_{n \in [m]}^{}A_n\right)
+            = \displaystyle\lim_{m \to \infty} \displaystyle\Pi_{n \in [m]} \o \left(A_n\right) = \displaystyle\Pi_{n \in \N} \p \left(A_n\right)$
+    \end{proof}
+\end{theorem}
+
+\begin{example}[Children's paradox - 3.58]
+    Mr John's has 2 children:
+    \begin{enumerate}
+        \item Given that one is a son, what is the probability that he has two sons?
+        \item Given that the firstborn is a son, what is the probability that
+            he has two sons?
+        \item Given that the second born is a son, what is the probability that
+            he has two sons?
+    \end{enumerate}
+
+    \begin{proof}[Solution ]
+        $\Omega = \left\{b, g\right\}^2$, uniform
+        \begin{enumerate}
+            \item $A = \text{there is a son} = \left\{\left(b, g\right), \left(b, b\right), \left(g, b\right)\right\}$,
+                $B_1 = \text{firstborn is a son} = \left\{\left(b, g\right), \left(b, b\right)\right\}$,
+                and $B_2 = \text{second born is a son} = \left\{\left(b, b\right), \left(g, b\right)\right\}$.
+                So, $\displaystyle\frac{1}{3}$
+            \item $\displaystyle\frac{1}{2}$
+            \item $\displaystyle\frac{1}{2}$
+        \end{enumerate}
+    \end{proof}
+    Let us complicate this somewhat, if we knock on the door, and a son opens
+    it, we can ask him if he's the older or the younger. What
+    is the probability now that Johns has 2 children? \\
+    \begin{proof}[Solution ]
+        $F = $ The elder opened the door \\
+        $D_1 = $ The one who opened the door is a son  \\
+        $D_2 = $ The who did not open the door is a son \\
+        $\displaystyle\frac{1}{3} = \p \left(\left(b, b\right) | D_1\right) = \p \left(\left(b, b\right) | D_1 \cap F\right) \p \left(F | D_1\right)
+        + \p \left(\left(b, b\right) | D_1 \cap F^c\right) \p \left(F^c | D_1\right) =
+        \displaystyle\frac{1}{2} \cdot \displaystyle\frac{1}{2} + \displaystyle\frac{1}{2} \cdot \displaystyle\frac{1}{2} = \displaystyle\frac{1}{2}$.
+        MY GOLLY?! What is this nonsense!? \\
+        The event $A$ is "John's has at least 1 son", and the event $D_1$, when
+        defined precisely, is "John's has at least one son \textbf{which opened the door}" \\
+
+        So, to do this properly, $\Omega = \left\{1, 2\right\} \times \left\{b, g\right\}^2$.
+        So now $D_1 = \left\{\left(1, b, g\right), \left(1, b, b\right), \left(2, g, b\right), \left(2, b, b\right)\right\}$.
+        In this case, $\Omega$ is continuous, of size 8. So, $\p \left(\left(\cdot, b, b\right) | D_1\right)
+        = \displaystyle\frac{\p \left(\cdot, b, b\right)}{\p \left(D_1\right)} = \displaystyle\frac{\displaystyle\frac{1}{4}}{\displaystyle\frac{1}{2}} = \displaystyle\frac{1}{2}$.
+        Additionally, $\p \left(\cdot, b, b | D_1 \cap F\right) = \displaystyle\frac{\p \left(1, b, b\right)}{\p \left(D_1 \cap F\right)}
+        = \displaystyle\frac{\displaystyle\frac{1}{8}}{\displaystyle\frac{1}{4}} = \displaystyle\frac{1}{2}$.
+        Finally, $\p \left(\cdot, b, b | D_1 \cap F\right) = \displaystyle\frac{1}{2}$,
+        so $\p \left(F\right) = \displaystyle\frac{1}{2}$. To conclude,
+        $\p \left(\cdot, b, b\right) = \p \left(\cdot, b, b | F \cap D_1\right) \p \left(F | D)1\right) + \p \left(\cdot, b, b | F^c \cap D_1\right) \p \left(F^c | D_1\right) = \displaystyle\frac{1}{2}$
+        and the paradox is resolved
+    \end{proof}
+
+    Another situation, if there is a son, then the eldest son opens the door. Otherwise,
+    the firstborn daughter will open the door:
+    \begin{proof}[Solution]
+        So now $F = \left(1, \cdot, \cdot\right)$, and $\p \left(F\right) = \displaystyle\frac{1}{2}$.
+        Additionally, our probability space is no longer continuous. This then
+        comes out to different numbers when you do the calculations.
+    \end{proof}
+\end{example}
+
+
+\end{document}
