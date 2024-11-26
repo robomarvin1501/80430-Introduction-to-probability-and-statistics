@@ -1,0 +1,225 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 8}
+\author{Gidon Rosalki}
+\date{2024-11-25}
+
+
+\begin{document}
+\maketitle
+\section{Random variables}\label{sec:Random variables} % (fold)
+
+\begin{definition}[Random variable]
+    Let there be $\left(\Omega, \F, \p\right)$. A \textbf{random variable} is
+    the function $X : \Omega \to \R$
+\end{definition}
+
+\subsubsection{Symbols}\label{sec:Symbols} % (fold)
+\begin{itemize}
+    \item We will write the collection of events on $\R$ with $\F_\R$
+    \item For every $S \in \F_\R$ we will write $\left\{X \in S\right\} = X^{-1} \left(S\right) = \left\{\omega \in \Omega | X(\omega) \in S\right\} \in \F$
+\end{itemize}
+% subsubsection Symbols (end)
+
+\subsubsection{Examples}\label{sec:Examples} % (fold)
+\begin{example}
+    $\Omega [6]^2$ (throwing 2 dice), the random variable of the sum of the dice
+    is $X(a, b) = a + b$
+\end{example}
+
+\begin{example}
+    $\Omega = \left\{H, T\right\}^5$ (tossing a coin 5 times), and counting $H$
+    is $X(a_1, \dots, a_5) = | \left\{i \in [5] | a_i = H\right\}|$
+\end{example}
+% subsubsection Examples (end)
+
+When we want to talk about probabilities, we may omit the set symbols. We will
+use commas instead of intersection.
+\subsubsection{Examples}\label{sec:Examples} % (fold)
+\begin{itemize}
+    \item $\p \left(X = 5\right) = \p \left(\left\{\omega \in \Omega | X(\omega) = 5\right\}\right)$
+    \item $\p \left(X \leq 5, X > 0\right) = \p \left(X \in (0, 5]\right) = \p \left(\left\{\omega \in \Omega | 0 < X(\omega) \leq 5\right\}\right)$
+    \item $\p \left(X \leq 5 | X > 0\right) = \p \left(\left\{\omega \in \Omega | X(\omega) \leq 5\right\} | \left\{\omega \in \Omega | 0 < X(\omega)\right\}\right)$
+\end{itemize}
+
+\begin{example}[Worked example]
+    $\p \left(X \leq 3\right) = \p \left(\left\{\omega \in [6]^2 | X(\omega) \leq 3\right\}\right) = \p \left(\left\{\left(1, 2\right), \left(2, 1\right), \left(1, 1\right)\right\}\right) = \displaystyle\frac{3}{36} = \displaystyle\frac{1}{12}$
+\end{example}
+% TODO more examples slide 41
+
+\begin{example}[4.4 Gal fished 3 fish]
+    The fish come in 3 sizes. A small fish is 50nis, medium is 100, and large is 150.
+    So, $\Omega = \left\{S, M, L\right\}^3$ \\
+    \begin{align*}
+        \text{Amount of small fish: } X &= | \left\{i \in [3] | \omega_i = S\right\}| \\
+        \text{Amount of medium fish: } Y &= | \left\{i \in [3] | \omega_i = M\right\}| \\
+        \text{Amount of large fish: }Z &= | \left\{i \in [3] | \omega_i = L\right\}| \\
+        \text{The amount of non large fish bought: } W_1 &= X + Y \\
+        \text{The price of the fish bought: }W_2 &= 50X + 100Y + 150Z \\
+        \text{The number of sizes of fish bought: } W_3 &= \min(X, 1) + \min(Y, 1) + \min(Z, 1) \\
+    \end{align*}
+\end{example}
+% subsubsection Examples (end)
+
+\begin{definition}[4.5]
+    Let there be $\left(\Omega, \F, \p\right)$, and $A \in \F$. The \textbf{indicator}
+    of $A$ is \[
+        \1_A(\omega) = \begin{cases}
+            1, &\text{ if }\omega \in A\\
+            0, &\text{ if }\omega \notin A\\
+        \end{cases}
+    \]
+\end{definition}
+
+\begin{theorem}[4.6]
+    Let there be $\left(\Omega, \F, \p\right)$ and $A, B \in \F$
+
+    \begin{enumerate}
+        \item $1 - \1_A = \1_{A^c}$
+        \item $\1_{A \cap B} = \1_A \1_B$
+        \item $\1_{A \cup B} = \max(\1_A, \1_B)$
+        \item $0 \notin S \in \F_\R \implies \left\{X \in S\right\} \cap A = \left\{X \cdot \1_A \in S\right\}$
+    \end{enumerate}
+
+    \begin{proof}[Proof]
+        \begin{enumerate}
+            \item \begin{align*}
+                    (1 - \1_A)(\omega) &= 1 \\
+                    \Leftrightarrow \1_A(\omega) &= 0 \\
+                    \Leftrightarrow \omega \notin A \Leftrightarrow \omega \in A^c \Leftrightarrow \1_{A^c} (\omega) = 1
+            \end{align*}
+            \item \begin{align*}
+                    \1_{A \cap B} (\omega) &= 1 \\
+                    \Leftrightarrow \omega \in A \cap B \\
+                    \Leftrightarrow \omega \in A &\land \omega \in B \\
+                    \Leftrightarrow \1_A(\omega) = 1 &\land \1_B(\omega) = 1 \\
+                    \Leftrightarrow \1_A(\omega) \1_B(\omega) = 1 \\
+            \end{align*}
+            \item Done with tables, can write the algebra
+            \item TODO Exercise
+        \end{enumerate}
+    \end{proof}
+\end{theorem}
+
+Consider the envelope problem. \\
+Given $n$ letters, and $n$ envelopes, we put every letter into an envelope,
+without looking what we put where. What is the probability that exactly $0 \leq r \leq n$
+letters reach their destinations? \\
+\begin{itemize}
+    \item The event space is all the arrangements of $[n]$: $\Omega = S_n$
+    \item For every $i \in [n]$ we will write $X_i$ to be the envelope to which
+        the letter $i$ was inserted: $X_i(\sigma) = \sigma(i)$
+    \item For every $i \in [n]$ we will write $Y_i$ to be the indicator that the
+        letter $i$ was correctly sent: $Y_i = \1_{X_i = i}$
+    \item So, the number of letters correctly sent is $Y = \displaystyle\sum_{i = 1}^{n}Y_i$
+\end{itemize}
+% section Random variables (end)
+
+\section{Distribution}\label{sec:Distribution} % (fold)
+\begin{definition}[4.9 Distribution function]
+    Let $\left(\Omega, \F, \p\right)$. Let there be $X: \Omega \to \R$ be a random variable.
+    The function $\p_X: \F_\R \to \R$ defined by $\p_X(S) = \p \left(X \in S\right)$
+    is the distribution function of $X$
+\end{definition}
+
+\begin{theorem}[4.10]
+    A distribution function of a random variable $X$ is the probability function on
+    $\left(\R, \F_\R\right)$
+
+    \begin{proof}[Proof ]
+        $\p_X(\R) = \p \left(X \in \R\right) = \p \left(\omega \in \Omega | X(\omega) \in \R\right) = \p \left(\Omega\right) = 1$ -
+        so we have normality. \\
+        Let there be $\left(S_n\right)_{n \in \N}$ disjoint events in $\F_\R$.
+        $\p_X(\displaystyle\bigsqcup_{n \in \N} S_n) = \p \left(X^{-1} \left(\bigsqcup_{n \in \N} S_n\right)\right)$.
+        Set theory exercises: $X^{-1} \left(\displaystyle\bigcup_{A \in I}^{}A\right) = \displaystyle\bigcup_{A \in I}^{}X^{-1} (A)$,
+        $A \cap B = \emptyset \implies X^{-1}(A) \cap X^{-1}(B)= \emptyset$. \\
+        So, continuing from above, $\p \left(X^{-1} \left(\displaystyle\bigsqcup_{n \in \N} S_n\right)\right) = \displaystyle\sum_{n \in \N}^{}\p \left(X^{-1} \left(S_n\right)\right)
+        = \displaystyle\sum_{n \in \N}^{}\p_X(S_n)$
+
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[4.11 Discrete random variable]
+    A random variable $X$ is \textbf{discrete} if its distribution is discrete,
+    ie $\p_X$ is a discrete probability function.
+\end{definition}
+We will call the function $p_X: \R \to [0, 1]$, which creates the discrete function $\p_X$,
+the point discrete distribution function.
+
+\begin{example}
+    Let us suppose throwing 2 dice, and taking the sum. Let $X$ be the random variable
+    which returns the sum of 2 fair dice.
+
+    \begin{proof}[Solution]
+        $\Omega = [6]^2$ has a uniform distribution, and $X((a, b)) = a + b$. (Consider
+        a table of dice rolls and their resultant probabilities)
+
+        $\p_X(4 \leq X \leq 6) = p_X(4) + p_X(5) + p_X(6) = \displaystyle\frac{1}{36} \left(3 + 4 + 5\right) = \displaystyle\frac{12}{36}$
+    \end{proof}
+\end{example}
+
+\subsubsection{Types of distribution}\label{sec:Types of distribution} % (fold)
+For building a probability space $\left(\R, \F, \mathcal{D}\right)$ and $X$ a
+random variable on the probability space $\left(\Omega, \F, \p\right)$, we will
+say that $X$ is distributed by $\mathcal{D}$ if $\p_X = \mathcal{D}$. We will write this
+$X \sim \mathcal{D}$
+
+\begin{definition}[4.15]
+    A random variable is distributed by the Bernoulli distribution with a probability
+    of $p$ if $p_X(1) = p$ and $p_X(0) = 1 - p$
+\end{definition}
+
+\begin{example}[4.17 Alice and the queen]
+    Alice and the queen of hearts are taking 4 balls from a jug one after the other,
+    in which there are 3 red and 2 white. If they remove more red than white, the
+    queen wins. Otherwise, Alice wins. What is the probability that the queen wins?
+
+    \begin{proof}[Solution]
+        We will assume that the balls are numbered $1$ to $5$, and we will assume that
+        the first 3 are red. $\Omega = S_5$ and is uniform. \\
+        The queen wins when: $\sigma(4) = 5 \lor \sigma(5) = 5$ (ie, when one of the
+        white balls is in the 5 position). \\
+        The probability that the queen wins $= X = \1_{\sigma(4) = 5 \lor \sigma(5) = 5} \sim Ber\left(\displaystyle\frac{2}{5}\right)$
+        so $\p_X(1) = \p \left(X = 1\right) = \displaystyle\frac{2}{5}$
+    \end{proof}
+\end{example}
+
+\begin{definition}[4.18 Uniform distribution]
+    The random variable $X$ has \textbf{uniform distribution} on the finite set $S \subseteq \R$
+    if $\forall x \in S\ p_X(x) = \displaystyle\frac{1}{|S|}$
+\end{definition}
+
+We will write $X \sim Unif(S) \lor X \sim U(S)$. Note that $\forall x \in \R \setminus S\ p_X(x) = 0$
+% subsubsection Types of distribution (end)
+
+% section Distribution (end)
+
+
+\end{document}
