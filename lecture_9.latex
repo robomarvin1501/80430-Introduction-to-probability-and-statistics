@@ -1,0 +1,245 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 9}
+\author{Gidon Rosalki}
+\date{2024-12-01}
+
+
+\begin{document}
+\maketitle
+\section{Random variables continued}\label{sec:Random variables continued} % (fold)
+
+\begin{definition}[4.15]
+    A random variable is distributed by the Bernoulli distribution with a probability
+    of $p$ if $p_X(1) = p$ and $p_X(0) = 1 - p$
+\end{definition}
+
+\begin{definition}[4.18 Uniform distribution]
+    The random variable $X$ has \textbf{uniform distribution} on the finite set $S \subseteq \R$
+    if $\forall x \in S\ p_X(x) = \displaystyle\frac{1}{|S|}$, and we will write
+    $X \sim Unif(S)$
+\end{definition}
+
+\begin{example}
+    Distribution of the sum of 2 dice mod 6:
+
+    \begin{proof}[Solution]
+        \begin{table}[h!]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|c|c|}
+                \hline
+                & 1 & 2 & 3 & 4 & 5 & 6 \\ \hline
+                1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
+                2 & 3 & 4 & 5 & 6 & 7 & 8 \\ \hline
+                3 & 4 & 5 & 6 & 7 & 8 & 9 \\ \hline
+                4 & 5 & 6 & 7 & 8 & 9 & 10 \\ \hline
+                5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \hline
+                6 & 7 & 8 & 9 & 10 & 11 & 12 \\ \hline
+            \end{tabular}
+            \caption{}
+        \end{table}
+        Find the values of the various numbers when considering the mod, and
+        the distribution falls out
+
+        Formally: We will write $X$ to be the result of the first die, and $Y$
+        to be the second throw.
+        \begin{align*}
+            \p \left(X + Y = k\right) &= \displaystyle\sum_{l = 1}^{6} \p \left(X + Y = k \mod 6 \land X = l\right) \\
+                                      &= \displaystyle\sum_{l = 1}^{6} \p \left(Y = k - l \mod 6 \land X = l\right) \\
+                                      &= \displaystyle\sum_{l = 1}^{6} \p \left(Y = k - l \mod 6 \right) \p \left(X = l\right) \\
+                                      &= \displaystyle\sum_{l = 1}^{6} \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{6} \\
+                                      &= 6 \cdot \displaystyle\frac{1}{36} \\
+                                      &= \displaystyle\frac{1}{6}
+        \end{align*}
+    \end{proof}
+    (Technically need to assume the die is numbered from 0 to 5)
+\end{example}
+
+\subsubsection{Constant random variables}\label{sec:Constant random variables} % (fold)
+If $\mathcal{D}$ is a probability function on $\R$, and $X$ is a random variable
+such that $\p_X = \mathcal{D}$ then $X \sim \mathcal{D}$
+
+\begin{definition}[4.22]
+    The random variable $X$ has \textbf{constant distribution} if there exists
+    $c \in \R$ such that $p_X(c) = 1$
+\end{definition}
+% TODO slide 12
+
+We will say that 2 random variables $X,Y$ are equal if $\forall \omega \in \Omega X(\omega) = Y(\omega)$
+
+\begin{exercise}[Extension of 4.13]
+    There are hats by a door, 2 white and 2 black.
+    Hats are taken randomly by Ori and Benny. Gali looks at the hats and sees that there
+    is one black hat, and one white hat left. We will define
+    \begin{enumerate}
+        \item $X$ is the event that "Ori took a white hat"
+        \item $Y$ is the event that "Benny took a white hat"
+    \end{enumerate}
+
+    It is true that $X + Y = 1$, and we will define $Z = 1 - Y$. Does $Z = X$?
+
+    \begin{proof}[Solution]
+        $\Omega = \left\{W, B\right\}^2$. Also $X(W, W) = 1 = Y(W, W)$. Additionally, $Z(W, W) = 1 - Y(W, W) = 1 - 1 = 0$.
+        Therefore $Z \ne X$. \\
+        Let us add in the below definition $4.24$. We will write $\p'$ to be the probability on
+        $\Omega$ given the event $X + Y = 1$.
+        \begin{align*}
+            \p' \left(W, W\right) &= \p' \left(X + y = 2\right) = 0 \\
+            \p' \left(B, B\right) &= \p' \left(X + Y = 0\right) = 0 \\
+            \p' \left(\left\{\left(W, B\right), \left(B, W\right)\right\}\right) &= 1 \\
+            X(W, B) = 1 &| X(B, W) = 0 \\
+            Z(W, B) = 1 - Y(W, B) = 1 - 0 = 1 &| Z(B, W) = 1 - 1 = 0 \\
+            \implies X = Z &= \left\{\left(W, B\right), \left(B, W\right)\right\} \\
+            \p \left(Z\right) &= \p \left(\left\{\left(W, B\right), \left(B, W\right)\right\}\right) = 1 \\
+            \implies X \stackrel{a.s}{=} Z
+        \end{align*}
+    \end{proof}
+\end{exercise}
+
+\begin{definition}[4.24]
+    Let there be $X, Y$ 2 independent random variables on the probability space $\left(\Omega, \F, \p\right)$.
+    $X, Y$ will be called \textbf{almost surely equals} $X\stackrel{a.s}{=}Y$ if
+    \[
+        \p \left(X = Y\right) \stackrel{def}{=} \p \left\{\omega \in \Omega | X(\omega) = Y(\omega)\right\} = 1
+    \]
+\end{definition}
+
+Flexibility of the symbol: It is clear that $X \stackrel{a.s}{\geq} Y \implies \p \left(X \geq Y\right) = 1$,
+and similarly with other symbols.
+
+In almost surely equals, the definition requires that $X, Y$ are defined on the
+same probability space. On the other hand, for every $X, Y$ (perhaps from different
+probability spaces), the distributions of $\p_X$ and $\p_Y$ are defined on $\F_\R$,
+and we are thus able to compare them.
+
+\begin{definition}[4.27]
+    Let there be $X, Y$ random variables. We will say that they are of equivalent
+    distribution, and write $X \stackrel{d}{=} Y$ if $\p_X \equiv Y$ (which is to say,
+    for every $S \in \F_\R$ it is true that $\p_X(S) = \p_Y(S)$)
+\end{definition}
+\begin{example}
+    We throw 2 fair dice. Let $X_i$ be the result of the $i$th die. $i = 1,2$.
+    IT is true that $X_1 \stackrel{d}{=} X_2$ since $X_i \sim Unif([6])$. On the other
+    hand it is not true that $X_1 \stackrel{a.s}{=} X_2$ since the probability is
+    greater than 0, and the result of the dice is different.
+\end{example}
+
+\begin{theorem}[4.28]
+    Let there be $X, Y$ random variables on $\left(\Omega, \F, \p\right)$. If $X \stackrel{a.s}{=} Y \implies X \stackrel{d}{=} Y$
+
+    \begin{proof}[Proof ]
+        From the given $\p \left(X \ne Y\right) = 0$. $\forall S \in \F_\R\ \left\{X \in S, Y \notin S\right\} \subseteq \left\{X \ne Y\right\}$.
+        This implies that $0 \leq \p \left(\left\{X \in S, Y \notin S\right\}\right) \leq \p \left(\left\{X \ne Y\right\}\right) = 0 \implies\p \left(\left\{X \in S, Y \notin S\right\}\right) = 0 $ \\
+        Let there be $S \in \F_\R$.
+        \begin{align*}
+            \p_X(S) &= \p \left(X \in S\right) \\
+                    &= \p \left(X \in S, Y \in S\right) + \p \left(X \in S, Y \notin S\right) \\
+                    &= \p \left(X \in S, Y \in S\right) + \p \left(X \notin S, Y \in S\right) \\
+                    &= \p \left(Y \in S\right) \\
+                    &= \p_Y(S)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[4.29]
+    In a jug there are 5 balls numbered from 1 to 5. We draw 3. We will write $X_i$
+    to be the number of the ball that was drawn on the $i$th draw, where $i = 1, 2, 3$.
+    We will show that $\forall 1 \leq i, j \leq 3\ X_i \stackrel{d}{=} X_j$
+
+    \begin{proof}[Proof]
+        $\Omega = S_5 = \left\{\left(\omega_1, \dots, \omega_5\right) | \forall i \ne j\ \omega_i \ne \omega_j \land \forall i\ \omega_i \in [5]\right\}$.
+        Additionally, $\Omega$ is uniform. \\
+        $a \in [5]$. $\p_{X_2} \left(\left\{a\right\}\right) = \p \left(X_i = a\right) =
+        \p \left(\left(\omega_1, \dots, \omega_5\right) \in \Omega | \omega_i = a\right)
+        = \p \left(\left\{\omega_1, a, \omega_3, \omega_4, \omega_5\right\} \in \Omega\right)
+        = \displaystyle\frac{|\left\{\omega_1, a, \omega_3, \omega_4, \omega_5\right\}|}{5!} = \displaystyle\frac{4!}{5!} = \displaystyle\frac{1}{5}$ \\
+        This calculation is correct also for $i = 1, 2, 3$, and for all $j \in [3]$, and
+        so $\forall i \ne j \in [3]\ \p_{X_i} = \p_{X_j}$
+    \end{proof}
+\end{example}
+
+\begin{theorem}[4.30]
+    $X \stackrel{d}{=} Y \land f \in \F_{\R \to \R} \implies f(X) \stackrel{d}{=} f(Y)$
+
+    \begin{proof}[Proof ]
+        Note $f(X_i) = \1_{X_i = 2}$ \\
+        Let there be $S \in \F_\R$.
+        \begin{align*}
+            \p_{f(X)}(S) &= \p \left(f(X) \in S\right) \\
+                         &= \p \left(X \in f^{-1}(S)\right) \text{this is the origin, NOT the inverse} \\
+                         &= \p_X(f^{-1}(S)) \\
+                         &\stackrel{X \stackrel{d}{=} Y}{=}  \p \left(f^{-1}(S)\right) \\
+                         &= \p \left(Y \in f^{-1}(S)\right) \\
+                         &= \p \left(f(Y) \in S\right) \\
+                         &= \p_{f(Y)}(S)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+% subsubsection Constant random variables (end)
+% section Random variables continued (end)
+
+\section{Random vectors}\label{sec:Random vectors} % (fold)
+We are given a random variable, what now?
+\begin{example}
+    We will take a fair coin $\Omega = \left\{H, T\right\}$. If $X(H) = 1 \land X(T) = 0 \implies X \sim Ber \left(\displaystyle\frac{1}{2}\right)$.
+    \begin{enumerate}
+        \item If we define $X \equiv Y \implies Y \sim Ber \left(\displaystyle\frac{1}{2}\right)$ and so $X \stackrel{a.s}{=} Y$.
+        \item If we define $Y = 1 - X$ then it is still true $Y \sim Ber \left(\displaystyle\frac{1}{2}\right)$,
+            however $X$ is almost surely different from $Y$
+        \item
+    \end{enumerate}
+    Additionally
+    \begin{enumerate}
+        \item $X + Y = Unif \left(\left\{0, 2\right\}\right)$
+        \item $X + Y \stackrel{a.s}{=} 1$
+    \end{enumerate}
+\end{example}
+
+\begin{definition}[4.36 random vector]
+    A finite collection of random variables $X = \left(X_1, \dots, X_n\right)$
+    on $\left(\Omega, \F, \p\right)$ will be called a \textbf{random vector}
+\end{definition}
+Instead of a function $\Omega \to \R$, we have a function $\Omega \to \R^n$.
+We will now also write the possible collection of events to be $\F_{\R^n}$
+and $\F_{\R^n} = 2^{\R^n}$.
+
+\begin{definition}[4.37]
+    Let there be a random vector $X = \left(X_1, \dots, X_n\right)$ on $\left(\Omega, \F, \p\right)$.
+    For $A \in \F_{\R^n}$ we will write \[
+        \p_X(A) = \p_{X_1, \dots, X_n}(A) = \p \left(X^{-1}(A)\right) = \p \left(\left\{\omega \in \Omega | X(\omega) \in A\right\}\right)
+    \]
+    We will call this the \textbf{shared distribution} of $X_1, \dots, X_n$. The
+    distribution of each of the individual $X_i$'s is called the \textbf{marginal
+    distribution}. If $\p_X$ is supported by $A$, we will say that $X$ is \textbf{supported}
+    by $A$.
+\end{definition}
+% section Random vectors (end)
+
+\end{document}
