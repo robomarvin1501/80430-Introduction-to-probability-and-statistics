@@ -1,0 +1,204 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Tutorial 7}
+\author{Gidon Rosalki}
+\date{2024-12-10}
+
+
+\begin{document}
+\maketitle
+\section{Binomial distribution}\label{sec:Binomial distribution} % (fold)
+\begin{definition}[Binomial distribution]
+    Let there be $\left(\Omega, \F, \p\right)$. We will say that the random variable
+    $X$ that is defined on $\Omega$ is binomially distributed, with parameters
+    $\left(n, p\right)$ if $X$ takes values from the set $\left\{0, \dots, n\right\}$,
+    and its probability function is: For $0 \leq k \leq n\ p_X \left(k\right) = \binom{n}{k} p^k \left(1 - p\right)^{n - k}$.
+    In this situation we write $X \sim Bin \left(n, p\right)$. \\
+    We saw in class that if $X_1, \dots, X_n$ are Bernoulli distributed random variables
+    $Ber \left(p\right)$, then $X_1 + \dots + X_n \sim Bin \left(n, p\right)$.
+\end{definition}
+
+\begin{exercise}
+    A drunkard stands on the numberline, starting at 0. At every minute he walks
+    either right, or left. In which direction he walks is independent at each minute. We will
+    calculate the probability that the drunkard returns to 0 after $n$ steps.
+
+    \begin{proof}[Solution]
+        We will use $A_n$ to be the event that after $n$ steps the drunkard returns
+        to $0$. If $n$ is odd, then $\p \left(A_n\right) = 0$. \\
+        For $k \in \N$, let there be $X_k$, the random variable that shows if the
+        drunkard walks left or right at the step $k$. $\p \left(X_k = 1\right) = \displaystyle\frac{1}{2},\ \p \left(X_k = -1\right) = \displaystyle\frac{1}{2}$.
+        \[
+            A_n = \left\{\displaystyle\sum_{k = 1}^{n}X_k = 0\right\}
+        \]
+        Now, $X_k$ is not Bernoulli, however $Y_k = \displaystyle\frac{X_k + 1}{2}$ is
+        Bernoulli with $\displaystyle\frac{1}{2}$. So \begin{align*}
+            A_n &= \left\{\displaystyle\sum_{k = 1}^{n}X_k = 0\right\} \\
+                &= \left\{\displaystyle\sum_{k = 1}^{n} \left(2 Y_k - 1\right) = 0\right\} \\
+                &= \left\{2 \displaystyle\sum_{k = 1}^{n}Y_k - n = 0\right\} \\
+                &= \left\{\displaystyle\sum_{k = 1}^{n}Y_k = \displaystyle\frac{n}{2}\right\} \\
+        \end{align*}
+        Now, we know that $\displaystyle\sum_{k = 1}^{n}Y_k \sim Bin \left(1, \displaystyle\frac{1}{2}\right)$, and
+        from Stirling's approximation \begin{align*}
+            \p \left(A_n\right) &= \binom{n}{\displaystyle\frac{n}{2}} \cdot \displaystyle\frac{1}{2}^{\displaystyle\frac{n}{2}} \cdot \left(1 - \displaystyle\frac{1}{2}\right)^{n - \displaystyle\frac{n}{2}} \\
+                                &= \displaystyle\frac{n!}{\left(\displaystyle\frac{n}{2}\right)! \left(\displaystyle\frac{n}{2}\right)!} \cdot \displaystyle\frac{1}{2}^2 \\
+                                &\stackrel{\text{Stirling}}{\approx} \displaystyle\frac{\sqrt{2 \pi n} \cdot \displaystyle\frac{n}{2}^n}{\left(\sqrt{\pi n} \cdot \displaystyle\frac{n}{2e}^{\displaystyle\frac{n}{2}}\right)^2} \cdot \displaystyle\frac{1}{2}^n \\
+                                &= \displaystyle\frac{\sqrt{2 \pi n} \cdot \displaystyle\frac{n}{e}^n}{\pi n \cdot \displaystyle\frac{n}{2e}^n} \cdot \displaystyle\frac{1}{2}^n \\
+                                &= \sqrt{\displaystyle\frac{2}{\pi}} \cdot \displaystyle\frac{1}{\sqrt{n}} \\
+                                &= O \left(\displaystyle\frac{1}{\sqrt{n}}\right)
+        \end{align*}
+    \end{proof}
+\end{exercise}
+
+\begin{exercise}
+    Robin opens $n$ fortune cookies, where in each there is the probability $p$ of there
+    being a good fortune. We will write that there were $k$ cookies with a good fortune.
+    After finishing, Robin opens another $k$ cookies, from a different company, where
+    there is a probability of there being a good fortune of $q$. What is the distribution
+    of good fortunes in the second batch of cookies?
+
+    \begin{proof}[Solution]
+        We will write $X$ to be the random variable that counts how many happy prophecies
+        there are in the first collection of cookies. \[
+            X \sim Bin \left(n, p\right)
+        \]
+        We will define an additional random variable $Y$ that counts how many good
+        fortunes are in the second batch. For every $k$, $Y | \left\{X = k\right\} \sim Bin \left(k, q\right)$,
+        and $Supp \left(Y\right) \subseteq [n]$ \begin{align*}
+            \forall i \in [k]\ \p_Y \left(i\right) &= \displaystyle\sum_{k = 1}^{n} \p \left(Y = i | X = k\right) \p \left(X = k\right) \\
+                                                   &= \displaystyle\sum_{k = i}^{n}\binom{k}{i} q^i \left(1- q\right)^{k-i} \binom{n}{k} p^k \left(1-p\right)^{n-k} \\
+                                                   &= \binom{n}{i} \displaystyle\sum_{k=i}^{n} \binom{n - i}{k - i} q^i \left(1 - q\right)^{k - i} p^k \left(1 - p\right)^{n-k} \\
+                                                   &= \binom{n}{i} \left(pq\right)^i \displaystyle\sum_{k = 0}^{n - i} \binom{n - i}{k} \left(p \left(1 - q\right)\right)^k \left(1 - p\right)^{n - i - k} \\
+                                                   &= \binom{n}{i} \left(pq\right)^i \left(p \left(1-q\right) + \left(1-p\right)\right)^{n - i} \\
+                                                   &= \binom{n}{i} \left(pq\right)^i \left(1 - pq\right)^{n - i}
+        \end{align*}
+
+        In short, $Y \sim Bin \left(n, pq\right)$
+    \end{proof}
+\end{exercise}
+
+\subsubsection{The connection between Bernoulli and binomial}\label{sec:The connection between Bernoulli and binomial} % (fold)
+\begin{exercise}
+    Let there be $X_1, X_2, X_3$ independent random variables with Bernoulli distribution $0 < p < 1$. We will
+    define for all $i \in [2]$ a random variable $Y_i$ the indicator of the set $X_i = X_{i + 1}$.
+    For which $p$ is it true that $Y_1$ and $Y_2$ are independent.
+
+    \begin{proof}[Solution]
+        From homework 5, question 4 (probably), it is sufficient to show that $\p \left(Y_1 = 1\right) \p \left(Y_2 = 1\right) = \p \left(Y_1 = 1, Y_2 = 1\right)$.
+        Note that \[
+            \p \left(Y_i = 1\right) = \p \left(X_i = X_{i + 1}\right) = \p \left(X_i = X_{i + 1} = 1\right) + \p \left(X_i = X_{i + 1} = 0\right) = p^2 + \left(1 - p\right)^2
+        \]
+        Therefore $Y_1 \sim Ber \left(p^2 + \left(1 - p\right)^2\right)$, and additionally $Y_2 \sim Ber \left(p^2 + \left(1 - p\right)^2\right)$.
+        \[
+            \p \left(Y_1 = 1, Y_2 = 1\right) = \p \left(X_1 = X_2 = X_3 = 0\right) + \p \left(X_1 = X_2 = X_3 = 1\right) = p^3 + \left(1 - p\right)^3
+        \]
+        Which is to say that an inequality occurs \textbf{if and only if} $\left(p^2 + \left(1 - p\right)^2\right)^2 = p^3 + \left(1 - p\right)^3$,
+        which holds true for $p \in \left\{0, \displaystyle\frac{1}{2}, 1\right\}$, and therefore
+        the only solution is $p = \displaystyle\frac{1}{2}$. So $Y_1, Y_2$ are
+        independent \textbf{if and only if} $p = \displaystyle\frac{1}{2}$
+    \end{proof}
+\end{exercise}
+
+\begin{exercise}
+    We will show that if $X \sim Bin \left(n, p\right)$ then $n - X \sim Bin \left(n, 1 - p\right)$
+
+    \begin{proof}[Solution]
+        We will take $Y = \left\{X_i'\right\}_{i \in [n]}$, the vector
+        of independent Bernoulli variables, with probability of success $p$. \[
+            Y = \displaystyle\sum_{i \in [n]}^{}X_i' \sim X
+        \]
+        Therefore \begin{align*}
+            \left(n - X\right) \sim \left(n - Y\right) &= \left(n - \displaystyle\sum_{i \in [n]}^{}X_i'\right) \\
+                                                       &=\left(\displaystyle\sum_{i \in [n]}^{}\left(1 - X_i'\right)\right) \sim Bin \left(n, 1 - p\right)
+        \end{align*}
+    \end{proof}
+\end{exercise}
+% subsubsection The connection between Bernoulli and binomial (end)
+% section Binomial distribution (end)
+
+\section{Geometric distribution}\label{sec:Geometric distribution} % (fold)
+\begin{definition}[Geometric distribution]
+    Let there be $\left(\Omega, \F, \p\right)$ probability space, and $X: \Omega \to \R$
+    a random variable on it. We will say that $X$ is geometrically distributed with
+    the probability of success $p$ if $Supp \left(X\right) = \N$, and its distribution
+    is $\p \left(X = n\right) = \left(1 - p\right)^{n - 1} p$. In this case we will
+    write $X \sim Geo \left(p\right)$
+\end{definition}
+
+\begin{theorem}[]
+    If $X \sim Geo \left(p\right)$ then $\p \left(X \in \N\right) = 1$
+
+    \begin{proof}[Proof]
+        The series $\left\{\p \left(X = n\right)\right\}_{n \in \N}$ is a geometric series
+        with the first value $p$, and multiplicand of $n - p$. \begin{align*}
+            \p \left(X \in \N\right) &= \displaystyle\sum_{n = 1}^{\infty}\p \left(X = n\right) \\
+                                     &= \displaystyle\sum_{n = 1}^{\infty} \left(1 - p\right)^{n - 1} \cdot p \\
+                                     &= \displaystyle\frac{p}{1 - \left(1 - p\right)} \\
+                                     &= 1
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[]
+    Let there be $X \sim Geo \left(p\right)$, then \[
+        \p \left(X = n + k | X > k\right) = \p \left(X = n\right)
+    \]
+\end{theorem}
+
+Note: If $X \sim Geo \left(p\right)$ then for all $k \in \N$ it is true that $\p \left(X > k\right) = \left(1 - p\right)^k$
+
+\begin{example}[]
+    Let us suppose that $40\%$ of masters degree students are tutors. Roi is looking
+    for a tutor, and starts picking random masters degree students. Let $X = $ the
+    number of students which Roi has met. What is the probability that Roi will talk
+    with at most 3 students?
+
+    \begin{proof}[Solution]
+        \[
+            \p \left(X \leq 3\right) = 1 - \p \left(X > 3\right) = 1 - 0.6^3
+        \]
+    \end{proof}
+\end{example}
+
+\begin{example}[]
+    There are 3 doors, A, B, C, where the chances of picking B, or C are $p_1, p_2$
+    respectively, such that $p_1 + p_2 < 1$. A leads back to choosing between the 3.
+    What is the chance that C is eventually entered?
+
+    \begin{proof}[Solution]
+        We will write $\omega_n$ to be the event that $C$ is picked on the $n$th choice.
+        So $p \left(\omega_n\right) = \left(1 - \left(p_1 + p_2\right)\right)^{n - 1} \cdot p_2$.
+        We will write that $A$ is the event where Alisa arrives to the door C. \[
+            \p \left(A\right) = \displaystyle\sum_{n = 1}^{\infty} \left(1 - \left(p_1 + p_2\right)\right)^{n - 1} \cdot p_2 = \displaystyle\frac{p^2}{p_1 + p_2}
+        \]
+    \end{proof}
+\end{example}
+% section Geometric distribution (end)
+\end{document}

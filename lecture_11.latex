@@ -1,0 +1,248 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 11}
+\author{Gidon Rosalki}
+\date{2024-12-08}
+
+
+\begin{document}
+\maketitle
+\section{More on independence and conditions}\label{sec:More on independence and conditions} % (fold)
+\begin{example}[4.54]
+    $X, Y$ are the results of throwing 2 dice. We will write $Z = X + Y$. What is the
+    distribution of $Z$ given $Z$ is even?
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            \p_Z \left(2 \N\right) &\stackrel{def}{=} \p \left(Z \in 2 \N\right) \\
+                                   &= \displaystyle\sum_{k \in [6]}^{} \p \left(Z = 2k\right) \\
+                                   &= p_Z(2) + p_Z(4) + p_Z(6) + p_Z(8) + p_Z(10) + p_Z(12) = \displaystyle\frac{1}{2}
+        \end{align*}
+        So now we need to calculate $\p_Z \left(\left\{k\right\} | Z \in 2 \N\right)$.
+        Note: $\forall 2 \leq k \leq 12 \p_{Z | Z \in 2\N} \left(\left\{k\right\}\right) = \displaystyle\frac{\p \left(\left\{k\right\}\right)\cap Z \in 2\N}{\p_Z \left(2 \N\right)} = \displaystyle\frac{p_Z(k)}{\displaystyle\frac{1}{2}} = 2p_Z(k)$
+        \begin{align*}
+            \p_Z \left(\left\{k\right\} \cap Z \in 2 \N\right) &= \begin{cases}
+                \p \left(\emptyset\right), &\text{ if }k \nmid 2\\
+                \p \left(Z=k\right), &\text{ if }k | 2\\
+            \end{cases}
+        \end{align*}
+    \end{proof}
+
+    Now, what is the distribution of $X$ given $Z$ is even?
+    \begin{proof}[Solution]
+        \begin{align*}
+            j \in [6]\ p_{X|Z \in 2\N}(j) &= \displaystyle\frac{\p \left(X = j, Z \in 2\N\right)}{\p \left(Z \in 2\N\right)} \\
+                                          &= 2 \p \left(X = j, 2 | Y - X\right) \\
+                                          &= 2 \cdot \displaystyle\frac{3}{36} \\
+                                          &= \displaystyle\frac{1}{6}
+        \end{align*}
+    \end{proof}
+
+    So given $Z$ is even, what is more probable, $X=4$ or $Z = 4$?
+    \begin{proof}[Solution]
+        $p_{Z | Z \in 2\N} \left(4\right) = 2p_Z(4) = 2 \cdot \displaystyle\frac{3}{36} = \displaystyle\frac{1}{6}$,
+        and $p_{X | Z \in 2 \N}(4) = p_X(4) = \displaystyle\frac{1}{6}$
+    \end{proof}
+\end{example}
+
+\begin{example}[4.55]
+    We choose uniformly a number $X \in [n]$. Afterwards, we choose uniformly a number
+    $Y \in [X]$. What is the probability that $Y = 1$?
+
+    \begin{proof}[Solution]
+        $X \sim Unif \left(\left[n\right]\right) \land \left(Y | X = k\right) \sim Unif \left(\left[k\right]\right)$.
+        \begin{align*}
+            p_Y \left(1\right) &\stackrel{complete probability}{=} \displaystyle\sum_{k \in \left[n\right]}^{} p_{Y | X = k} \left(1\right) p_X(k) \\
+                               &= \displaystyle\frac{1}{n} \displaystyle\sum_{k \in [n]}^{}\displaystyle\frac{1}{n} \\
+                               &= \displaystyle\sum_{k \in \left[n\right]}^{} \displaystyle\frac{1}{kn} \\
+                               &\approx \displaystyle\frac{\ln \left(n\right)}{n}
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{theorem}[4.56]
+    Given as a "diagnosis". Really need to figure out how to translate that properly.
+
+    Distributive equality is saved under conditions: We will assume that $X \stackrel{d}{=} Y$, and $S \in \F_{\R^d}$. \textbf{Then}
+    \[
+        \left(Z | X \in S\right) \stackrel{d}{=} \left(Y | Y \in S\right)
+    \]
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \p_{X | X \in S} \left(T\right) &\stackrel{def}{=}  \p \left(X \in T | X \in S\right) \\
+                                            &\stackrel{def}{=}  \displaystyle\frac{\p \left(X \in T, X \in S\right)}{\p \left(X \in S\right)} \\
+                                            &= \displaystyle\frac{\p \left(X \in T \cap S\right)}{\p \left(X \in S\right)} \\
+                                            &= \displaystyle\frac{\p_X \left(S \cap T\right)}{\p_X \left(S\right)} \\
+                                            &= \displaystyle\frac{\p_Y \left(S \cap T\right)}{\p_Y \left(S\right)} \\
+                                            &= \vdots \\
+                                            &= \p_{Y | Y \in S} \left(T\right)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+
+\begin{definition}[4.58]
+    Let there be $X, Y$ random variables on $\left(\Omega, \F, \p\right)$. $X, Y$
+    are independent \textbf{if and only if} for all $x, y \in \R$ it is true that
+    \[
+        p_{X, Y} \left(x, y\right) p p_X(x) p_Y(y) \Leftrightarrow p_{X | Y} \left(x | y\right) = p_X \left(x\right)
+    \]
+\end{definition}
+
+\begin{example}[4.60]
+    $X, Y \sim Unif \left(\left\{0, 1, 2, 3, 4, 5\right\}\right)$ are independent,
+    and $Z = X + Y \mod 6$. Are $X$ and $Z$ independent?
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            \forall a, b \in \left\{0\right\} \cup [5]\ p_{X, Z} \left(a, b\right) &= \p \left(X = a, Z = b\right) \\
+                                                                                   &= \p \left(X = a, X + Y = b \mod 6\right) \\
+                                                                                   &= \p \left(X = a, a + Y = b \mod 6\right) \\
+                                                                                   &= \p \left(X = a, Y = b - a \mod 6\right) \\
+                                                                                   &\stackrel{\text{X, Y are independent}}{=} \p \left(X = a\right) \p \left(Y = b - a\right) \\
+                                                                                   &= p_X(a) p_Y(b - a \mod 6) \\
+                                                                                   &= \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{6} \\
+                                                                                   &= \displaystyle\frac{1}{36} \\
+                                                                                   &= p_X(a) p_Z(b)
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{definition}[4.68]
+    Let there be $X, Y$ random vectors on $\left(\Omega, \F, \p\right)$, for $\R^n$,
+    and $\R^m$ accordinly. $X, Y$ are \textbf{independent} if for all $S \in \F_{\R^m}$
+    and for all $T \in \F_{\R^n}$ it is true that $\p_{X, Y} \left(S \times T\right) = \p_X \left(S\right) \p_Y \left(T\right)$
+\end{definition}
+
+\begin{definition}[4.69]
+    Let there be $X, Y$ discrete random vectors on $\left(\Omega, \F, \p\right)$. $X, Y$ are
+    independent \textbf{if and only if} for all $x \in \R^m$ and $y \in \R^n$ it
+    is true that $p_{X, Y} \left(x, y\right) = p_X(x) p_Y(y)$
+\end{definition}
+
+\begin{theorem}[4.75]
+    The collection of random vectors $\left\{X_i\right\}_{i \in [n]}$ on $\left(\Omega, \F, \p\right)$
+    is independent \textbf{if and only if} for every collection of suitable events
+    $\left\{S_i\right\}_{i \in [n]}$
+
+    \begin{proof}[Proof ]
+        $\p_{X_1, \dots, X_n} \left(\displaystyle\times_{i \in [n]} S_i\right) = \p \left(\displaystyle\bigcap_{i \in [n]}^{} \left(X_i \in S_i\right)\right) = \displaystyle\Pi_{i \in [n]} \p \left(X_i \in S_i\right)$
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[4.76]
+    Diagnosis: \\
+    Independence of discrete random vectors is a point attribute
+
+    \begin{proof}[Proof]
+        $\left\{X_i\right\}_{i \in [n]}$ discrete are independent $\Leftrightarrow p_{X_1, \dots, X_n} \left(v_1, \dots, v_n\right) = \Pi_{i \in [n]} p_{X_i} \left(v_i\right)$
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[4.78]
+    Diagnosis:\\
+    The events $A_1, \dots, A_n \in \F$ are independent \textbf{if and only if} $\left\{\1_{A_i}\right\}_{i \in [n]}$
+    is a collection of independent random variables.
+
+    \begin{proof}[Proof ]
+        Left as an exercise % TODO
+    \end{proof}
+\end{theorem}
+
+\begin{example}[4.80]
+    We toss 3 fair coins. $Y_1 ,Y_2$ indicate the result of heads on the first and seconds throws,
+    according to the index. $Z$ indicates the evenness of the number of heads in
+    all three tosses. Show that $\left\{Y_1, Y_2, Z\right\}$ is an independent collection
+    of random variables.
+
+    \begin{proof}[Solution]
+        $Y_i = \1_{\text{The $i$th throw is heads}}$. $Y = \left(Y_1, Y_2, Y_3\right),\ Supp(Y) = \left\{0, 1\right\}^3$.
+        Additionally, $Y_i \sim Ber \left(\displaystyle\frac{1}{2}\right) \implies Y \sim Unif \left(\left\{0, 1\right\}^3\right)$.
+        $Z = \1_{\text{The number of heads is even}} = \1_{110, 101, 011, 000} \sim Ber \left(\displaystyle\frac{1}{2}\right)$.
+        $\forall a, b, c \in \left\{0, 1\right\}\ p_{X, Y, Z} \left(a, b, c\right) = \p \left(Y_1 = a, Y_2 = b, Z = c\right) = \p \left(Y = a, Y_2 = b, Y_3 = f \left(a, b\right)\right)$.
+        Now what is $f$?
+
+        $f \left(a, b\right) = \begin{cases}
+            0, &\text{ if }a = b\\
+            1, &\text{ if }a \ne b\\
+
+        \end{cases}$. Note $\forall a, b \in \left\{0, 1\right\}\ f \left(a, b\right) \in \left\{0, 1\right\}$, which will enable
+        that in the trio $a, b, f \left(a, b\right)$ there will be an even number of $1$s.
+
+        So, $\p \left(Y = a, Y_2 = b, Y_3 = f \left(a, b\right)\right) \stackrel{\text{Independence of }Y_i}{=} p_{Y_1} \left(a\right) p_{Y_2} \left(b\right) p_{Y_3} \left(f \left(a, b\right)\right)
+        = \left(\displaystyle\frac{1}{2}\right)^3 = p_{Y_1} \left(a\right) p_{Y_2} \left(b\right) p_Z \left(1\right)$. \\
+        For every $a, v \in \left\{0, 1\right\}$, the events $\left\{Y_1 = a, Y_2 = b, Z = 1\right\}$ are independent.
+        From independence of the completion, $\left\{Y_1 = a, Y_2 = b, Z = 0\right\}$ is independent.
+    \end{proof}
+\end{example}
+
+\begin{example}[4.82]
+    There are 4 throws of a fair die.
+    $X_1, X_2, X_3, X_4 \sim Unif \left(\left[6\right]\right)$ are independent. $\forall i \in [3]\ Y_y = X_i + X_{i + 1}$.
+    Show that $Y_1$ and $Y_3$ are independent.
+
+    \begin{proof}[Solution]
+        $2 \leq a, b \leq 12$
+        \begin{align*}
+            p_{Y_1,Y_3} \left(a, b\right) &= \p \left(Y_1 = a, Y_3 = b\right) \\
+                                          &= \p \left(X_1 + X_2 = a, X_4 + X_4 = b\right) \\
+                                          &\stackrel{\text{Complete probability}}{=} \displaystyle\sum_{i, j \in [6]}^{} \p \left(X_1 = i, X_1 + X_2 = a, X_3 = j, X_3 + X_4 = b\right) \\
+                                          &= \displaystyle\sum_{i, j \in [6]}^{} \p \left(X_1 = i, X_2 = a - i, X_3 = j, X_4 = b - j\right) \\
+                                          &\stackrel{\text{Independence}}{=} p_{x_1}(i) p_{X_2}(a - i) p_{X_3} \left(j\right) p_{X_4} \left(b - j\right) \\
+                                          &\stackrel{\text{Change of order}}{=} \displaystyle\sum_{i \in [6]}^{} p_{X_1} \left(i\right) p_{X_2} \left(a - i\right) \displaystyle\sum_{j \in [6]}^{} p_{X_3} \left(j\right) p_{X_4} \left(b - j\right) \\
+                                          &\stackrel{\text{Independence}}{=} \displaystyle\sum_{i \in [6]}^{} \p \left(X_1 = i, X_2 = a - i\right) \displaystyle\sum_{j \in [6]}^{} \p \left(X_3 = j, X_4 = b - j\right) \\
+                                          &\stackrel{\text{Complete probability}}{=} \p \left(X_1 + X_2 = a\right) \p \left(X_3 + X_4 = b\right) \\
+                                          &\stackrel{def}{=} p_{Y_1} \left(a\right) p_{Y_3} \left(b\right)
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[~4.90]
+    We have many independent random variables. We sum pairs in order. The sums that start
+    at even indices are independent. The sums that start at odd indices  are independent.
+    The sums in disjoint threes are also independent.
+\end{example}
+
+\begin{example}[4.91]
+    $A_1, \dots, A_5$ are independent events in $\Omega$. Show that
+    $B_1 = \left(A_1 \cup A_2\right) \cap A_3$ and $B_2 = A_4^c \cap A_5$ are independent.
+
+    \begin{proof}[Solution]
+        We will move to the indicators (which are random variables) $X_1, \dots, X_5$. They are independent according to
+        $4.78$. We will define $f \left(x, y, z\right) = z \max \left(x, y\right)$, and $g \left(x, y\right) = \left(1 - x\right)y$.
+        We will receive that $\1_{B_2} = g \left(X_4, X_5\right)$ and $\1_{B_1} = f \left(X_1, X_2, X_3\right)$, and
+        these are independent random variables as we said.
+    \end{proof}
+\end{example}
+% section More on independence and conditions (end)
+
+
+\end{document}

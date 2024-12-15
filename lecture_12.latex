@@ -1,0 +1,287 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 12}
+\author{Gidon Rosalki}
+\date{2024-12-09}
+
+
+\begin{document}
+\maketitle
+\section{Important distributions}\label{sec:Important distributions} % (fold)
+\begin{theorem}[4.70]
+    Let there be $X, Y, Z$ discrete random variables. If for all $x \in Supp \left(X\right)$
+    it is true that $\left(Y | X = x\right) \stackrel{d}{=} Z$ \textbf{then} $Y \stackrel{d}{=} Z$,
+    and also $Y, X$ are independent.
+
+    \begin{proof}[Proof ]
+        Let there be $a \in Supp \left(Y\right)$
+        \begin{align*}
+            p_Y \left(a\right) &= \p \left(Y = a\right) \\
+                               &\stackrel{\text{complete probability}}{=} \displaystyle\sum_{x \in Supp \left(X\right)}^{} \p \left(Y = a | X = x\right) \p \left(X = x\right) \\
+                               &\stackrel{\text{given}}{=} \displaystyle\sum_{x \in Supp \left(X\right)}^{} \p \left(Z = a\right) \p \left(X = x\right) \\
+                               &= p_Z \left(a\right) \displaystyle\sum_{x \in Supp \left(X\right)}^{} p_X \left(x\right) \\
+                               &= p_Z \left(a\right)
+        \end{align*}
+        Part 2:
+        \begin{align*}
+            p_{X, Y} \left(x, a\right) &= \p \left(Y = a, X = x\right) \\
+                                       &\stackrel{\text{Chaining}}{=} \p \left(Y = y | X = x\right) \p \left(X = x\right) \\
+                                       &\stackrel{\text{Given}}{=}  \p \left(Z = a\right) \p \left(X = x\right) \\
+                                       &= p_Z \left(a\right) p_X \left(x\right) \\
+                                       &\stackrel{Z \stackrel{d}{=} Y}{=}  p_X \left(x\right) p_Y \left(a\right)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+Example usage: $X, Y \sim Unif \left(\left\{0, 1, \dots, 5\right\}\right)$, and $Z = X + Y \mod 6$. Are
+$X, Z$ independent? From yesterday: \\
+$p_{Z | X = x} \left(a\right) = \p \left(Z = a | x = x\right) = \displaystyle\frac{\p \left(Z = a, X = x\right)}{\p \left(X = x\right)}
+= \displaystyle\frac{\p \left(Y = a - x \mod 6, X = x\right)}{\displaystyle\frac{1}{6}} = 6 \cdot \displaystyle\frac{1}{36} = \displaystyle\frac{1}{6} = p_Y \left(a\right)$.
+So, $\forall x \in Supp \left(X\right)\ \left(Z | X = x\right) \stackrel{d}{=} Y$,
+so according to $4.70$: $Z, X$ are independent and $Z \stackrel{d}{=} Y$.
+
+\begin{definition}[4.112]
+    The random variable $X$ has \textbf{binomial distribution} with $n$ experiments, and
+    probability of success $p$, $X \sim Bin \left(n, p\right)$ if $\forall 0 \leq k \leq n\ p_X \left(k\right) = \binom{n}{k} p^k \left(1 - p\right)^{n - k}$
+\end{definition}
+
+\begin{theorem}[Binomial distribution is a distribution]
+    We need to check $\displaystyle\sum_{k \in \R}^{}p_X \left(k\right) = 1$, and it
+    is sufficient to check on $0 \leq k \leq n$
+    \begin{align*}
+        \displaystyle\sum_{k = 0}^{n} p_X \left(k\right) &\stackrel{def}{=} \displaystyle\sum_{k = 0}^{n}\binom{n}{k} p^k \left(1 - p\right)^{n - k} \\
+                                                         &=\stackrel{\text{binomial formula}}{=}  \left(p + \left(1 - p\right)\right)^n \\
+                                                         &= 1^n \\
+                                                         &= 1
+    \end{align*}
+\end{theorem}
+
+Examples include:
+\begin{itemize}
+    \item Throwing a fair coin $n$ times. The number of throws that came out $H$
+        distributes binomially with the parameters $n$ and $\displaystyle\frac{1}{2}$
+    \item Rolling a fair die $n$ times. Number of throws of $6$ distributes binomially
+        with $n$ and $\displaystyle\frac{1}{6}$
+\end{itemize}
+
+\begin{theorem}[4.113]
+    Let $X_i \sim Ber \left(p\right)$ be independent random variables. We will write $Y = \displaystyle\sum_{i \in [n]}^{}X_i$.
+    Then $Y \sim Bin \left(n, p\right)$
+
+    \begin{proof}[Proof ]
+        Let there be $0 \leq k \leq n$. \[
+            p_Y \left(k\right) = \p \left(\displaystyle\sum_{i \in [n]}^{}X_i = k\right)
+        \]
+        We will look at the random vector $X = \left(X_1, \dots, X_n\right) \stackrel{a.s}{\subseteq} \left\{0, 1\right\}^n $.
+        $X \Leftrightarrow \displaystyle\sum_{i \in [n]}^{}X_i = k$ is a "binary" vector,
+        with exactly $k$ 1s, and $n - k$ 0s. \[
+            A_k \stackrel{def}{=} \left\{\left[x_1, \dots, x_n\right] | \forall i \in [n]\ X_i \in \left\{0, 1\right\} \land
+            \exists I \subseteq [n]\ |I| = k \land \forall i \in I\ X_i = 1\ \land \forall j \notin I\ X_j = 0\right\}
+            = \binom{n}{k} p^k \left(1 - p\right)^{n - k}
+        \]
+        \begin{align*}
+            \p \left(\displaystyle\sum_{i \in [n]}^{}X_i = k\right) &= \p \left(X \in A_k\right) \\
+                                                                    &= \displaystyle\sum_{x \in A_k}^{}p_X \left(x\right) \\
+                                                                    &= \displaystyle\sum_{\left(x_1, \dots, x_n\right) \in A_k}^{} p_{X_1, \dots, X_n} \left(x_1, \dots, x_n\right) \\
+                                                                    &\stackrel{\text{independent}}{=}  \displaystyle\sum_{\left(x_1, \dots, x_n\right) \in A_k}^{} \displaystyle\Pi_{i \in [n]} p_{X_i} \left(x_i\right) \\
+                                                                    &\stackrel{X_i \sim Ber \left(p\right)}{} \displaystyle\sum_{\left(x_1, \dots, x_n\right) \in A_k}^{} p^k \left(1-p\right)^{n - k} \\
+                                                                    &= |A_k| p^k \left(1 - p\right)^{n - k} \\
+                                                                    &= \binom{n}{k} p^k \left(1 - p\right)^{n - k}
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[4.114]
+    Conclusion: Let there be $X_1, X_2$ independent random variables such that $j \in [2]\ X_j \sim Bin \left(n_j, p\right)$.
+    $Y = X_1 + X_2$. \textbf{Then} $Y \sim Bin \left(n_1 + n_2, p\right)$
+
+    \begin{proof}[Proof ]
+        Let there be $Z_1, \dots, Z_{n_1 + n_2} \sim Ber \left(p\right)$ independent
+        random variables. We will write $X_1' = \displaystyle\sum_{i = 1}^{n_1}Z_i$,
+        $X_2' = \displaystyle\sum_{i = n_1 + 1}^{n_1 + n_2}Z_i$, and $Y' = \displaystyle\sum_{i = 1}^{n_1 + n_2} Z_i$.
+        According to $4.113$, $X_1' \sim Bin \left(n_1, p\right) \land X_2 \sim Bin \left(n_2, p\right) \land Y' Bin \left(n_1 + n_2, p\right)$.
+        This implies that $X_1 \stackrel{d}{=} X_1' \land X_2 \stackrel{d}{=} X_2'$. Additionally
+        $X_1'$ and $X_2'$ are independent as a grouping of disjoint collections of
+        independent random variables.
+        \begin{align*}
+            Y &\stackrel{def}{=} X_1 + X_2 \\
+              &\stackrel{d}{=} X_1' + X_2' \\
+              &= \displaystyle\sum_{i = 1}^{n_1}z_i + \displaystyle\sum_{i = n_1 + 1}^{n_1 + n_2} Z_i \\
+              &= \displaystyle\sum_{i = 1}^{n_1 + n_2}Z_i \\
+              &\stackrel{def}{=} Y'
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[Steerling]
+    Let there be $n \in \N$. \textbf{Then} $n! \approx \sqrt{2 \pi n} \displaystyle\frac{n}{e}^n $
+\end{theorem}
+
+\begin{example}[]
+    We throw two fair dice $2n$ times. What is the probability of exactly $n$ heads?
+
+    \begin{proof}[Solution]
+        If $X$ is the number of heads in $2n$ throws, then $X \sim Bin \left(2n, \displaystyle\frac{1}{2}\right)$.
+        \begin{align*}
+            p_X \left(n\right) &= \binom{2n}{n} \displaystyle\frac{1}{2}^n \displaystyle\frac{1}{2}^n \\
+                               &= \displaystyle\frac{\left(2n\right)!}{n!n!} \cdot 2^{-2n}   \\
+                               &\approx \displaystyle\frac{\sqrt{4 \pi n} \left(\displaystyle\frac{2n}{e}\right)^{2n}}{ \left(\sqrt{2 \pi n} \left(\displaystyle\frac{n}{e}\right)^n\right)^2} \\
+                               &= \displaystyle\frac{2 \sqrt{\pi n} \displaystyle\frac{2^{2n}n^{2n}}{e^{2n}}}{2 \pi n \displaystyle\frac{n^{2n}}{e^{2n}}} \cdot 2^{-2n} \\
+                               &= \displaystyle\frac{1}{\sqrt{\pi n}}
+        \end{align*}
+    \end{proof}
+\end{example}
+i \in [2n]
+\begin{example}[Random walk (drunk walk)]
+    On a number line. What is the probability that he will return to the starting
+    point after $2n$ steps?
+
+    \begin{proof}[Solution]
+        $X_i \sim Ber \left(\displaystyle\frac{1}{2}\right)$, which indicates that the
+        drunkard stepped right on the $i$th step. \\
+        $X_1, \dots, X_{2n} \sim Ber \left(\displaystyle\frac{1}{2}\right)$ are
+        independent. We will write $k \in [2n]\ Y_k$ to be the location of the drunkard
+        after $k$ steps. \\
+        $Y_k = \displaystyle\sum_{i \in [k]}^{}X_i - \displaystyle\sum_{i \in [k]}^{}\left(1 - X_i\right) = 2 \displaystyle\sum_{i \in [k]}^{}X_i - k$.
+        So $Y_{2n} = 2 \displaystyle\sum_{i \in [2n]}^{}X_i - 2n$. So, we want to find:
+        \begin{align*}
+            Y_{2n} = 0 &\Leftrightarrow 2 \displaystyle\sum_{i \in [2n]}^{} X_i - 2n = 0 \\
+                       &\Leftrightarrow \displaystyle\sum_{i \in [2n]}^{}X_i = n \\
+        \end{align*}
+        this is precisely the probability to get $n$ heads in $2n$ tosses of a coin, which
+        was calculated above. So $p_{Y_{2n}} \left(0\right) \approx \displaystyle\frac{1}{\sqrt{\pi n}}$
+    \end{proof}
+\end{example}
+
+\begin{definition}[4.99]
+    A random variable $X$ has a \textbf{geometric distribution} with a probability of
+    success $p$ $X \sim Geo \left(p\right)$ if for every $n \in \N$ $p_X \left(n\right) = p \left(1 - p\right)^{n - 1}$
+\end{definition}
+\begin{theorem}[Geometric distribution is a distribution]
+    \begin{align*}
+        1 &= \displaystyle\frac{n \in \N}{}p_X \left(n\right) \\
+          &= \displaystyle\sum_{n \in \N}^{}p \left(1 - p\right)^{n - 1} \\
+          &= p \left(\displaystyle\sum_{n \in \N}^{}\left(1 - p\right)^{n - 1}\right) \\
+          &\stackrel{\text{Sum of geometric series}}{} p \cdot \displaystyle\frac{1}{1 - \left(1 - p\right)} \\
+          &= p \cdot \displaystyle\frac{1}{p} \\
+          &= 1
+    \end{align*}
+\end{theorem}
+
+Examples:
+\begin{itemize}
+    \item Throwing a coin until the first $H$ distributes geometrically with probability of
+        success $\displaystyle\frac{1}{2}$
+    \item Throwing a d20 until getting a number greater than equal to 15 distributes
+        geometrically with probability of success $\displaystyle\frac{1}{4}$
+\end{itemize}
+
+\begin{definition}[4.93]
+    A series of random variables $\left(X_n\right)_{n \in \N}$ is independent
+    if for all $n \in \N$ the set $\left\{X_j\right\}_{j \in [n]}$ is independent
+\end{definition}
+
+\begin{theorem}[4.95]
+    It is \textbf{impossible} to define infinite equal probability independent random
+    on the discrete $\left(\Omega, \F, \p\right)$
+\end{theorem}
+
+\begin{theorem}[4.96]
+    There exists $\left(\Omega, \F, \p\right)$ where for it it is possible to define infinite
+    independent random variables
+\end{theorem}
+
+\begin{theorem}[4.94]
+    Let there be $\left(X_n\right)_{n \in \N}$ an infinite series of independent random variables.
+    Let $\left(S_n\right)_{n \in \N}$ be a series of events in $\F_\R$. It is true that \[
+        \p \left(\forall n \in \N\ X_n \in S_n\right) = \p \left(\displaystyle\bigcap_{n \in \N}^{}\left(X_n \in S_n\right)\right) = \displaystyle\Pi_{n = 1}^{\infty} \ \left(X_n \in S_n\right)
+    \]
+
+    \begin{proof}[Proof ]
+        Let there be $S_n \in \F_\R$. We will write $B_k = S_1 \times \dots \times S_k \times \R^\infty \implies B_k$
+        is a descending series of events such that $\displaystyle\bigcap_{k \in \N}^{}B_k = \times_{n \in \N} S_n$. \\
+        \begin{align*}
+            \p \left(\forall n \in \N\ X_n \in S_n\right) &\stackrel{def}{=} \p \left(\displaystyle\bigcap_{n \in \N}^{}\left(X_n \in S_n\right)\right) \\
+                                                          &= \p \left(\displaystyle\bigcap_{k \in \N}^{}B_k\right) \\
+                                                          &\stackrel{\text{Continuity of probability}}{=} \displaystyle\lim_{n \to \infty} \p \left(\displaystyle\bigcap_{k \in [n]}^{}B_k\right) \\
+                                                          &= \displaystyle\lim_{n \to \infty} \p \left(B_n\right) \\
+                                                          &= \displaystyle\lim_{n \to \infty} \p \left(\forall k \in [n]\ X_k \in S_k\right) \\
+                                                          \stackrel{\text{Independence of } X_n}{=} \displaystyle\lim_{n \to \infty} \displaystyle\Pi_{k \in [n]} \p \left(X_k \in S_k\right) \\
+                                                          &= \displaystyle\Pi_{k \in \N} \p \left(X_k \in S_k\right)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[The typing monkey]
+    Let us assume that there is an immortal monkey with a typewriter with infinite ink.
+    The monkey can type a single letter every second. Every letter is chosen independently of
+    every other. What is the probability that the monkey will type Shakespeare's "King Lear"?
+
+    \begin{proof}[Solution]
+        We will count the most used letters of English $[k]$ (we're ignoring letters with diacritics).
+        Every text is a vector in $[k]^n$. Let us assume that King Lear has $l$ letters. Then
+        the copy of King Lear is $L \in [k]^l$. We will write $Y_i = \1_{\left(X_{i + 1}, \dots, X_{i + l} = L\right)}$.
+        For the monkey $X_i \sim Unif \left[k\right]$, independent. The $Y_i$s are of course
+        dependent, since if $Y_i = 1$ then $Y_{i + 1} = 0$. However, the $\left\{Y_{l - i}\right\}_{i \in \N}$ are
+        independent since they are a grouping of disjoint collections of the independent collections.
+
+        \begin{align*}
+            \p \left(\exists i \in \N_0 : Y_{i l} = 1\right) &= ? \\
+            \p \left(\forall i \in \N_0\ Y_{il} = 0\right) &= \p \left(\displaystyle\bigcap_{i \in \N_0}^{}Y_i = 0\right) \\
+                                                           &\stackrel{\text{Independence}}{=} \displaystyle\Pi_{i \in \N_0} \p \left(Y_{il} = 0\right) \\
+                                                           &= \displaystyle\lim_{n \to \infty} \displaystyle\Pi_{i \in [n]} \left(1 - \left(\displaystyle\frac{1}{k}\right)^l\right) \\
+                                                           &= \displaystyle\lim_{n \to \infty} \left(1 - \left(\displaystyle\frac{1}{k}\right)^n\right) = 0 \\
+            \implies \p \left(\exists i \in \N_0 : Y_{i l} = 1\right) &= 1
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{theorem}[4.100]
+    Let ther ebe $\left(X_n\right)_{n \in \N}$ a series of Bernoulli independent random variables $X_n \sim Ber \left(p\right)$
+    (which exist in accordance with theorem $4.96$). We will write \[
+        Y = \min \left\{t \in \N | X_n = 1\right\}
+    \]
+    and define $Y = \infty$ if $X_n = 0$ for all $n \in \N$. \textbf{Then} $Y \sim Geo \left(p\right)$
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \p \left(Y = n\right) &= \p \left(X_1 = 0, \dots, X_{n - 1} = 0, X_n = 1, X_{n + 1} \in \R \dots\right) \\
+                                  &\stackrel{\text{Independence}}{=} \displaystyle\Pi_{i \in [n - 1]} \p \left(X_i = 0\right) \cdot \p \left(X_n = 1\right) \cdot \displaystyle\Pi_{i \in \N} \p \left(X_{n + i} \in \R\right) \\
+                                  &= p \left(1 - p\right)^{n - 1} \cdot 1 \\
+                                  &= p \left(1 - p\right)^{n - 1} \\
+        \end{align*}
+        We have proven $\displaystyle\sum_{n \in \N}^{} p \left(1 - p\right)^{n - 1} = 1$ and therefore
+        $p_Y \left(\infty\right) = 0 \implies Y \sim Geo \left(p\right)$
+    \end{proof}
+\end{theorem}
+% section Important distributions (end)
+
+
+\end{document}

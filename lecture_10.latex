@@ -1,0 +1,331 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 10}
+\author{Gidon Rosalki}
+\date{2024-12-02}
+
+
+\begin{document}
+\maketitle
+\section{Random vectors}\label{sec:Random vectors} % (fold)
+\begin{example}
+    We will take a fair coin $\Omega = \left\{H, T\right\}$. If $X(H) = 1 \land X(T) = 0 \implies X \sim Ber \left(\displaystyle\frac{1}{2}\right)$.
+    \begin{enumerate}
+        \item If we define $X \equiv Y \implies Y \sim Ber \left(\displaystyle\frac{1}{2}\right)$ and so $X \stackrel{a.s}{=} Y$.
+        \item If we define $Y = 1 - X$ then it is still true $Y \sim Ber \left(\displaystyle\frac{1}{2}\right)$,
+            however $X$ is almost surely different from $Y$
+        \item
+    \end{enumerate}
+    Additionally
+    \begin{enumerate}
+        \item $X + Y = Unif \left(\left\{0, 2\right\}\right)$
+        \item $X + Y \stackrel{a.s}{=} 1$
+    \end{enumerate}
+\end{example}
+
+\begin{definition}[4.36 random vector]
+    A finite collection of random variables $X = \left(X_1, \dots, X_n\right)$
+    on $\left(\Omega, \F, \p\right)$ will be called a \textbf{random vector}
+\end{definition}
+Instead of a function $\Omega \to \R$, we have a function $\Omega \to \R^n$. \\
+We will now also write the possible collection of events to be $\F_{\R^n}$
+and $\F_{\R^n} = 2^{\R^n}$.
+
+
+\begin{definition}[4.37]
+    Let there be a random vector $X = \left(X_1, \dots, X_n\right)$ on $\left(\Omega, \F, \p\right)$.
+    For $A \in \F_{\R^n}$ we will write \[
+        \p_X(A) = \p_{X_1, \dots, X_n}(A) = \p \left(X^{-1}(A)\right) = \p \left(\left\{\omega \in \Omega | X(\omega) \in A\right\}\right)
+    \]
+    We will call this the \textbf{shared distribution} of $X_1, \dots, X_n$. The
+    distribution of each of the individual $X_i$'s is called the \textbf{marginal
+    distribution}. If $\p_X$ is supported by $A$, we will say that $X$ is \textbf{supported}
+    by $A$.
+\end{definition}
+
+\begin{definition}[4.38]
+    If $X$ is a random vector, $\p_X$ is a probability function on $\left(\R^n, \F_{\R^n}\right)$
+\end{definition}
+
+So what is the difference? A random vector is the way to show the connection between two
+different random variables. The great thing here is that this comes from something
+we already know, namely probability spaces.
+
+\subsubsection{Shared distribution supports the connection between random variables}\label{sec:Shared distribution supports the connection between random variables} % (fold)
+\begin{itemize}
+    \item $\p \left(X \geq Y\right) = \p \left(\left\{\omega \in \Omega | X(\omega) \geq Y(\omega)\right\}\right) = \p_{X, Y} \left(\left\{\left(x, y\right) \in \R^2 | X \geq Y\right\}\right)$
+    \item $X \stackrel{a.s}{=} Y$ \textbf{if and only if} $\left(X, Y\right)$ is supported by $\left\{\left(a, a\right) | a \in \R\right\}$
+    \item $\p_{X_1} \left(S\right) = \p_X \left(X_1 \in S, X_2 \in \R, \dots, X_n \in \R\right) = \p_X \left(S \times \R^{n-1}\right)$
+\end{itemize}
+% subsubsection Shared distribution supports the connection between random variables (end)
+
+\begin{definition}[4.40]
+    A random vector $X = \left(X_1, \dots, X_n\right)$ will be called \textbf{discrete}
+    if $\p_X$ is a discrete probability function. The $p_X$ for a discrete $\p_X$
+    will be called the point probability function. $Supp(X) = \left\{x \in \R^n | p_X(x) > 0\right\}$ is the
+    \textbf{support} of $X$
+\end{definition}
+Note: $p_X(x_1, \dots, x_n) = \p \left(\displaystyle\bigcap_{i \in [n]}^{}X_i^{-1} \left(x_i\right)\right)$
+
+\begin{example}[4.42]
+    Let $a \in \left[0, \displaystyle\frac{1}{2}\right]$. We will define a discrete
+    random vector $\left(X, Y\right)$ by:
+    \begin{itemize}
+        \item $p_{X, Y} \left(0, 0\right) = p_{X, Y}(1, 1) = a$
+        \item $p_{X, Y} \left(1, 0\right) = p_{X, Y}(0, 1) = \displaystyle\frac{1}{2} - a$
+    \end{itemize}
+    Show that for all $a \in \left[0, \displaystyle\frac{1}{2}\right]$ it is true
+    that $X, Y \sim Ber \left(\displaystyle\frac{1}{2}\right)$
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            \p_X(1) &= \p \left(X = 1, Y \in \R\right) = \p \left(X - 1, Y = 0\right) + \p \left(X = 1, Y = 1\right) \\
+                   &= \displaystyle\frac{1}{2} - a + a = \displaystyle\frac{1}{2} \\
+            \p_X(0) &= \p \left(X = 0, ,Y \in \R\right) = \p \left(X = 0, Y = 0\right) + \p \left(X = 0, Y = 1\right) \\
+                    &= a + \displaystyle\frac{1}{2} - a = \displaystyle\frac{1}{2} \\
+                    &\implies \p_X(r) = 0\ \forall r \notin \left\{0, 1\right\} \implies X \sim Ber \left(\displaystyle\frac{1}{2}\right)
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}
+    We throw a fair die. $X$ will be the result of the upward face, and $Y$ will
+    be the result of the northern face. \\
+    $X, Y \sim Unif \left(\left[6\right]\right)$
+
+    \begin{proof}[Solution]
+        $\left(l, k\right) \in [6]^2$ \\
+        So $\p_{X, Y}(l, k) = \begin{cases}
+            0, &\text{ if } l \in {k, 7-k} \\
+            \displaystyle\frac{1}{6} \cdot \displaystyle\frac{1}{4} = \displaystyle\frac{1}{24}, &\text{ if } l \notin {k, 7-k} \\
+        \end{cases}$
+        \begin{table}[h!]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|c|c|c|}
+                \hline
+                & 1 & 2 & 3 & 4 & 5 & 6 & $p_X$\\ \hline
+                1 & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & 0 & $\displaystyle\frac{1}{6}$ \\ \hline
+                2 & $\displaystyle\frac{1}{24}$ & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{6}$ \\ \hline
+                3 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & 0 & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{6}$ \\ \hline
+                4 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & 0 & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{6}$ \\ \hline
+                5 & $\displaystyle\frac{1}{24}$ & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{6}$ \\ \hline
+                6 & 0 & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & $\displaystyle\frac{1}{24}$ & 0 & $\displaystyle\frac{1}{6}$ \\ \hline
+                $p_Y$ & $\displaystyle\frac{1}{6}$ & $\displaystyle\frac{1}{6}$ & $\displaystyle\frac{1}{6}$ & $\displaystyle\frac{1}{6}$ & $\displaystyle\frac{1}{6}$ & $\displaystyle\frac{1}{6}$ & 1\\ \hline
+            \end{tabular}
+            \caption{}
+        \end{table}
+    \end{proof}
+\end{example}
+
+For a discrete random variable $X = \left(X_1, \dots, X_n\right)$ the point distribution
+of $X_i$ in $a$ comes from summing $p_X$ on \[
+    \left\{\left(x_1, \dots, x_{i - 1}, a, x_{i + 1}, \dots, x_n\right) | x_j \in \R,\ j \in [n] \setminus i\right\}
+\]
+
+Summing two dice: \\
+If $X$ is the result of the first die, and $Y$ is the sum, we get
+\begin{align*}
+    \displaystyle\frac{2}{36} &= p_Y(3)= \displaystyle\sum_{x \in [6]}^{}p_{X, Y} \left(x, 3\right) \\
+                              &= p_{X, Y} \left(1, 3\right) + p_{X, Y} \left(2, 3\right) \\
+                              &= p \left(1, 2\right) + p \left(2, 1\right) = \displaystyle\frac{1}{36} + \displaystyle\frac{1}{36}
+\end{align*}
+
+\begin{example}[4.44]
+    We throw 2 fair dice. We will write $X_i$ the results of the die $i \in [2]$.
+    We will write $Y = \min \left(X_1, X_2\right)$ and $Z = \max \left(X_1, X_2\right)$. Find
+    $p_{Y, Z}$ the marginal distribution
+
+    \begin{proof}[Solution]
+        $X = \left(X_1, X_2\right)$ distributes uniformly on $[6]^2 \subseteq \R^2$.
+        $1 \leq y < z \leq 6 \implies p_{Y, Z} \left(y, z\right) = \p_{X_1, X_2} \left(\left\{\left(y, z\right), \left(z, y\right)\right\}\right) = \displaystyle\frac{2}{36} = \displaystyle\frac{1}{18}$ \\
+        $1 \leq y = z \leq 6 \implies p_{Y, Z} \left(y, z\right) = \p_{X_1, X_2} \left(\left\{\left(y, y\right)\right\}\right) = \displaystyle\frac{1}{36}$ \\
+        $1 \leq z < y \leq 6 \implies p_{Y, Z}(y, z) = 1$ since by definition $Z \stackrel{a.s}{\geq} Y$
+
+        So we may write $p_{Y, Z} \left(y, z\right) = \begin{cases}
+            \displaystyle\frac{2}{36}, &\text{ if } y < z\\
+            \displaystyle\frac{1}{36}, &\text{ if } y = z\\
+            0, &\text{ if } y > z\\
+        \end{cases}$
+        So we get the following table:
+        \begin{table}[h!]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|c|c|c|}
+                \hline
+                Y\\Z & 1 & 2 & 3 & 4 & 5 & 6 & $p_Y$ \\ \hline
+                1 & $\displaystyle\frac{1}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{11}{36}$ \\ \hline
+                2 & 0 & $\displaystyle\frac{1}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{9}{36}$\\ \hline
+                3 & 0 & 0 & $\displaystyle\frac{1}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{7}{36}$\\ \hline
+                4 & 0 & 0 & 0 & $\displaystyle\frac{1}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{5}{36}$\\ \hline
+                5 & 0 & 0 & 0 & 0 & $\displaystyle\frac{1}{36}$ & $\displaystyle\frac{2}{36}$ & $\displaystyle\frac{3}{36}$\\ \hline
+                6 & 0 & 0 & 0 & 0 & 0 & $\displaystyle\frac{1}{36}$ & $\displaystyle\frac{1}{36}$\\ \hline
+                $p_Z$ & $\displaystyle\frac{1}{36}$ & $\displaystyle\frac{3}{36}$ & $\displaystyle\frac{5}{36}$ & $\displaystyle\frac{7}{36}$ & $\displaystyle\frac{9}{36}$ & $\displaystyle\frac{11}{36}$ & 1\\ \hline
+            \end{tabular}
+            \caption{}
+        \end{table}
+    \end{proof}
+\end{example}
+
+\begin{definition}[4.45]
+    A random vector $X = \left(X_1, \dots, X_n\right)$ uniformly distributes on the finite $S \subseteq \R^n$,
+    so $p_X(x) = \displaystyle\frac{1}{|S|}$. We will write $X \sim Unif(S)$
+\end{definition}
+
+\begin{definition}[4.46]
+    Two random vectors $X, Y$ on $\left(\Omega, \F, \p\right)$ are almost surely equals ($X \stackrel{a.s}{=} Y$) if
+    $\p \left(X = Y\right) = 1$
+\end{definition}
+
+\begin{definition}[4.47]
+    Two random vectors $X, Y$ are equal in distribution ($X \stackrel{d}{=} Y$) if
+    for all $S \subseteq \F_{\R^n}$ it is true that $\p_X(S) = \p_Y(S)$, so $\p_X \equiv \p_Y$
+\end{definition}
+
+\begin{example}[4.48]
+    Let there be $X = \left(X_1, \dots, X_5\right) \sim Unif(S_5)$ random cycle on $[5]$.
+    The way to read this is $X_i \left(\sigma\right) = \sigma(i)$, where $\sigma \in S_5$
+    is chosen uniformly. Show that $\left(X_1, X_2\right) \stackrel{a.s}{\ne} \left(X_3, X_4\right)$,
+    however $\left(X_1, X_2\right) \stackrel{d}{=} \left(X_3, X_4\right)$
+
+    \begin{proof}[Solution]
+        It is enough to check the point distributions.
+        \begin{align*}
+            \p \left(X_1 = a_1, X_2 = a_2\right) &= \displaystyle\sum_{a_3, a_4, a_5 \in [5]}^{} \p \left(\displaystyle\bigcap_{i \in [5]}^{} \left\{X_i = a_i\right\}\right) \\
+                                                 &= \displaystyle\sum_{a_1 \ne a_2 \ne a_5 \in [5] \setminus \left\{a_3, a_4\right\}}^{} \displaystyle\frac{1}{5!} \\
+                                                 &= \displaystyle\frac{3!}{5!} \\
+                                                 &= \displaystyle\frac{1}{20}
+        \end{align*}
+        So we have in fact achieved that $\left(X_1, X_2\right) \stackrel{d}{=} \left(X_3, X_4\right)$
+    \end{proof}
+\end{example}
+
+If we return to example $4.44$ (max and min of 2 dice), we had a random vector $\left(X_1, X_2\right) : \Omega \to \R^2$,
+we defined $f: \R^2 \to \R^2$ with $f \left(x_1 , x_2\right) = \left(\min(x_1, x_2), \max(x_1, x_2)\right)$,
+we called the results of $f$ the names $Y, Z$
+
+\begin{theorem}[4.51]
+    Let there be $X = \left(X_i\right)_{i = 1}^n$ and $Y = \left(Y_i\right)_{i = 1}^n$
+    random vectors. Let there be $f \in $ % TODO 89, proof in notes, same as earlier
+\end{theorem}
+
+
+\begin{definition}[4.52]
+    Let there be $X$ a random variable of dimension $d$, on $\left(\Omega, \F, \p\right)$.
+    Let $A \in \F$ be an event such that $\p \left(A\right) > 0$. The \textbf{conditional probability}
+    of $X$ in the event $A$ is defined for every $S \in \F_{\R^d}$ \[
+        \p_{X | A} (S) = \p \left(X \in S | A\right)
+    \]
+    Given the proof that $\p_A(B) = \p \left(B | A\right)$ is a probability function
+    on $(\Omega, \F)$, we get that $\p_{X | A}$ is a distribution of $X$ on $\left(\Omega, \F, \p_A\right)$
+
+    We will write that $\left(X | A\right) \sim \mathcal{D}$ if the distribution of
+    $X$ given $A$ is equal to the distribution $\mathcal{D}$
+\end{definition}
+
+\begin{example}[4.53]
+    $X \sim Unif \left(\left\{0, 1, 2\right\}\right)$, and $S = \left\{0, 1\right\}$.
+    Show that $\left(X | X \in S\right) \sim Ber \left(\displaystyle\frac{1}{2}\right)$.
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            \p_{X | X \in S} \left(\left\{0\right\}\right) &= \p \left(X = 0 | X \in S\right) = \displaystyle\frac{\p \left(X = 0, X \in S\right)}{\p \left(X \in S\right)} = \displaystyle\frac{p_X(0)}{p_X(0) + p_X(1)} = \displaystyle\frac{1/3}{2/3} = \displaystyle\frac{1}{2} \\
+            \p_{X | X \in S} \left(\left\{1\right\}\right) &= \p \left(X = 1 | X \in S\right) = \displaystyle\frac{\p \left(X = 1, X \in S\right)}{\p \left(X \in S\right)} = \displaystyle\frac{p_X(1)}{p_X(1) + p_X(0)} = \displaystyle\frac{1/3}{2/3} = \displaystyle\frac{1}{2} \\
+        \end{align*}
+        and this requires that $\p_{X | X \in S} \left(\left\{2\right\}\right) = 0$, since the probability function sums to 1.
+    \end{proof}
+\end{example}
+
+If we once again return to $4.44$, we are now able to ask what is the conditional distribution,
+since $Y = k$ definitely affects the distribution that $Z = l$ \\
+\begin{align*}
+    \p_{Y | z = k} \left(\left\{l\right\}\right) &\stackrel{def}{=}  \p \left(Y = l | Z = k\right) \\
+                                                 &\stackrel{def}{=}  \displaystyle\frac{\p \left(Y = l, Z = k\right)}{\p \left(Z = k\right)} \\
+                                                 &\stackrel{def}{=}  \displaystyle\frac{p+{Y, Z} \left(l, k\right)}{p_Z(k)} \\
+                                                 &= \begin{cases}
+                                                    0, &\text{ if }l > k\\
+                                                    \displaystyle\frac{\displaystyle\frac{1}{36}}{\displaystyle\frac{13-2k}{36}}, &\text{ if }l = k \\[10pt]
+                                                    \displaystyle\frac{2}{2k - 1}, &\text{ if }l < k \\[10pt]
+                                                 \end{cases}
+\end{align*}
+
+% section Random vectors (end)
+
+\section{Independent random vectors}\label{sec:Independent random vectors} % (fold)
+\begin{definition}[Independence of random variables]
+    Let there be $X_1, \dots, X_n: \Omega \to \R$ random variables. $X_1, \dots, X_n$
+    are independent if for every $S_1, \dots, S_n \in \F_\R$ the events
+    $\left\{X_1 \in S_1, X_2 \in S_2, \dots, X_n \in S_n\right\}$ are independent. \\
+    Which is to say: $\p \left(\displaystyle\bigcap_{i \in [n]}^{}\left\{X_i \in S_i\right\}\right) = \displaystyle\Pi_{i \in [n]}^{} \p \left(X_i \in S_i\right)$
+\end{definition}
+
+\begin{example}
+    $X_i$ is the result of rolling a die $i$ where $i \in [n]$.
+    $X = \left(X_1, \dots, X_n\right) \land a_1, \dots a_n \in [6]$
+    \begin{proof}[Solution]
+        \begin{align*}
+            p_X \left(a_1, \dots, a_n\right) &= \p \left(\displaystyle\bigcap_{i \in [n]}^{}\left\{X_i = a_i\right\}\right) \\
+                                             &= \displaystyle\Pi_{i \in [n]} \p \left(X_i = a_i\right) \\
+                                             &= \Pi_{i \in [n]} p_{X_i} \left(a_i\right) \\
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{theorem}[]
+    If $X$ is a discrete random vector, then it is sufficient to check $p_X(a_1, \dots, a)n) = \Pi \p_{X_i} \left(a_1\right)$ for
+    every $a_1, \dots, a_n \in \R$. \\
+    Note, if $X$ is a discrete random vector that enables $\Pi \p_{X_i} \left(a_1\right)$, \textbf{then}
+    $X_1, \dots, X_n$ are independent.
+
+    \begin{proof}[Proof ]
+        Let there be $S_1, \dots, S_n \in \F_\R$, then
+        \begin{align*}
+            \p_X \left(S_1 \times S_2 \times \dots \times S_n\right) &= \displaystyle\sum_{\left(x_1, \dots, x_n\right) \in S_1 \times \dots \times S_n}^{}\p_X \left(\left\{\left(X_1, \dots, X_n\right)\right\}\right) \\
+                                                                     &= \displaystyle\sum_{\left(x_1, \dots, x_n\right) \in S_1 \times \dots \times S_n}^{} p_X(x_1, dots, x_n) \\
+                                                                     &= \displaystyle\sum_{(x_1, \dots, x_n) \in S_1 \times \dots \times S_n}^{} p_{X_1}(x_1) \dots p_{X_n}(x_n) \\
+                                                                     &= \displaystyle\sum_{x_1 \in S_1}^{} \displaystyle\sum_{x_2 \in S_2}^{} \dots \displaystyle\sum_{x_n \in S_n}^{} \Pi_{i \in [n]} o_{X_i} \left(x_i\right) \\
+                                                                     &= \displaystyle\sum_{x_1 \in S_1}^{} p_{X_1}(x_1) \displaystyle\sum_{x_2 \in S_2}^{} p_{X_2} \left(x_2\right) \dots \displaystyle\sum_{x_n \in S_n}^{} p_{X_n} \left(x_n\right) \\
+                                                                     &= \p_{X_1} \left(S_1\right) \dots \p_{X_n} \left(S_n\right) \\
+        \end{align*}
+    \end{proof}
+
+    Or
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \p_{X_1, X_2} \left(S_1 \times S_2\right) &= \displaystyle\sum_{\left(x_1, x_2\right) \in S_1 \times S_2}^{} p_{X_1, X_2} \left(x_1, x_2\right) \\
+                                                      &= \displaystyle\sum_{x_1 \in S_1}^{} \displaystyle\sum_{x_2 \in S_2}^{} p_{X_1} \left(x_1\right) p_{X_2} \left(x_2\right) \\
+                                                      &= \displaystyle\sum_{x_1 \in S_1}^{} p_{X_1} \left(x_1\right) \displaystyle\sum_{x_2 \in S_2}^{} p_{X_2} \left(x_2\right) \\
+                                                      &= \displaystyle\sum_{x_1 \in S_1}^{} p_{X_1} \left(x_1\right) \p \left(X_2\right) \left(S_2\right) \\
+                                                      &= \p_{X_1} \left(S_1\right) \p_{X_2} \left(S_2\right)
+        \end{align*}
+        and continue with induction.
+    \end{proof}
+\end{theorem}
+% section Independent random vectors (end)
+
+\end{document}
