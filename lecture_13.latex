@@ -1,0 +1,238 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 13}
+\author{Gidon Rosalki}
+\date{2024-12-15}
+
+
+\begin{document}
+\maketitle
+
+\begin{align*}
+    X &\sim Ber \left(p\right)\ Supp \left(X\right) = \left\{0, 1\right\}\ p_X \left(1\right) = p \\
+    X &\sim Unif \left(S\right)\ Supp \left(X\right) = S\ p_X \left(x\right) = \begin{cases}
+        \displaystyle\frac{1}{|S|}, &\text{ if }x \in S\\
+        0, &\text{ if }x \notin S\\
+    \end{cases} \\
+    X &\sim Bin \left(n, p\right)\ Supp \left(X\right) = \left\{0, \dots, n\right\}\ p_X \left(k\right) = \binom{n}{k} p^k \left(1 - p\right)^{n - k} \\
+    X &\sim Geo \left(p\right)\ Supp \left(X\right) = \N\ p_X \left(n\right) = p \left(1 - p\right)^{n - 1}
+\end{align*}
+
+\begin{theorem}[4.100]
+    Let there be $\left(X_n\right)_{n \in \N}$  a random series of Bernoulli random variables
+    $X_n \sim Ber \left(p\right)$ that are independent (according to 4.96), then
+    we will write \[
+        Y = \displaystyle\min_{} \left\{t \in \N | X_n = 1\right\}
+    \]
+    and we will define $\forall n \in \N\ X_n = 0 \implies Y = \infty$. \textbf{Then}
+    $Y \sim Geo \left(p\right)$
+\end{theorem}
+
+\begin{definition}[Residual distribution]
+    In general, if we have a random variable $X$, its \textbf{residual distribution} starting
+    at $a$ is $\p \left(X > a\right)$
+\end{definition}
+
+\begin{theorem}[4.104]
+    $X \sim Geo \left(p\right) \Leftrightarrow \forall n \in \N\ \p \left(X > n\right) = \left(1 - p\right)^n$, and this random variable
+    is supported by the naturals, and is discrete.
+
+    \begin{proof}[Proof ]
+        $\implies$ \\
+        We will assume that $X \sim Geo \left(p\right)$. \begin{align*}
+            \p \left(X > n\right) &= 1 0 \p \left(X \leq n\right) \\
+                                  &= 1 - \displaystyle\sum_{k \in [n]}^{}p_X \left(k\right) \\
+                                  &= 1 - \displaystyle\sum_{k \in [n]}^{}p \left(1 - p\right)^{k - 1} \\
+                                  &= 1 - p \displaystyle\sum_{k \in [k]}^{} \left(1 - p\right)^{k - 1} \\
+                                  &= 1 - p \left(\displaystyle\frac{1 - \left(1 - p\right)^n}{1 - \left(1 - p\right)}\right) \\
+                                  &= 1 - p \displaystyle\frac{1 - \left(1 - p\right)^n}{p} \\
+                                  &= \left(1 - p\right)^n
+        \end{align*}
+
+        $\impliedby$ \\
+        We will assume that $\left(1 - p\right)^n = \p \left(X > n\right)$ \\
+        \begin{align*}
+            p_X \left(n\right) &\stackrel{def}{=} \p \left(X = n\right) \\
+                               &= \p \left(\left\{X > n - 1\right\} \setminus \left\{X > n\right\}\right) \\
+                               &= \p \left(X > n - 1\right) - \p \left(X > n\right) \\
+                               &\stackrel{assumption}{=}  \left(1 - p\right)^{n - 1} - \left(1 - p\right)^n \\
+                               &= \left(1 - p\right)^{n - 1} \left(1 - \left(1 - p\right)\right) \\
+                               &= p \left(1 - p\right)^{n - 1} \\
+                               &\implies X \sim Geo \left(p\right)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[4.105]
+    Let there be a discrete random variable $X$ which is supported by $\N$, such that $\p \left(X = 1\right) < 1$.
+    The following requirements are equivalent:
+    \begin{enumerate}
+        \item $X \sim Geo \left(p\right)$ \\
+        \item $X \stackrel{d}{=} \left(X - 1 | X > 1\right)$
+        \item $\forall s \in \N \cup \left\{0\right\}\ X \stackrel{d}{=} \left(X - s | X > s\right)$
+    \end{enumerate}
+
+    \begin{proof}[Proof ]
+        \begin{itemize}
+            \item $1 \implies 3$:
+                We want to show the first equivalence: $k \in \N$ \begin{align*}
+                    p_{X - s | X > s} \left(k\right) &= p \left(1 - p\right)^{k - 1} \\
+                    \text{So: } p_{X - s | X > s} \left(k\right) &= \p \left(X - s = k | X > s\right) = \p \left(X - k + s | X > s\right) \\
+                                                                 &= \displaystyle\frac{\p \left(X = k + s\right)}{\p \left(X > s\right)} \\
+                                                                 &\stackrel{\text{Residual distribution} }{}  \displaystyle\frac{p \left(1 - p\right)^{k + s - 1}}{\left(1 - p\right)^s} \\
+                                                                 &= p \left(1 - p\right)^{k - 1}
+            \end{align*}
+        \item $3 \implies 2$ is immediate when $s = 1$
+        \item $2 \implies 1$ We will write $p_X \left(1\right) = p < 1$ \begin{align*}
+                p_{X - 1 | X > 1} \left(1\right) &\stackrel{assumption}{=} p_X \left(1\right) \\
+                                                 &= p \\
+                \implies p_{X - 1 | X > 1} \left(1\right) &= \p \left(X = 2 | X > 1\right) \\
+                                                       &= \displaystyle\frac{\p \left(X = 2\right)}{\p \left(X > 1\right)} \\
+                                                       &\stackrel{Supp \left(X\right) = \N}{=} \displaystyle\frac{p_X \left(2\right)}{1 - p} \\
+                \implies p_X \left(2\right) &= p \left(1 - p\right)
+        \end{align*}
+        We will assume $p_X \left(k\right) = p \left(1 - p\right)^{k - 1}$ for $k \in \N$. \begin{align*}
+            p_{X - 1 | X > 1} \left(k + 1\right) &\stackrel{\text{assumption 2}}{=} p_X \left(k + 1\right) \\
+                                                 &= p \left(1 - p\right)^{k - 1} \\
+            p_{X - 1 | X > 1} \left(k + 1\right) &= \p \left(X - 1 = k + 1 | X > 1\right) \\
+                                                 &= \displaystyle\frac{p_X \left(k + 1\right)}{1 - p} \\
+                  \implies p_X \left(k + 1\right)&= p \left(1 - p\right)^k
+        \end{align*}
+        \end{itemize}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[4.81 - The collectors problem]
+    In every kinder egg there is a single toy within $n$ different toys. The toy in every
+    egg is randomly uniformly chosen, and independent of every other egg. We need to
+    find an upper limit of the probability that after $k$ eggs we will get all $n$
+    toys.
+
+    \begin{proof}[Solution]
+        Let us define $X_i \sim Unif \left(\left[n\right]\right)$ is the type of toy
+        in the $i$th egg where $i \in \N$. So the $\left(X_i\right)_{i \in \N}$ are
+        independent. \\
+        Let $A_k$ be the event "in the first $k$ eggs we did not find $n$ different toys". \begin{align*}
+            A_k &= \left\{[n]^k | \exists j \in [n]\ \forall i \in [k] X_i \ne j\right\} \\
+                &= \displaystyle\bigcup_{j \in [n]}^{} \displaystyle\bigcap_{i \in [k]}^{} \left(X_i \ne j\right)
+        \end{align*}
+        So \begin{align*}
+            \p \left(A_k\right) &\leq \displaystyle\sum_{j \in [n]}^{} \p \left(\displaystyle\bigcap_{i \in [k]}^{}X_i \ne j\right) \\
+                                &= \displaystyle\sum_{j \in [n]}^{} \left(1 - \displaystyle\frac{1}{n}\right)^k \\
+                                &= n \left(1 - \displaystyle\frac{1}{n}\right)^k \\
+                                &\leq n e^{- \displaystyle\frac{k}{n}}
+        \end{align*}
+        since $1 + x \leq e^x\ \forall x \geq -1$
+        Which is to say also that $k = C n \ln \left(n\right)$ where $C > 1$: \begin{align*}
+            n e^{- \displaystyle\frac{k}{n}} &= n e^{- \displaystyle\frac{C n \ln \left(n\right)}{n}} \\
+                                             &= n^{1 - C} \\
+                                             &\stackrel{n \to \infty}{\to} 0
+        \end{align*}
+    \end{proof}
+
+    If we write $Y_0 = 0$, and $k \in [n]\ Y_k = \displaystyle\min_{} \left\{t > 0 | |\left\{X_1, \dots, X_t\right\}| = k\right\} $.
+    We will define $Z_k = Y_k - Y_{k - 1}$ where $k \geq 1$. We shall theorise
+    that $Z_k \sim Geo \left(\displaystyle\frac{n - k + 1}{n}\right)$, and also that
+    $\left\{Z_k\right\}_{k \in [n]}$ are independent
+    \begin{proof}[Solution]
+        \begin{align*}
+            \p \left(Z_k = a_k | Z_1 = a_1, Z_2 = a_2, \dots, Z_{k - 1} = a_{k - 1}\right) &= \displaystyle\frac{\p \left(\displaystyle\bigcap_{i \in [k]}^{}Z_i = a_i\right)}{\p \left(\displaystyle\bigcap_{i \in [k - 1]}^{}Z_i = a_i\right)}
+        \end{align*}
+
+        % TODO read notes
+    \end{proof}
+\end{example}
+
+\section{Poisson variables}\label{sec:Poisson variables} % (fold)
+\begin{definition}[4.123]
+    WE will say that the random variable $X$ has a Poisson distribution, with an
+    incidence of $\lambda \geq 0$, $X \sim Pois \left(\lambda\right)$ if
+    for all $n \in \N$ enables $p_X \left(n\right) = \displaystyle\frac{\lambda^n}{n!}e^{-\lambda}$
+\end{definition}
+
+\begin{theorem}[]
+    The poisson distribution is in fact a distribution
+
+    \begin{proof}[Proof ]
+        This comes from the following Taylor series: $e^x = \displaystyle\sum_{n = 0}^{\infty}\displaystyle\frac{x^n}{n!}$.
+
+        \begin{align*}
+            \displaystyle\sum_{n \in \N_0}^{}p_X \left(n\right) &= \displaystyle\sum_{n \in \N_0}^{}\displaystyle\frac{\lambda^n}{n!}e^{-\lambda} \\
+                                                                &= e^{-\lambda} \displaystyle\sum_{n \in \N_0}^{} \displaystyle\frac{\lambda^n}{n!} \\
+                                                                &= e^{-\lambda} \cdot e^\lambda
+                                                                &= 1
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[4.124]
+    Let there be $Y \sim Pois \left(\lambda\right)$. Let $\left(X_n\right)_{n \in \N}$ be a
+    series of random variables such that $\forall n > k\ X_n \sim Bin \left(n, \displaystyle\frac{\lambda}{n}\right)$.
+    \textbf{Then} \[
+        \forall k \in \N\ \displaystyle\lim_{n \to \infty} \p_{X_n} \left(k\right) = \p_Y \left(k\right)
+    \]
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            p_{X_n} \left(k\right) &= \binom{n}{k} \displaystyle\frac{\lambda}{n}^k \left(1 - \displaystyle\frac{\lambda}{n}\right)^{n - k} \\
+                                   &= \displaystyle\frac{n!}{k! \left(n - k\right)!} \left(\displaystyle\frac{\lambda}{n}\right)^k \left(1 - \displaystyle\frac{\lambda}{n}\right)^{n - k} \\
+            \binom{n}{k} &= \displaystyle\frac{n \cdot \left(n - 1\right) \cdot \dots \cdot \left(n - k + 1\right)}{k!} \\
+                         &= \displaystyle\frac{n^k}{k!}\left[1 \cdot \left(1 - \displaystyle\frac{1}{n}\right) \cdot \left(1 - \displaystyle\frac{2}{n}\right) \cdot \dots \cdot \left(1 - \displaystyle\frac{k - 1}{n}\right)\right]
+                         &\stackrel{n \to \infty}{\to}  \displaystyle\frac{n^k}{k!} \cdot 1 \\
+            p_X \left(k\right) &= \displaystyle\frac{n^k \left(1 + O \left(1\right)\right)}{k!} \displaystyle\frac{\lambda^k}{n^k} \left(1 - \displaystyle\frac{\lambda}{n}\right)^n \left(1 - \displaystyle\frac{\lambda}{n}\right)^{-k} \\
+                               &\stackrel{n \to \infty}{\to} \displaystyle\frac{\lambda^k}{k!} e^{-\lambda} \left(1 + 0\right) \\
+                               &= p_Y \left(k\right)
+        \end{align*}
+        Using the knowledge that $f = O \left(g\right) \implies \displaystyle\frac{f}{g} \stackrel{x \to \infty}{\to} 0$
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[4.125]
+    Let $X \sim Pois \left(\lambda\right)$.
+    \begin{enumerate}
+        \item If $Y \sim Pois \left(\eta\right)$ is independent of $X$ \textbf{then} $X + Y \sim Pois \left(\lambda + \eta\right)$
+        \item If $\forall n \in \N\ \left(Z | X = n\right) \sim Bin \left(n, p\right) \implies Z \sim Pois \left(\lambda p\right)$
+    \end{enumerate}
+
+    \begin{proof}[Proof ]
+        \begin{enumerate}
+            \item \begin{align*}
+                    p_{X + Y} \left(k\right) &= \displaystyle\sum_{l = 0}^{k} p_X \left(l\right) p_Y \left(k - l\right) \\
+                                             &= \displaystyle\sum_{l = 0}^{k} \displaystyle\frac{e^{-\lambda} \lambda^l}{l!} \cdot \displaystyle\frac{e^{-\eta} \eta^{k - l}}{\left(k - l\right)!} \\
+                                             &= \displaystyle\frac{e^{- \left(\lambda + \eta\right)}}{k!} \displaystyle\sum_{l = 0}^{k}\displaystyle\frac{k!}{l! \left(k - l\right)!} \lambda^l \cdot \eta^{k - l} \\
+                                             &= \displaystyle\frac{e^{-\lambda + \eta}}{k!} \left(\displaystyle\sum_{l = 0}^{k} \binom{k}{l} \lambda^l \eta^{k - l}\right) \\
+                                             &= e^{- \left(\lambda + \eta\right)} \cdot \displaystyle\frac{\left(\lambda + \eta\right)^k}{k!}
+            \end{align*}
+        \end{enumerate}
+    \end{proof}
+\end{theorem}
+% section Poisson variables (end)
+
+\end{document}
