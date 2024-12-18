@@ -163,7 +163,9 @@
     $\left\{Z_k\right\}_{k \in [n]}$ are independent
     \begin{proof}[Solution]
         \begin{align*}
-            \p \left(Z_k = a_k | Z_1 = a_1, Z_2 = a_2, \dots, Z_{k - 1} = a_{k - 1}\right) &= \displaystyle\frac{\p \left(\displaystyle\bigcap_{i \in [k]}^{}Z_i = a_i\right)}{\p \left(\displaystyle\bigcap_{i \in [k - 1]}^{}Z_i = a_i\right)}
+            \p \left(Z_k = a_k | Z_1 = a_1, Z_2 = a_2, \dots, Z_{k - 1} = a_{k - 1}\right) &= \displaystyle\frac{\p \left(\displaystyle\bigcap_{i \in [k]}^{}Z_i = a_i\right)}{\p \left(\displaystyle\bigcap_{i \in [k - 1]}^{}Z_i = a_i\right)} \\
+                                                                                           &\stackrel{\text{Conditional probability} }{=} \displaystyle\frac{\p \left(\displaystyle\bigcap_{i \in [k]}^{}Z_i = a_i\right)}{\p \left(\displaystyle\bigcap_{i \in [k - 1]}^{}Z_i = a_i\right)} \\
+                                                                                           &=
         \end{align*}
 
         % TODO read notes

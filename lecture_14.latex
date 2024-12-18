@@ -1,0 +1,246 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 14}
+\author{Gidon Rosalki}
+\date{2024-12-16}
+
+
+\begin{document}
+\maketitle
+\section{Expectation}\label{sec:Expectation} % (fold)
+\begin{definition}[5.1]
+    Let there be $X$ a discrete random variable. The \textbf{expectation} of $X$ is
+    defined as \[
+        \E[X] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right)
+    \]
+    If this series is absolutely convergent. Otherwise, $X$ has no expectation.
+\end{definition}
+
+Note, the probability is dependent only on the distribution!
+
+\begin{theorem}[5.2]
+    If $X$ is a random variable defined over the discrete $\left(\Omega, \F, \p\right)$,
+    \textbf{then} $\E[X] = \displaystyle\sum_{\omega \in \Omega}^{}X \left(\omega\right) \p \left(\left\{\omega\right\}\right)$
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \E \left[X\right] &= \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right) \\
+            \text{Definition of discrete distribution} &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \p \left(X = x\right) \\
+              \text{Definition of discrete probability} &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \displaystyle\sum_{\omega \in X^{-1} \left(x\right)}^{} \p \left(\left\{x\omega\right\}\right) \\
+          \text{Definition of a discrete variable} &= \displaystyle\sum_{\omega \in \Omega}^{} X \left(\omega\right) \p \left(\left\{\omega\right\}\right)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[5.3]
+    Let $X$ be a random vector of $d$ dimensions, and $f \in \F_{\R^d \to \R}$.
+    We will write $Y = f \left(X\right)$. \textbf{Then} $\E \left[Y\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}f \left(x\right) p_X \left(x\right)$
+
+    \begin{proof}[Proof ]
+        We will define $Z: \R^d \to \R$ through $Z \left(x\right) = f \left(x\right)$.
+        By definition $Z \stackrel{d}{=} Y$.
+        Since \begin{align*}
+            p_{f \left(X\right)} &= \p \left(f \left(X\right) = x\right) \\
+                                 &= \p \left(Z = x\right) \\
+                                 &= p_Z \left(x\right) \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\subsubsection{Expectations of known distributions}\label{sec:Expectations of known distributions} % (fold)
+\[
+    X \sim Ber \left(p\right)\ \E \left[X\right] = 0 \cdot p_X \left(0\right) + 1 \cdot p_X \left(1\right) = p
+\]
+If it is so for all $A \in \F$ we get that the probability of the indicator
+variable is \[
+    \E \left[\1_A\right] = \p \left(A\right)
+\]
+
+\[
+    X \sim Unif \left(\left[n\right]\right)\ \E \left[X\right] = \displaystyle\sum_{k \in [n]}^{}\displaystyle\frac{k}{n} = \displaystyle\frac{n \left(n + 1\right)}{2n} = \displaystyle\frac{n + 1}{2}
+\]
+
+\[
+    X \sim Bin \left(n, p\right)\ \E \left[X\right] = np % TODO complete calculation in notes from Ori, 3rd page
+\]
+
+\[
+    X \sim Geo \left(p\right)\ \E \left[X\right] = \displaystyle\frac{1}{p} % TODO also in notes, page 4
+\]
+
+\begin{align*}
+    X \sim Pois \left(\lambda\right)\ &\E \left[X\right] \\
+    \E \left[X\right] &= \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right) \\
+                      &= \displaystyle\sum_{k \in \N_0}^{}k p_X \left(k\right) \\
+   k = 0 \text{ Doesn't do anything to the sum} &= \displaystyle\sum_{k = 1}^{\infty}k \cdot e^{-\lambda} \cdot \displaystyle\frac{\lambda^k}{k!} \\
+                                                &= e^{-\lambda} \displaystyle\sum_{k = 1}^{\infty}\displaystyle\frac{\lambda^k}{\left(k - 1\right)!} \\
+                                                &= e^{-\lambda} \cdot \lambda \displaystyle\sum_{k = 1}^{\infty} \displaystyle\frac{\lambda^{k - 1}}{ \left(k - 1\right)!} \\
+                                                &= \lambda \cdot e^{-\lambda} \cdot e^{\lambda} \\
+                                                &= \lambda
+\end{align*}
+% subsubsection Expectations of known distributions (end)
+
+\subsubsection{Size bias}\label{sec:Size bias} % (fold)
+\begin{example}[5.5]
+    Given 10 classes of the following sizes: $2 \times 200,\ 4 \times 100,\ 4 \times 50$
+    \begin{enumerate}
+        \item We choose a class uniformly. What is the expected size of the class?
+        \item We uniformly choose a student. What is the expected size of his class?
+    \end{enumerate}
+
+    \begin{proof}[Solution]
+        \begin{enumerate}
+            \item $X \sim Unif \left[10\right]$, let us define \[
+                    f \left(x\right) = \begin{cases}
+                        200, &\text{ if }x \in \left\{1, 2\right\}\\
+                        100, &\text{ if }x \in \left\{5, 6, 7, 8\right\}\\
+                        50, &\text{ if }x \in \left\{3, 4, 9, 10\right\}\\
+                        0, &\text{ if otherwise} \\
+                    \end{cases}
+                \]
+                So \begin{align*}
+                    \E \left[f \left(X\right)\right] &= \displaystyle\sum_{k \in \left[10\right]}^{} f \left(k\right) p_X \left(k\right) \\
+                                                     &= \displaystyle\frac{1}{10} \left(2 \cdot 200 + 4 \cdot 100 + 4 \cdot 50\right) \\
+                                                     &= 100
+                \end{align*}
+            \item $Y \sim Unif \left[1000\right]$, let us define \[
+                    g \left(x\right) = \begin{cases}
+                        200, &\text{ if }1 \leq x \leq 400\\
+                        100, &\text{ if }401 \leq x \leq 800\\
+                        50, &\text{ if }801 \leq x \leq 1000\\
+                        0, &\text{ if }x \notin \Z \lor x \notin [1000]\\
+                    \end{cases}
+                \]
+                So \begin{align*}
+                    \E \left[g \left(Y\right)\right] &= \displaystyle\sum_{k \in [1000]}^{} g \left(k\right) p_Y \left(k\right) \\
+                                                     &= \displaystyle\frac{1}{1000} \left(400 \cdot 200 + 400 \cdot 100 + 200 \cdot 50\right) \\
+                                                     &= 130
+                \end{align*}
+        \end{enumerate}
+        The difference comes from the fact that there were many students in the
+        class of 200 whose "response" pulls the average up.
+    \end{proof}
+\end{example}
+% subsubsection Size bias (end)
+
+\subsubsection{Random variables without expected values}\label{sec:Random variables without expected values} % (fold)
+There is not an expected value for every random variable, and this is related to the
+requirement of absolute convergence.
+
+\begin{example}[]
+    $p_X \left(n\right) = \displaystyle\frac{C}{n^2}$. So \begin{align*}
+        \E \left[X\right] &= \displaystyle\sum_{n = 1}^{\infty}n \cdot \displaystyle\frac{C}{n^2} \\
+                          &= \displaystyle\sum_{n = 1}^{\infty} \displaystyle\frac{1}{n^2} \\
+                          &= \infty
+    \end{align*}
+\end{example}
+
+\begin{example}[5.8]
+    Let $X \sim Geo \left(\displaystyle\frac{1}{2}\right)$, and we will define \[
+        Y = 2^X,\ Z = \left(-2\right)^X,\ W = \displaystyle\frac{\left(-2\right)^X}{X}
+    \]
+    \begin{align*}
+        \E \left[Y\right] &= \displaystyle\sum_{k = 1}^{\infty}2^k \displaystyle\frac{1}{2^k} = \infty \\
+                          &= \E \left[Z\right] = \displaystyle\sum_{}^{}|\left(-1\right)^k| \displaystyle\frac{1}{2^k} \\
+        \E \left[W\right] &= \displaystyle\sum_{k = 1}^{\infty} \displaystyle\frac{|\left(-2\right)^k|}{k} \displaystyle\frac{1}{2^k} = \infty
+    \end{align*}
+\end{example}
+% subsubsection Random variables without expected values (end)
+
+\subsubsection{Features of expectation}\label{sec:Features of expectation} % (fold)
+\begin{theorem}[5.9]
+    Let $X, Y$ be discrete random variables, with expectation, defined on the
+    same probability space.
+    \begin{itemize}
+        \item \textbf{Positivity:} If $X \stackrel{a.s}{\geq} 0$ then $\E \left[X\right] \geq 0$. Additionally,
+            greater than implies greater than.
+        \item \textbf{Linearity:} $\forall a, b \in \R\ \E \left[aX + bY\right] = a \E \left[X\right] + b \E \left[Y\right]$
+        \item \textbf{Monotonicity:} If $X \stackrel{a.s}{\geq} Y$ then $\E \left[X\right] \geq \E \left[Y\right]$.
+            Greater than implies greater than.
+    \end{itemize}
+
+    \begin{proof}[Proof ]
+        \begin{itemize}
+            \item \begin{align*}
+                    X \stackrel{a.s}{\geq} 0 &\implies \E \left[X\right] \stackrel{def}{=} \displaystyle\sum_{x \in Supp \left(X\right)}^{} x p_X \left(x\right)\\
+                                             &\geq 0
+            \end{align*}
+            \item \begin{align*}
+                    a,b \in \R & f \left(x, y\right) = ax + by \\
+                    \E \left[aX + bY\right] &= \E \left[f \left(X, Y\right)\right]
+                                            &= \displaystyle\sum_{x, y \in Supp \left(X, Y\right)}^{}\left(ax + by\right)p_{X, Y} \left(x, y\right) \\
+                                            &= \displaystyle\sum_{x, y}^{}ax p_{X, Y} \left(x, y\right) + by p_{X,Y} \left(x, y\right) \\
+                                            &= \displaystyle\sum_{x, y}^{}ax p_{X,Y} \left(x, y\right) + \displaystyle\sum_{x, y}^{}by p_{X,Y} \left(x, y\right) \\
+                                            &= a \displaystyle\sum_{x \in Supp \left(X\right)}^{}x \displaystyle\sum_{y \in Supp \left(Y\right)}^{} p_{X,Y} \left(x, y\right) + b \displaystyle\sum_{y \in Supp \left(Y\right)}^{} y \displaystyle\sum_{x \in Supp \left(X\right)}^{}p_{X, Y} \left(x, y\right) \\
+               \text{Marginal distribution} &= a \displaystyle\sum_{x \in Supp \left(X\right)}^{} x p_X \left(x\right) + b \displaystyle\sum_{y \in Supp \left(Y\right)}^{} y p_Y \left(y\right)
+                                            &= a \E \left[X\right] + b \E \left[Y\right]
+            \end{align*}
+            \item \begin{align*}
+                    X \stackrel{a.s}{\geq} Y &\Leftrightarrow X - y \stackrel{a.s}{\geq} 0 \\
+                                             &\stackrel{\text{Positivity} }{\implies} \E \left[X - Y\right] \geq 0 \\
+                                             &\stackrel{\text{Linearity} }{\implies} \E \left[X\right] - \E \left[Y\right] \\
+                                             &\geq 0 \\
+                                             &\Leftrightarrow \E \left[X\right] \geq \E \left[Y\right]
+            \end{align*}
+        \end{itemize}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    Given a jug with $r$ red balls and $b$ blue balls. We draw $n$ balls (without returning).
+    What is the expected number of red balls to have been drawn?
+
+    \begin{proof}[Solution]
+        We shall assume that the balls are numbered $[r + b]$, with $[r]$ red
+        balls, and $r + [b]$ blue balls. $X = \left(X_1, \dots, X_n\right)$, wher e
+        $X_i$ is the number that the ball $i$ was drawn. \\
+        $X_i \sim Unif \left[r + b\right]$ and $Y_i = \1_{X_i \in [r]}$, so $Y_i \sim Ber \left(\displaystyle\frac{r}{r + b}\right)$
+        \[
+            Z = \displaystyle\sum_{i \in [n]}^{}Y_i \implies \E \left[2\right] = \displaystyle\sum_{i \in [n]}^{}\E \left[Y_i\right] = \displaystyle\sum_{i \in [n]}^{}\displaystyle\frac{r}{r + b} = \displaystyle\frac{nr}{r + b}
+        \]
+        Where $Z$ is the number of red balls that were drawn.
+    \end{proof}
+\end{example}
+
+\begin{theorem}[5.21]
+    Let $X$ be a discrete random variable with an expected value, and let $Y$ be a
+    discrete random variable such that $|X| \stackrel{a.s}{\geq} |Y|$. Therefore $Y$
+    has an expected value.
+
+    \begin{proof}[Proof ]
+        Comparison of positive series (from infi 2).
+    \end{proof}
+\end{theorem}
+% subsubsection Features of expectation (end)
+
+% section Expectation (end)
+
+\end{document}
