@@ -1,0 +1,249 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 15}
+\author{Gidon Rosalki}
+\date{2024-12-22}
+
+
+\begin{document}
+\maketitle
+\section{Envelopes problem (again)}\label{sec:Envelopes problem (again)} % (fold)
+\begin{exercise}
+    What is the expected value of letters that make it to their correct destination?
+    \begin{proof}[Solution]
+        $Y_i = \1$ - The $i$th letter makes it to its correct destination.\\
+        This implies $Y_i \sim Ber \left(\displaystyle\frac{1}{n}\right)$. \\
+        Let $Z$ be the amount of letters that made it to their destination,
+        so $Z = \displaystyle\sum_{i \in [n]}^{}Y_i$. \\
+        \begin{align*}
+            \E \left[Z\right] &= \E \left[\displaystyle\sum_{}^{}Y_i\right] \\
+                              &= \displaystyle\sum_{}^{}\E \left[Y_i\right] \\
+                              &= \displaystyle\sum_{}^{}\displaystyle\frac{1}{n} \\
+                              &= 1 \\
+        \end{align*}
+    \end{proof}
+\end{exercise}
+% section Envelopes problem (again) (end)
+
+\begin{theorem}[5.21]
+    Let $X$ be a discrete random variable with an expected value, and let $Y$ be a
+    discrete random variable such that $|X| \stackrel{a.s}{\geq} |Y|$. Therefore $Y$
+    has an expected value.
+
+    \begin{proof}[Proof ]
+        A random variable with a finite support has an expected value. In particular,
+        a constant random variable has the expected value of the constant. \[
+            \E \left[C\right] = C
+        \]
+        So, a random variable with a limited support has the expected value $0 < M$
+        $|X| \stackrel{a.s}{\leq} M$ since we have got $|X|$ is almost surely less that equal to
+        the constant random variable, which has an expected value.
+        \begin{align*}
+            \E \left[|X|\right] &= \displaystyle\sum_{x \in Supp \left(X\right)}^{}|x| \cdot p_X \left(x\right) \\
+                                &= \displaystyle\sum_{x \in Sup \left(X\right)}^{}|x| \left(\p \left(X = x, |X| \geq |Y|\right) + \p \left(X = x, |X| < |Y|\right)\right) \\
+                                &= \displaystyle\sum_{x \in Sup \left(X\right)}^{}|x| \left(\p \left(X = x, |X| \geq |Y|\right) + 0\right) \\
+                                &= \displaystyle\sum_{x \in Supp \left(X\right), y \in Supp \left(Y\right)}^{} |x| \p \left(X = x, Y = y\ |X| \geq |Y|\right) \\
+                                &\geq \displaystyle\sum_{X \in Supp \left(X\right), y \in Supp \left(Y\right)}^{} |y| \p \left(X = x, Y = y\ |X| \geq |Y|\right) \\
+                                &= \displaystyle\sum_{y \in Supp \left(Y\right)}^{} |y| \left(\p \left(Y = y, |X| \geq |Y|\right) + \p \left(Y = y, |X| < |Y|\right)\right) \\
+                                &= \displaystyle\sum_{y \in Supp \left(Y\right)}^{}|t| p_Y \left(y\right) \\
+                                &= \E \left[Y\right] \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[5.15]
+    Let there be $X, Y$ discrete independent random variables, with finite expectations.
+    \textbf{Then} $\E \left[XY\right] = \E \left[X\right] \E \left[Y\right]$.
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \E \left[|XY|\right] &= \displaystyle\sum_{x, y \in \left(Supp X\right) \times \left(Supp Y\right)}^{} |x \cdot y| \cdot p_{X, Y} \left(x, y\right) \\
+                               &= \displaystyle\sum_{x, y \in \left(Supp X\right) \times \left(Supp Y\right)}^{} |xy| p_X \left(x\right) p_Y \left(y\right) \\
+                               &= \displaystyle\sum_{x \in Supp X}^{} |x| p_X \left(x\right) \cdot \displaystyle\sum_{y \in Supp Y}^{} |y| p_Y \left(y\right) \\
+                               &= \displaystyle\sum_{x \in Supp \left(X\right)}^{}|x| p_X \left(x\right) \E \left[|Y|\right] \\
+                               &= \E \left[|X|\right] \E \left[|Y|\right]
+        \end{align*}
+        This calculation is sufficient to show that the expected value $XY$ exists,
+        and so the same calculation without the absolute values gives us the required
+        value.
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[Conclusion]
+    If $X, Y$ are discrete independent random variables of finite expectations, \textbf{then}
+    for all $f, g \in \F_{\R \to \R}$ enables \[
+        \E \left[f \left(X\right) g \left(Y\right)\right] = \E \left[f \left(X\right)\right]\E \left[g \left(Y\right)\right]
+    \]
+
+    \begin{proof}[Proof ]
+        $f \left(X\right)$ and $g \left(Y\right)$ are indepent, as we showed in the past,
+        and therefore we may use $5.15$
+    \end{proof}
+\end{theorem}
+
+\begin{exercise}
+    We take 2 sticks from a pile. There are kites of length 1, 1.5, and 2 metres.
+    Let us assume that the probability to take every length is $\displaystyle\frac{1}{3}$.
+    We build a kite from the sticks. What is the expected area of the kite?
+
+    \begin{proof}[Solution]
+        $X_i \sim Unif \left[3\right]\ i \in \left\{1, 2\right\}$ are independent,
+        and are the type of stick we take. $f \left[3\right] \to \R$. \begin{align*}
+            f \left(1\right) &= 1 \\
+            f \left(2\right) &= 1.5 \\
+            f \left(3\right) &= 2 \\
+        \end{align*}
+
+        \begin{align*}
+            \E \left[\displaystyle\frac{f \left(X_1\right) f \left(X_2\right)}{2}\right] &= \displaystyle\frac{1}{2} \E \left[f \left(X_1\right) f \left(X_2\right)\right] \\
+                                                                                         &= \displaystyle\frac{1}{2} \E \left[f \left(X_1\right)\right] \E \left[f \left(X_2\right)\right] \\
+                                                                                         &= \displaystyle\frac{1}{2} \cdot \left(\displaystyle\frac{3}{2}\right)^2 \\
+                                                                                         &= \displaystyle\frac{9}{8}
+        \end{align*}
+    \end{proof}
+\end{exercise}
+
+\begin{theorem}[5.19 - tail theorem]
+    Let there be $X$ a discrete random variable with a finite expected value,
+    supported by $\N_0$. \textbf{So} $\E \left[X\right] = \displaystyle\sum_{n \in \N}^{}\p \left(X \geq n\right)$
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \E \left[X\right] &\stackrel{def}{=} \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right) \\
+                              &= \displaystyle\sum_{k \in \N_0}^{}k p_X \left(k\right) \\
+            \text{k = 0 doesn't add anything}  &= \displaystyle\sum_{k \in \N}^{}k p_X \left(k\right) \\
+                                               &= \displaystyle\sum_{k \in \N}^{} \displaystyle\sum_{i = 1}^{k}p_X \left(k\right) \\
+                                               &= \displaystyle\sum_{i = 1}^{\infty} \displaystyle\sum_{k = i}^{\infty}p_X \left(k\right) \\
+        \text{Definition of marginal distribution} &= \displaystyle\sum_{i \in \N}^{}\p \left(X \geq i\right) \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[]
+    Let $X$ be a discrete random variable with an expected value, and $A$ an event such that
+    $\p \left(A\right) > 0$. The \textbf{dependent expectation} of $X$ in $A$ is the expectation
+    of the random variable $\left(X | A\right)$. We will write \[
+        \E \left[X | A\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}x \p \left(X = x | A\right)
+    \]
+    If $X$ has expectation then so too does $\left(X | A\right)$
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \E \left[X | A\right] &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} x p_{X | A} \left(x\right) \\
+                                  &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \p \left(X = x | A\right) \\
+                                  &\stackrel{def \p \left(\cdot | A\right)}{=} \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \displaystyle\frac{\p \left(X = x, A\right)}{\p \left(A\right)} \\
+                                  &= \displaystyle\frac{1}{\p \left(A\right)} \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \p \left(X = x, A\right) \\
+                                  &\leq \displaystyle\frac{1}{\p \left(A\right)} \displaystyle\sum_{x \in Supp \left(X\right)}^{}x \p \left(X = x\right) \\
+                                  &= \displaystyle\frac{1}{\p \left(A\right)} \E \left[X\right]
+        \end{align*}
+        All the calculations work also where we switch $x$ with $|x|$, therefore from the equivalence of
+        positive series, $\E \left[X | A\right]$ exists, and is disjoint, and we
+        are able to extract $\displaystyle\frac{1}{\p \left(A\right)}$ from the sum.
+    \end{proof}
+\end{definition}
+
+\begin{theorem}[5.28]
+    Let $X$ be a discrete random variable, with expectation, and $\mathcal{A}$
+    a countable division of $\Omega$. So \[
+        \E \left[X\right] = \displaystyle\sum_{A \in \mathcal{A}}^{}\E \left[X | A\right] \p \left(A\right)
+    \]
+
+    \begin{proof}[Proof]
+        Let there be $\mathcal{A}$ a countable division of $\Omega$.
+        \begin{align*}
+            \E \left[X\right] &\stackrel{def}{=} \displaystyle\sum_{x \in Supp \left(X\right)}^{} x p_X \left(x\right) \\
+                              &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} \p \left(X = x\right) \\
+                              &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \displaystyle\sum_{A \in \mathcal{A}}^{} \p \left(X = x, A\right) \\
+                              &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \displaystyle\sum_{A \in \mathcal{A}}^{} p_{X | A} \left(x\right) \p \left(A\right) \\
+                              &= \displaystyle\sum_{A \in \mathcal{A}}^{} \displaystyle\sum_{x \in Supp \left(X\right)}^{} x p_{X | A} \left(x\right) \p \left(A\right) \\
+                              &= \displaystyle\sum_{A \in \mathcal{A}}^{} \p \left(A\right) \E \left[X | A\right] \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    We randomly choose between two coins of probabilities $\alpha_1,\ \alpha_2$ to
+    land on heads. We toss the coin $n$ times. What is the expected number of heads?
+    \begin{proof}[Solution]
+        $X$ is the number of heads thrown. $A$ the event that we chose coin 1. $\p \left(A\right) = \displaystyle\frac{1}{2}$.
+        \begin{align*}
+            \left(X | A\right) &\sim Bin \left(n, \alpha_1\right)
+            \left(X | A^c\right) &\sim Bin \left(n, \alpha_2\right)
+        \end{align*}
+
+        So \begin{align*}
+            \E \left[X\right] &= \E \left[X | A\right] \p \left(A\right) + \E \left[X | A^c\right] \p \left(A^c\right) \\
+                              &= \displaystyle\frac{1}{2} \left(n \alpha_1 + n \alpha_2\right) \\
+                              &= n \displaystyle\frac{\alpha_1 + \alpha_2}{2}
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[]
+    We will once again calculate the expectation of a geometric random variable by relying
+    on its lack of memory: $X \sim Geo \left(p\right)$
+    \begin{align*}
+        \E \left[X\right] &= \E \left[X | X = 1\right] \p \left(X = 1\right) + \E \left[X | X > 1\right] \p \left(X > 1\right) \\
+                          &= p + \E \left[X - 1 | X > 1\right]\left(1 - p\right) + \E \left[1 | X > 1\right] \left(1 - p\right) \\
+        \text{From the lack of memory of $X$} &= p + \E \left[X\right]\left(1 - p\right) + 1 - p \\
+        \implies \E \left[X\right] &=1 + \left(1 - p\right) \E \left[X\right] \\
+        p \E \left[X\right] &= 1 \\
+        \E \left[X\right] &= \displaystyle\frac{1}{p}
+    \end{align*}
+\end{example}
+
+\begin{theorem}[5.36 - Markov inequality]
+    Let $X$ be a discrete random variable with expectation such that $X \stackrel{a.s}{\geq} 0$.
+    So for all $a > 0$ it is true that \[
+        \p \left(X \geq a\right) \leq \displaystyle\frac{\E \left[X\right]}{a}
+    \]
+    Or in other words, you cannot have more than half of the class get more than
+    2x the average.
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \E \left[X\right] &= \E \left[X | X < a\right] \p \left(X < a\right) + \E \left[X | X \geq a\right] \p \left(X \geq a\right) \\
+                              &\geq a \p \left(X \geq a\right) \\
+            \implies \p \left(X \geq a\right) &\leq \displaystyle\frac{\E \left[X\right]}{a}
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[]
+    \[
+        0 < \p \left(X > \E \left[X\right]\right) < 1
+    \]
+    Where $X$ is not constant
+    \begin{proof}[Proof ]
+        IF $\p \left(X > \E \left[X\right]\right) = 1$ then $X \stackrel{a.s}{>} \E \left[X\right]$,
+        and so from monotonicity of the expectation $\E \left[X\right] > \E \left[E \left[X\right]\right] = \E \left[X\right]$,
+        which is a contradiction. The same calculations apply for if we wrote $<$.
+    \end{proof}
+\end{theorem}
+
+\end{document}
