@@ -1,0 +1,340 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 16}
+\author{Gidon Rosalki}
+\date{2024-12-23}
+
+
+\begin{document}
+\maketitle
+
+\begin{theorem}[5.36 - Markov inequality]
+    Let $X$ be a discrete random variable with expectation such that $X \stackrel{a.s}{\geq} 0$.
+    So for all $a > 0$ it is true that \[
+        \p \left(X \geq a\right) \leq \displaystyle\frac{\E \left[X\right]}{a}
+    \]
+    Or in other words, you cannot have more than half of the class get more than
+    2x the average.
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \E \left[X\right] &= \E \left[X | X < a\right] \p \left(X < a\right) + \E \left[X | X \geq a\right] \p \left(X \geq a\right) \\
+                              &\geq a \p \left(X \geq a\right) \\
+            \implies \p \left(X \geq a\right) &\leq \displaystyle\frac{\E \left[X\right]}{a}
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[]
+    \[
+        0 < \p \left(X > \E \left[X\right]\right) < 1
+    \]
+    Where $X$ is not constant
+    \begin{proof}[Proof ]
+        IF $\p \left(X > \E \left[X\right]\right) = 1$ then $X \stackrel{a.s}{>} \E \left[X\right]$,
+        and so from monotonicity of the expectation $\E \left[X\right] > \E \left[E \left[X\right]\right] = \E \left[X\right]$,
+        which is a contradiction. The same calculations apply for if we wrote $<$.
+    \end{proof}
+\end{theorem}
+
+\subsubsection{Connection to the birthday problem}\label{sec:Connection to the birthday problem} % (fold)
+Let there be $M, N \in \N$, and $X_i \sim Unif \left(\left[M\right]\right)$ independent
+for $i \in \left[N\right]$. We will write $A = \left\{\left(i, j\right) | i, j \in \left[N\right] \land X_i = X_j\right\}$.
+We want to find a limit on the probability that $|A| > l$ for every $l \in \N$.
+Our random variable is $Z = |A|$. Let us also have $Y_{ij} = \1_{X_i = X_j}$ where $i < j \in \left[N\right]$.
+So $Z = \displaystyle\sum_{i < j} Y_{ij}$. \\
+Therefore $\E \left[Z\right] = \displaystyle\sum_{i < j \in \left[N\right]}^{}\E \left[Y_{ij}\right]$.
+\begin{align*}
+    p_{Y_{ij}} &= \p \left(Y_{ij} = 1\right) \\
+               &= \p \left(X_i = X_j\right) \\
+               &= \displaystyle\sum_{m \in \left[M\right]}^{}\p \left(X_i = X_j = m\right) \\
+               &= \displaystyle\sum_{m \in \left[M\right]}^{}p_{X_i} \left(m\right) p_{X_j} \left(m\right) \\
+               &= \displaystyle\sum_{m \in \left[M\right]}^{}\displaystyle\frac{1}{M} \displaystyle\frac{1}{M} \\
+               &= \displaystyle\frac{M}{M^2} \\
+               &= \displaystyle\frac{1}{M} \\
+               &\implies Y_{ij} \sim Ber \left(\displaystyle\frac{1}{M}\right)
+\end{align*}
+So we have found that \[
+    \p \left(Z > l\right) \leq \displaystyle\frac{\E \left[Z\right]}{l} = \binom{N}{2} \displaystyle\frac{1}{Ml}
+\]
+
+In the birthday problem, for $N = 23$, and $M = 365$, we will get that $\p \left(Z \geq 1\right) \leq \displaystyle\frac{23.22}{730} \approx 0.7$,
+which is much larger than what we calculated previous which was $\approx 0.507$
+
+Another question that we may ask: How do we limit the probability that $k > 1$ from
+the equivalent $X_i$s? \\
+\begin{align*}
+    Y_{i_1, \dots, i_k} &= \1_{X_{i_1} = \dots = X_{i_k}} \sim Ber \left(\displaystyle\frac{1}{M^{k - 1}}\right) \\
+    B &= \left\{\left(i_1, \dots, i_k\right) | i_1 < \dots < i_k \in \left[N\right] \land X_{i_1} = \dots = X_{i_k}\right\} \\
+    \text{We want } &\p \left(|B| > 1\right) \\
+    p_{Y_{i_1, \dots, i_k}} &= \displaystyle\sum_{m \in \left[M\right]}^{} \p \left(\forall j \in \left[k\right]\ X_{i_j} = m\right) \\
+                            &= \displaystyle\sum_{m \in \left[M\right]}^{} \displaystyle\frac{1}{M^k} \\
+                            &= \displaystyle\frac{M}{M^k} \\
+                            &= \displaystyle\frac{1}{M^{k - 1}} \\
+    \p \left(Z \geq l\right) &\leq \displaystyle\frac{\E \left[Z\right]}{l} \\
+                             &= \binom{N}{k} \displaystyle\frac{1}{M^{k - 1}l} \\
+    \implies \p \left(|B| \geq 1\right) &\leq \binom{N}{k} \displaystyle\frac{1}{M^{k - 1}} \\
+\end{align*}
+% subsubsection Connection to the birthday problem (end)
+
+Let us return to the collector problem. There are $n$ types of toys, and in
+each egg there is  a toy of random type, distributed uniformly independently. \\
+Question model: \begin{itemize}
+    \item We will number the types of toys $1, \dots, n$
+    \item We will write $X_i \sim Unif \left(\left[n\right]\right)$, the toy in the egg $i$
+        that we bought, where $ \in \left[k\right]$
+    \item According to the question, $X_i$ are independent
+\end{itemize}
+\begin{enumerate}
+    \item What is the expectation of the number of eggs that we will buy before
+        we get all the toys?
+    \item Find the number of purchases required to ensure that we have a probability
+        of at least 0.5 that we get all the toys.
+\end{enumerate}
+
+\begin{enumerate}
+    \item We defined $Z_i$ - the number of toys that we bought from finding the type
+        $i - 1$ until finding the type $i$. \\
+        $Z_i \sim Geo \left(\displaystyle\frac{n - i + 1}{n}\right)$ and are
+        independent. We will write $W = \displaystyle\sum_{i \in \left[n\right]}^{}Z_i$.
+        \begin{align*}
+            \E \left[W\right] &= \displaystyle\sum_{i \in \left[n\right]}^{} \E \left[Z_i\right] \\
+                              &= \displaystyle\sum_{i \in \left[n\right]}^{} \displaystyle\frac{n}{n - i + 1} \\
+                              &= n \displaystyle\sum_{i = 1}^{n} \displaystyle\frac{1}{i} \\
+                              & \leq n \ln \left(n\right) + n
+        \end{align*}
+        So \begin{align*}
+            \p \left(W \geq 2 \E \left[W\right]\right) &\stackrel{Markov}{\leq}  \displaystyle\frac{1}{2} \\
+            \p \left(W < 2 \E \left[W\right]\right) &\geq \displaystyle\frac{1}{2} \\
+        \end{align*}
+        So if we buy $2n \left(\ln \left(n\right) + 1\right)$ eggs, then there is a probability
+        of at least $\displaystyle\frac{1}{2}$ we will get all the toys.
+\end{enumerate}
+
+
+\section{Variance}\label{sec:Variance} % (fold)
+\begin{definition}[]
+    The discrete random variable $X$ \textbf{has expectation} if the series
+    $\E \left[X\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right)$
+    is absolutely convergent.
+\end{definition}
+
+\begin{definition}[Variance]
+    Let there be $X$ a discrete random variable with expectation. The \textbf{variance}
+    is defined as so: \[
+        Var \left[X\right] = \E \left[\left(X - \E \left[X\right]\right)^2\right]
+    \]
+    The size of $\sqrt{Var [X]}$ is written $\sigma_X$ and is called the \textbf{standard deviation}
+    of $X$. \\
+
+    \begin{align*}
+        Var \left[X\right] &= \E \left[\left(X 0 \E \left[X\right]\right)^2\right] \\
+                           &= \E \left[X^2 - 2X \E \left[X\right] + \left(\E \left[X\right]\right)^2\right] \\
+                           &= \E \left[X^2\right] - 2\E \left[X\right] \E \left[X\right] + \left(\E \left[X\right]\right)^2 \\
+                           &= \E \left[X^2\right] - 2 \E \left[X\right]^2 + \E \left[X\right]^2 \\
+                           &= \E \left[X^2\right] - \E \left[X\right]^2
+    \end{align*}
+\end{definition}
+
+\begin{theorem}[6.3]
+    Let there be $X$ a discrete random variable with expectation.
+    \begin{enumerate}
+        \item Positivity: $Var \left[X\right] \geq 0$, and $Var \left[X\right] = 0$ \textbf{if and only if} $X$ is constant.
+        \item Invariance to movement: $\forall a \in \R\ Var \left[X + a\right] = Var \left[X\right]$
+        \item Quadratic calibration: $\forall a \in \R\ Var \left[aX\right] = a^2 Var \left[X\right]$
+        \item Summing under independence: $\forall X, Y$ independent random variables, $Var \left[X + Y\right] = Var \left[X\right] + Var \left[Y\right]$
+    \end{enumerate}
+
+    \begin{proof}[Proof ]
+        \begin{enumerate}
+            \item \begin{align*}
+                    \left(X - \E \left[X\right]\right) &\stackrel{a.s}{\geq} 0 \\
+                    \implies Var \left[X\right] &= \E \left[\left(X - \E \left[X\right]\right)^2\right] \geq 0 \\
+            \end{align*}
+                If $X \stackrel{a.s}{=} \E \left[X\right]$, then $X - \E \left[X\right] \stackrel{a.s}{=} 0 \implies
+                Var \left[X\right] = 0$. If $X$ is not constant, then we have proven
+                \begin{align*}
+                    0 < &\p \left(X > \E \left[X\right]\right) \\
+                    0 < &\p \left(X - \E \left[X\right] > 0\right) < 1 \\
+                    X - \E \left[X\right] > 0 \subseteq \left(X - \E \left[X\right]\right)^2 > 0
+                \end{align*}
+                which is to say that in the calculation of $Var \left[X\right]$, there
+                is a positive term, and so $Var \left[X\right] > 0$
+            \item \begin{align*}
+                    Var \left[X + a\right] &= \E \left[\left(X + a - \E \left[X + a\right]\right)^2\right] \\
+                                           &= \E \left[\left(X + a - \E \left[X\right] - a\right)^2\right] \\
+                                           &= \E \left[\left(X - \E \left[X\right]\right)^2\right] \\
+                                           &= Var \left[X\right]
+                \end{align*}
+            \item \begin{align*}
+                    Var \left[aX\right] &= \E \left[\left(aX - \E \left[aX\right]\right)^2\right] \\
+                                        &= \E \left[\left(aX - a \E \left[X\right]\right)^2\right] \\
+                                        &= a^2 \E \left[\left(X - \E \left[X\right]\right)^2\right] \\
+                                        &= a^2 Var \left[X\right] \\
+                \end{align*}
+            \item We shall write $X' - X - \E \left[X\right]$, and $Y' = Y - \E \left[Y\right]$.
+                \begin{align*}
+                    \E \left[X'\right] = &0 = \E \left[Y'\right] \\
+                    \implies Var \left[X'\right] = \E \left[X'^2\right] &- \E \left[X'\right]^2 = &\E \left[X'^2\right] \\
+                    Var \left[Y'\right] &= \E \left[Y'^2\right] \\
+                \end{align*}
+                So
+                \begin{align*}
+                    Var \left[X + Y\right] &= \E \left[\left(X + Y 0 \E \left[X + Y\right]\right)^2\right] \\
+                                           &= \E \left[\left(X - \E \left[X\right] + Y - \E \left[Y\right]\right)^2\right] \\
+                                           &= \E \left[\left(X' + Y'\right)^2\right] \\
+                                           &= \E \left[X'^2 + 2X'Y' + Y'^2\right] \\
+                                           &= \E \left[X'^2\right] + \E \left[Y'^2\right] + 2\E \left[X'Y'\right] \\
+                                           &= Var \left[X'\right] + Var \left[Y'\right]  + 2 \E \left[X'\right]\E \left[Y'\right] \\
+                                           &= Var \left[X\right] + Var \left[Y\right] + 2 \cdot 0 \cdot 0 \\
+                \end{align*}
+        \end{enumerate}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[Conclusion - 6.5]
+    If $\left(X_i\right)_{i \in [n]}$ are independent random variables, then \[
+        Var \left[\displaystyle\sum_{i \in [n]} X_i\right] = \displaystyle\sum_{i \in [n]} Var \left[X_i\right]
+    \]
+    \begin{proof}[Proof ]
+        Through induction
+    \end{proof}
+\end{theorem}
+
+\subsubsection{Examples}\label{sec:Examples} % (fold)
+\begin{example}[Bernoulli]
+    Let $X \sim Ber \left(p\right)$, then $Var \left[X\right] = p \left(1 - p\right)$
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            X \sim Ber \left(p\right) &\implies Var \left[X\right] = \E \left[X^2\right] - \E \left[X\right]^2 \\
+            p_{X^2} \left(1\right) &= \p \left(X^2 = 1\right) \\
+                                   &= \p \left(X = \pm 1\right) \\
+                                   &= p_X \left(1\right) \\
+                                   &= p \\
+            \implies X^2 &\sim Ber \left(p\right)
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[Uniform]
+    \begin{align*}
+        X \sim Unif \left(\left[n\right]\right) &\implies Var \left[X\right] = \E \left[X^2\right] - \E \left[X\right]^2 \\
+        \E \left[X\right] &= \displaystyle\frac{n + 1}{2} \\
+        \E \left[X^2\right] &= \displaystyle\sum_{k \in [n]}^{} k^2 p_X \left(k\right) \\
+                            &= \displaystyle\frac{1}{n} \displaystyle\sum_{k \in [n]}^{} k^2 \\
+                            &= \displaystyle\frac{n \left(n + 1\right) \left(2n + 1\right)}{6n} \\
+                            &= \displaystyle\frac{\left(n + 1\right) \left(2n + 1\right)}{5} \\
+        \displaystyle\frac{\left(n + 1\right) \left(2n + 1\right)}{6} - \displaystyle\frac{\left(n + 1\right)^2}{4} &= \displaystyle\frac{2n^2 + 3n + 1}{6} - \displaystyle\frac{n^2 + 2n + 1}{4} \\
+                                                                                                                    &= \displaystyle\frac{4n^2 + 6n + 2 - 3n^2 - 6n - 3}{12} \\
+                                                                                                                    &= \displaystyle\frac{n^2 - 1}{12} \\
+    \end{align*}
+\end{example}
+
+\begin{example}[Binomial]
+    \[
+        X \sim Unif \left(\left[n\right]\right) \implies Var \left[X\right] = np \left(1 - p\right)
+    \]
+    $X \sim Bin \left(n, p\right)$, so $X$ is of the same distribution of $\displaystyle\sum_{i \in [n]}^{}X_i$
+    where $X_i \sim Ver \left(p\right)$ independent \[
+        Var \left[X\right] = \displaystyle\sum_{i = 1}^{n} Var \left[X_i\right] = \displaystyle\sum_{i = 1}^{n} p \left(1 - p\right) = np \left(1 - p\right)
+    \]
+\end{example}
+
+\begin{example}[Geometric]
+    Let $X \sim Geo \left(p\right)$. So $Var \left[X\right] = \displaystyle\frac{1 - p}{p^2}$
+    \begin{proof}[Solution]
+        \begin{align*}
+            Var \left[X\right] &= \E \left[X^2\right] - \E \left[X\right]^2 \\
+            \E \left[X^2\right] &= \displaystyle\sum_{n \in \N}^{} \p \left(X^2 \geq n\right) \\
+                                &= \displaystyle\sum_{n \in \N}^{} \p \left(X \geq \sqrt{n} \right) \\
+                                &= \displaystyle\sum_{n \in \N}^{}\p \left(X \geq \left\lceil \sqrt{n} \right\rceil\right) \\
+            \text{Note} \displaystyle\sum_{n = 1}^{k}2n - 1 &= k^2 \\
+            \displaystyle\sum_{n \in \N}^{}\p \left(X \geq \left\lceil \sqrt{n} \right\rceil\right) &= \displaystyle\sum_{k \in \N}^{}\left(2k - 1\right) \p \left(X \geq k\right) \\
+                                                                                                    &= 2 \displaystyle\sum_{k \in \N}^{}k \p \left(X \geq k\right) - \displaystyle\sum_{k \in \N}^{} \p \left(X \geq k\right) \\
+            \displaystyle\sum_{k \in \N}^{}k \p \left(X \geq k\right) &= \displaystyle\frac{1}{p} \displaystyle\sum_{k \in \N}^{}kp \left(1 - p\right)^{k - 1} \\
+            2 \displaystyle\sum_{k \in \N}^{}k \p \left(X \geq k\right) - \displaystyle\sum_{k \in \N}^{} \p \left(X \geq k\right) &= \displaystyle\frac{2}{p} \cdot \displaystyle\frac{1}{p} - \displaystyle\frac{1}{p} \\
+                                                                                                                                   &= \displaystyle\frac{2 - p}{p} \\
+        \end{align*}
+        So we may calculate:
+        \begin{align*}
+            \E \left[X^2\right] - \E \left[X\right]^2 &= \displaystyle\frac{2 - p}{p^2} - \displaystyle\frac{1}{p^2} \\
+                                                      &= \displaystyle\frac{1 - p}{p^2}
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[Poisson]
+    Let $X \sim Pois \left(\lambda\right)$ So $Var \left[X\right] = \lambda$
+    \begin{proof}[Solution]
+        \begin{align*}
+            Var \left[X\right] &= \E \left[X^2\right] - \E \left[X\right]^2 \\
+            \E \left[X^2\right] &= \displaystyle\sum_{x \in Supp \left(X\right)}^{} x^2 p_X \left(x\right) \\
+                                &= \displaystyle\sum_{k \in \N_0}^{}k^2 e^{-\lambda} \displaystyle\frac{\lambda^k}{k!} \\
+                                &= e^{-\lambda} \displaystyle\sum_{k \in \N}^{}k \displaystyle\frac{\lambda^k}{\left(k - 1\right)!} \\
+                                &= e^{-\lambda} \left(\displaystyle\sum_{k \in \N \setminus \left\{1\right\}}^{} \left(k - 1\right) \displaystyle\frac{\lambda^k}{\left(k - 1\right)!} + \lambda \displaystyle\sum_{k \in \N}^{} \displaystyle\frac{\lambda^{k - 1}}{\left(k - 1\right)!}\right) \\
+                                &= e^{-\lambda} \left(\lambda^2 \displaystyle\sum_{k \in \N \setminus \left\{1\right\}}^{} \displaystyle\frac{\lambda^{k - 2}}{\left(k - 2\right)!} + \lambda e^\lambda\right) \\
+                                &= e^{-\lambda} \left(\lambda^2 e^\lambda + \lambda e^\lambda\right) \\
+                                &= \lambda^2 + \lambda \\
+            \E \left[X^2\right] - \E \left[X\right]^2 &= \lambda^2 + \lambda - \lambda^2 \\
+                                                      &= \lambda \\
+        \end{align*}
+    \end{proof}
+\end{example}
+% subsubsection Examples (end)
+
+\begin{theorem}[Chebishev inequality]
+    Let $X$ be a discrete random variable, with variance. \textbf{Then} \[
+        \forall a > 0\ \p \left(|X - \E \left[X\right]| \geq a\right) \leq \displaystyle\frac{Var \left[X\right]}{a^2}
+    \]
+    \begin{proof}[Proof ]
+        \begin{align*}
+            | X - \E \left[X\right]| &\stackrel{a.s}{\geq} 0 \\
+            \left(| X - \E \left[X\right] | \geq a\right) &\subseteq \left(\left(X - \E \left[X\right]\right)^2 \geq a^2\right) \\
+            \p \left(|X - \E \left[X\right] | \geq a\right) &\leq \p \left(\left(X - \E \left[X\right]\right)^2 \geq a^2\right) \\
+                                                            &\leq \displaystyle\frac{\E \left[\left(X - \E \left[X\right]\right)^2\right]}{a^2} \\
+                                                            &= \displaystyle\frac{Var \left[X\right]}{a^2}
+
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[Conclusion]
+    Let $X$ be a discrete random variable. So \[
+        \forall b > 0\ \p \left(| X - \E \left[X\right]| \geq b \sigma_X\right) \leq \displaystyle\frac{1}{b^2}
+    \]
+    \begin{proof}[Proof ]
+        Let $a = b \sigma_X$ in the original Chebishev inequality.
+    \end{proof}
+\end{theorem}
+% section Variance (end)
+
+\end{document}
