@@ -1,0 +1,300 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Lecture 17}
+\author{Gidon Rosalki}
+\date{2024-12-30}
+
+
+\begin{document}
+\maketitle
+\section{Variance}\label{sec:Variance} % (fold)
+\begin{theorem}[Chebishev inequality]
+    Let $X$ be a discrete random variable, with variance. \textbf{Then} \[
+        \forall a > 0\ \p \left(|X - \E \left[X\right]| \geq a\right) \leq \displaystyle\frac{Var \left[X\right]}{a^2}
+    \]
+    \begin{proof}[Proof ]
+        \begin{align*}
+            | X - \E \left[X\right]| &\stackrel{a.s}{\geq} 0 \\
+            \left(| X - \E \left[X\right] | \geq a\right) &\subseteq \left(\left(X - \E \left[X\right]\right)^2 \geq a^2\right) \\
+            \p \left(|X - \E \left[X\right] | \geq a\right) &\leq \p \left(\left(X - \E \left[X\right]\right)^2 \geq a^2\right) \\
+                                                            &\leq \displaystyle\frac{\E \left[\left(X - \E \left[X\right]\right)^2\right]}{a^2} \\
+                                                            &= \displaystyle\frac{Var \left[X\right]}{a^2}
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[Conclusion]
+    Let $X$ be a discrete random variable. So \[
+        \forall b > 0\ \p \left(| X - \E \left[X\right]| \geq b \sigma_X\right) \leq \displaystyle\frac{1}{b^2}
+    \]
+    \begin{proof}[Proof ]
+        Let $a = b \sigma_X$ in the original Chebishev inequality.
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    Tossing $2n$ fair coins, and $X$ counts heads:
+
+    \begin{proof}[Solution]
+        When tossing $2n$ fair coins, and $X$ counts heads, we saw that \begin{align*}
+            p_X \left(n\right) &= \displaystyle\frac{1}{\sqrt{\pi n} } \\
+            X &\sim Bin \left(10^6, \displaystyle\frac{1}{2}\right)
+        \end{align*}
+
+        So \begin{align*}
+            Var \left[X\right] &= np \left(1 - p\right) \\
+                               &= \displaystyle\frac{10^6}{4} \\
+                               &= 250,000 \\
+            \sigma_X &= \sqrt{250,000} \\
+                     &= 500 \\
+            \p \left(|X - 5 \cdot 10^5| \geq 10 \sigma_X\right) &= \p \left(|X - 5 \cdot 10^5| \geq 5000 \right) \\
+                                                                &\leq \displaystyle\frac{1}{10^2} \\
+                                                                &= \displaystyle\frac{1}{100} \\
+            \p \left(495,000 < X < 505,000\right) &\geq 0.99
+        \end{align*}
+    \end{proof}
+
+\end{example}
+
+\begin{example}[Collector problem]
+    We have $n$ types of toys, distributed uniformly across eggs, and $X_i \sim Unif \left(\left[n\right]\right)$,
+
+    \begin{proof}[Solution]
+        If $T_n$ is the number of eggs that we buy until we have all the toys:
+        \begin{align*}
+            T_n &= \displaystyle\sum_{i \in \left[n\right]}^{}Z_i \\
+            \E \left[T_n\right] &= \displaystyle\sum_{i \in \left[n\right]}^{}\displaystyle\frac{n}{n - i + 1} \\
+                                &= n \displaystyle\sum_{n \in \left[n\right]}^{}\displaystyle\frac{1}{j} \\
+                                &> n \ln \left(n\right) \\
+            Var \left[T_n\right] &= Var \left[\displaystyle\sum_{i \in \left[n\right]}^{}Z_i\right] \\
+                                 &= \displaystyle\sum_{i \in \left[n\right]}^{} Var \left[Z_i\right] \\
+                                 &= \displaystyle\sum_{i \in \left[n\right]}^{} \displaystyle\frac{n \left(i - 1\right)}{\left(n - i + 1\right)^2} \\
+                                 &= n \displaystyle\sum_{j \in \left[n\right]}^{} \displaystyle\frac{n - j}{j^2} \\
+                                 &= n^2 \displaystyle\sum_{j \in \left[n\right]}^{}\displaystyle\frac{1}{j^2} - n \displaystyle\sum_{j \in \left[n\right]}^{}\displaystyle\frac{1}{j} \\
+                                 &\leq n^2 \displaystyle\sum_{j \in \N}^{}\displaystyle\frac{1}{j^2} \\
+                                 &= \displaystyle\frac{n^2 \pi^2}{6} \\
+                                 &= n^2C \\
+            \implies \sigma_{T_n} &= n \sqrt{C}  \\
+            \p \left(|T_n - \E \left[T_n\right]| \geq a n \sqrt{C} \right) &\leq \p \left(|T_n - \E \left[T_n\right]| \geq a \sigma_{T_n}\right) \\
+                                                                        &\leq \displaystyle\frac{1}{a^2} \\
+            \left(T_n < n \left(\ln \left(n\right) - b\right)\right) &\subseteq | T_n - \E \left[T_n\right]| \geq nb \\
+            P \left(T_n < n \ln \left(n\right) - nb\right) &\leq \p \left(| T - \E \left[T_n\right]| \geq nb\right) \\
+                                                                     &\leq \displaystyle\frac{\sigma^2_{T_n}}{n^2b^2} \\
+                                            b = a \sqrt{C} \implies &\leq \displaystyle\frac{1}{a^2} \\
+        \end{align*}
+     \end{proof}
+\end{example}
+Conclusions: \begin{enumerate}
+    \item \[
+    \forall 0 < \varepsilon \exists a : \p \left(T_n < n \left(\ln \left(n\right) - a\right)\right) < \varepsilon
+\]
+    \item  \[
+            \forall 0 < c < 1\ \p \left(T_n < c n \ln \left(n\right)\right) \stackrel{n \to \infty}{\longrightarrow} 0
+        \]
+\end{enumerate}
+
+\begin{definition}[6.17]
+    Let there be $X_n$, a series of random variables, and $c \in \R$. We will say that
+    $X_n \stackrel{d}{\to} c$ if for all $\varepsilon > 0$ it is true that \[
+        \displaystyle\lim_{n \to \infty} \p \left(|X_n - c| < \varepsilon\right) = 1
+    \]
+    Or in the words of infi: \[
+        \forall 0 < \varepsilon \land \forall \gamma > 0 \exists N \in \N : \forall n > N\ |1 - \p \left(|X_n - c| < \varepsilon\right)| < \gamma \Leftrightarrow \p \left(|X_n - c| < \varepsilon\right) > 1 - \gamma
+    \]
+\end{definition}
+
+\begin{example}[]
+    \begin{align*}
+        X_n \sim Ber \left(1 - \displaystyle\frac{1}{n}\right) \\
+        \text{We want to show} & X_n \stackrel{d}{\longrightarrow} 1
+    \end{align*}
+    \begin{proof}[Solution]
+        So, let there be $\varepsilon > 0$. If $1 \leq \varepsilon$ then $|X_n - 1| < \varepsilon \Leftrightarrow X_n \in \left\{0, 1\right\}$.
+        So $\p \left(|X_n - 1| < \varepsilon\right) = 1 \stackrel{n \to \infty}{\longrightarrow} 1$ \\
+        If $0 < \varepsilon < 1$, then $\left(|X_n - 1| < \varepsilon\right) = X_n = 1$.
+        So $\p \left(\left(|X_n - 1| < \varepsilon\right)\right) = \p \left(X_n = 1\right) = 1 - \displaystyle\frac{1}{n} \stackrel{n \to \infty}{\longrightarrow} 1$
+    \end{proof}
+\end{example}
+
+\begin{theorem}[6.19]
+    Let there be $X_n$ a series of discrete random variables with variance. If $\E \left[X_n\right] \to \mu$ and
+    $Var \left[X_n\right] \to 0$ \textbf{then} $X_n \stackrel{d}{\longrightarrow} \mu$
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \text{We need to show} \forall \varepsilon > 0\ \p \left(|X_n - \mu| > \varepsilon\right) &\stackrel{n \to \infty}{\longrightarrow} 1 \\
+            \Leftrightarrow 1 - \p \left(|X_n - \mu| < \varepsilon\right) &\stackrel{n \to \infty}{\longrightarrow} 1 - 1 = 0 \\
+            \Leftrightarrow \p \left(|X_n - \mu| \geq \varepsilon\right) \stackrel{n \to \infty}{\longrightarrow} 0
+        \end{align*}
+        So, let there be $\varepsilon > 0$: \begin{align*}
+            \E \left[X_n\right] \stackrel{n \to \infty}{\longrightarrow} \mu &\implies \exists N \in \N\ :\ \forall n > N\ |\E \left[X_n\right] - \mu| < \displaystyle\frac{\varepsilon}{2} \\
+            \left(|X_n - \mu| \geq \varepsilon\right) &\subseteq |X_n - \E \left[X_n\right]| \geq \displaystyle\frac{\varepsilon}{2} \\
+            \p \left(|X_n - \mu| \geq \varepsilon\right) &\leq \p \left(|X_n - \E \left[X_n\right]| \geq \displaystyle\frac{\varepsilon}{2}\right) \\
+                                                         &\stackrel{Chebishev}{\leq}  \displaystyle\frac{Var \left[X_n\right]}{\varepsilon^2 \mu} \\
+                                                         &\stackrel{n \to \infty}{\longrightarrow} 0 \\
+                                                         &\implies \text{From sandwich } \displaystyle\lim_{n \to \infty} \p \left(|X_n - \mu| \geq \varepsilon\right) = 0 \\
+                                                         &\text{since } X_n \stackrel{d}{\to} \mu
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[for 6.19]
+    $X_n \sim Ber \left(1 - \displaystyle\frac{1}{n}\right)$
+    \begin{proof}[Solution]
+        \begin{align*}
+            \E \left[X_n\right] &= 1 - \displaystyle\frac{}{} \stackrel{n \to \infty}{\longrightarrow}  1 \\
+            Var \left[X_n\right] &= \displaystyle\frac{1}{n}\left(1 - \displaystyle\frac{1}{n}\right) \stackrel{n \to \infty}{\longrightarrow} 0
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[Collector problem]
+    We want to show that $\displaystyle\frac{T_n}{n \ln \left(n\right) \stackrel{d}{\to} 1}$
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            \E \left[T_n\right] &\approx n \ln \left(n\right) \\
+            \E \left[\displaystyle\frac{T_n}{n \ln \left(n\right)}\right] &= \displaystyle\frac{1}{n \ln \left(n\right)} \E \left[T_n\right] \stackrel{n \to \infty}{\longrightarrow} 1 \\
+            0 &\leq Var \left[\displaystyle\frac{T_n}{n \ln \left(n\right)}\right] \\
+              &= \displaystyle\frac{1}{n^2 \ln \left(n\right)^2} Var \left[T_n\right] \\
+              &\leq \displaystyle\frac{1}{n^2 \ln \left(n\right)^2} \displaystyle\frac{n^2\pi^2}{6} \\
+              &= \displaystyle\frac{\pi^2}{\ln \left(n\right)^2 \cdot 6} \\
+              &\stackrel{n \to \infty}{\longrightarrow} 0 \\
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{theorem}[6.21 - the weak rule of big numbers]
+    Let there be $\left(X_i\right){i \in \N}$ random variables of equal distribution, independent,
+    and of expected value $\mu$, with variance. \textbf{So}: \[
+        \displaystyle\frac{1}{n} \displaystyle\sum_{i = 1}^{n}X_i \stackrel{d}{\to} \mu
+    \]
+
+    \begin{proof}[Proof ]
+        We know from $6.19$ that $\E \left[X_n\right] = \mu \stackrel{n \to \infty}{\longrightarrow} \mu$.
+        We will write $Y_n = \displaystyle\frac{1}{n}\displaystyle\sum_{kk \in \left[n\right]}^{}X_k$.
+        So \begin{align*}
+            \E \left[Y_n\right] &= \E \left[\displaystyle\frac{1}{n}\displaystyle\sum_{k \in \left[n\right]}^{}X_k\right] \\
+                                &= \displaystyle\frac{1}{n} \displaystyle\sum_{k \in \left[n\right]}^{}\E \left[X_n\right] \\
+                                &= \mu  \stackrel{n \to \infty}{\longrightarrow}  \mu \\
+            Var \left[Y_n\right] &= Var \left[\displaystyle\frac{1}{n}\displaystyle\sum_{k \in \left[n\right]}^{}X_k\right] \\
+                                 &= \displaystyle\frac{1}{n^2} Var \left[\displaystyle\sum_{k \in \left[n\right]}^{}X_k\right] \\
+                                 &= \displaystyle\frac{1}{n^2} \displaystyle\sum_{k \in \left[n\right]}^{}Var \left[X_k\right] \\
+                                 &= \displaystyle\frac{1}{n^2} \cdot n Var \left[X_1\right] \\
+                                 &= \displaystyle\frac{Var \left[X_1\right]}{n} \stackrel{n \to \infty}{\longrightarrow} \\
+        \end{align*}
+        Therefore from $6.19$ we get that $Y_n \stackrel{d}{\to} \mu$
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    Let $\Omega = \left[0, 1\right]^2 \setminus \left\{\left(0, 0\right)\right\}$, which
+    is to say $\left\{\left(0, 1\right), \left(1, 0\right), \left(1, 1\right)\right\}$, with
+    uniform probability. Let us write $X \left(a, b\right) = a \land Y \left(a, b\right) = b$.
+    We immediately get that $X, Y \sim Ber \left(\displaystyle\frac{2}{3}\right)$,
+    which is to say $\E \left[X\right] = \displaystyle\frac{2}{3} = \E \left[Y\right]$, and
+    also $Var \left[X\right] = \displaystyle\frac{2}{9} = Var \left[Y\right]$.
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            \E \left[\left(X + Y\right)^2\right] &= 0^2 \p \left(X = Y = 0\right) + 1^2 \p \left(X = 1 - Y\right) + 2^2 \p \left(X = 1 = Y\right) \\
+                                                 &= 1 \cdot \displaystyle\frac{2}{3} + 4 \cdot \displaystyle\frac{1}{3} = 2 \\
+            \E \left[X + Y\right]^2 &= \left(\displaystyle\frac{4}{3}\right)^2 \\
+                                    &= \displaystyle\frac{16}{9} \\
+            Var \left[X + Y\right] &= \E \left[\left(X + Y\right)^2\right] - \E \left[X + Y\right]^2 \\
+                                   &= 2 - \displaystyle\frac{16}{9} \\
+                                   &= \displaystyle\frac{2}{9} \ne Var \left[X\right] + Var \left[Y\right]
+        \end{align*}
+    \end{proof}
+\end{example}
+
+% section Variance (end)
+
+\section{Covariance}\label{sec:Covariance} % (fold)
+\begin{definition}[6.24]
+    Let there be $X, Y$ discrete random variables with an expected value. The \textbf{covariance} of
+    $X$ and $Y$ is defined as follows: \[
+        Cov \left[X, Y\right] = \E \left[\left(X - \E \left[X\right]\right)\left(Y - \E \left[Y\right]\right)\right]
+    \]
+\end{definition}
+\begin{theorem}[]
+   \[
+       Cov \left[X, Y\right] = \E \left[XY\right] - \E \left[X\right] \E \left[Y\right]
+   \]
+\end{theorem}
+
+\begin{definition}[]
+    The random variables $X, Y$ with covariance of $0$ are called \textbf{uncorrelated}
+\end{definition}
+
+\begin{theorem}[6.25]
+    For 2 random variables with finite variance, $\E \left[XY\right]$ exists and is finite.
+\end{theorem}
+
+\subsubsection{Calculation of variance of a sum}\label{sec:Calculation of variance of a sum} % (fold)
+Let there be $X, Y$ 2 discrete random variables with expectation: \begin{align*}
+    Var \left[X + Y\right] &= \E \left[\left(X + Y\right)^2\right] - \E \left[X + Y\right]^2 \\
+                           &= \E \left[X^2 + 2XY + Y^2\right] - \left(\E \left[X\right] + \E \left[Y\right]\right)^2 \\
+                           &= \E \left[X^2\right] + 2\E \left[XY\right] + \E \left[Y^2\right] - \E \left[X\right]^2 - 2\E \left[X\right]\E \left[Y\right] - \E \left[Y\right]^2 \\
+                           &= Var \left[X\right] + Var \left[Y\right] + 2 Cov \left[X, Y\right]
+\end{align*}
+% subsubsection Calculation of variance of a sum (end)
+
+\begin{theorem}[6.32]
+    Let there be $X, Y$ discrete random variables with variance.
+    \begin{itemize}
+        \item Symmetric: $Cov \left[X, Y\right] = Cov \left[Y, X\right]$
+        \item Bilinear: If $Z$ is a discrete random variable with variance, then
+            $Cov \left[X + Z, Y\right] = Cov \left[X, Y\right] + Cov \left[Z, Y\right]$
+        \item $Cov \left[cX, Y\right] = c Cov \left[X, Y\right] = Cov \left[X, cY\right]$
+        \item Connection to variance: $Cov \left[X, X\right] = Var \left[X\right]$
+        \item Sensitivity to movement: $\forall a \in \R\ Cov \left[X + a, Y\right] = Cov \left[X, Y\right]$
+    \end{itemize}
+
+    \begin{proof}[Proof ] % TODO I promise its easy, it comes from the definition
+        \begin{itemize}
+            \item $\E \left[XY\right] - \E \left[X\right] \E \left[Y\right]$ are exactly the same in both directions
+            \item \begin{align*}
+                \E \left[\left(X + Z\right)Y\right]
+            \end{align*}
+        \end{itemize}
+    \end{proof}
+\end{theorem}
+
+
+\begin{theorem}[6.34]
+    Let there be $\left(X_i\right)_{i \in \left[n\right]}$ discrete random variables
+    with variance. So \[
+        Var \left[\displaystyle\sum_{i \in \left[n\right]}^{}X_i\right] &= \displaystyle\sum_{i \in \left[n\right]}^{}Var \left[X_i\right] + 2 \displaystyle\sum_{i < j \in \left[n\right]}^{}Cov \left[X_i, X_j\right] = \displaystyle\sum_{i, j \in \left[n\right]}^{} Cov \left[X_i, X_j\right]
+    \]
+\end{theorem}
+% section Covariance (end)
+\end{document}
