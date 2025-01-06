@@ -1,0 +1,237 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\V}{\ensuremath{\mathcal{V}}}
+
+\title{Lecture 18}
+\author{Gidon Rosalki}
+\date{2025-01-05}
+
+
+\begin{document}
+\maketitle
+\section{Covariance}\label{sec:Covariance} % (fold)
+\begin{definition}[Covariance]
+    \begin{align*}
+        Cov \left[X, Y\right] &= \E \left[\left(X - \E \left[X\right]\right) \left(Y = \E \left[Y\right]\right)\right] \\
+                              &= \E \left[XY\right] - \E \left[X\right] \E \left[Y\right]
+    \end{align*}
+    If $Cov \left[X, Y\right]= 0$ then $X, Y$ are uncoordinated
+\end{definition}
+We also saw that \[
+    Var \left[X + Y\right] = Var \left[X\right] + Var \left[Y\right] + 2Cov \left[X, Y\right]
+\]
+
+\begin{theorem}[6.30]
+    If $X, Y$ are independent, then $X, Y$ are uncoordinated.
+    \begin{proof}[Proof ]
+        \begin{align*}
+            Cov \left[X, Y\right] &= \E \left[XY\right] - \E \left[X\right] \E \left[Y\right] \\
+                                  &\stackrel{independence}{=} \E \left[X\right] \E \left[Y\right] - \E \left[X\right] \E \left[Y\right] \\
+                                  &= 0
+        \end{align*}
+        In order that the variance of $X + Y$ will be $Var \left[X\right] + Var \left[Y\right]$
+        we need that $Cov \left[X, Y\right] = 0$
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    $X, Y, Z \sim Unif \left[6\right]$ are the results of throwing 3 different dice.
+    Let $W = \left(X - Y\right)Z$. We want to show that $Z, W$ are
+    dependent, but uncoordinated.
+    \begin{proof}[Solution]
+        \begin{align*}
+            \p \left(Z = 2\right) > 0 &\land \p \left(W = 1\right) > 0 \\
+            \p \left(W = 1, Z = 2\right) = 0 &< \p \left(W = 1\right) \p \left(Z = 2\right) \\
+        \end{align*}
+        Therefore $Z, W$ are dependent.
+        \begin{align*}
+            \E \left[WZ\right] - \E \left[W\right] \E \left[Z\right] &= \E \left[\left(X - Y\right)Z^2\right] - \E \left[\left(X - Y\right)Z\right] \E \left[Z\right] \\
+                             \text{Independence of functions of random variables} &= \E \left[X - Y\right] \E \left[Z^2\right] - \E \left[X - Y\right] \E \left[Z\right]^2 \\
+                                                                                  &= 0
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[6.35]
+    We toss a weighted coin of probability heads $p$, $n$ times. We will write $X_i \sim Ber \left(p\right)$,
+    the indicator that we got Heads on the $i$th throw. We will write $Y_i = X_iX_{i + 1}$
+    for $i \in \left[n - 1\right]$. Analyse $Z_n = \displaystyle\sum_{i \in \left[n - 1\right]}^{}Y_i$.
+    (In short, we're looking for how many series of 2 heads in a row there are,
+    eg there are 3 such in the following sequence: $HHTHHH$)
+    \begin{proof}[Solution]
+        \begin{align*}
+            Y_i &\sim Ber \left(p^2\right) \\
+            \E \left[Y_i\right] &= p^2 \\
+            \E \left[Y_i\right] &= p^2 \left(1 - p^2\right) \\
+            Z_n &= \displaystyle\sum_{i \in \left[n - 1\right]}^{}Y_i \\
+            \E \left[Z_n\right] &= \left(n - 1\right)p^2 \\
+            Var \left[Z_n\right] &= \displaystyle\sum_{i \in \left[n - 1\right]}^{} Var \left[Y_i\right] + 2 \displaystyle\sum_{i < j \in \left[n - 2\right]}^{} Cor \left[Y_i, Y_j\right] \\
+                                 \text{From the calculations below} &= \left(n - 1\right)p^2 \left(1 - p^2\right) + 2 \left(n - 2\right)p^3 \left(1 - p\right)
+        \end{align*}
+        if $j > i + 1$, then $Y_i, Y_j$ are independent. Therefore $Cov \left[Y_i, Y_j\right] = 0$
+        \begin{align*}
+            Cov \left[Y_i, Y_{i + 1}\right] &= \E \left[Y_i Y_{i + 1}\right] - \E \left[Y_i\right] \E \left[Y_{i + 1}\right] \\
+                                            &= \E \left[Y_i Y_{i + 1}\right] - p^4 \\
+                                            &= \E \left[X_i\right] \E \left[X_{i + 1}\right] \E \left[X_{i + 2}\right] - p^4 \\
+                                            &= p^3 - p^4 \\
+                                            &= p^3(1 - p)
+        \end{align*}
+        Note \[
+            Y_i Y_{i + 1} \stackrel{d}{=} X_i X_{i+1}^2 X_{i + 2} = X_i X_{i+1} X_{i + 2}
+        \]
+        Since $0^2 = 0 \land 1^2 = 1$ which are all the options for a Bernoulli random variable
+        \begin{align*}
+            \E \left[\displaystyle\frac{Z_n}{n}\right] &= \displaystyle\frac{1}{n}\E \left[Z_n\right] \\
+                                                       &= \displaystyle\frac{n - 1}{n}p^2 \stackrel{n \to \infty}{\Longrightarrow} p^2 \\
+            Var \left[\displaystyle\frac{Z_n}{n}\right] &= \displaystyle\frac{1}{n^2}Var \left[Z_n\right] \\
+                                                        &= \displaystyle\frac{n p^4 \left(1 + O(1)\right)}{n^2} \stackrel{n \to \infty}{\Longrightarrow} 0 \\
+            \implies \displaystyle\frac{Z_nn}{n} &\stackrel{d}{\to} p^2 \\
+        \end{align*}
+        In increasing probability the relationship between $Z_n$ to $n$ tends towards $p^2$.
+    \end{proof}
+\end{example}
+
+\subsubsection{Erdos-Reyni graphs 36.6}\label{sec:Erdos-Reyni graphs 36.6} % (fold)
+\begin{itemize}
+    \item We will write $V = \left[n\right]$
+    \item For every $i \ne j \in \left[n\right]$ Let there be $X_{ij} \sim Ber \left(p\right)$
+    \item We will write $E = \left\{\left(i, j\right) \in V^2 | X_{ij} = 1\right\}$
+    \item $G = \left(V, E\right)$ is called the Erdos-Reyni graph with parameter $p$
+    \item We will write $\Delta_n = \left| \left\{\left(i, j, k\right) \in \binom{\left[n\right]}{3} : \left(i, j\right), \left(i, k\right), \left(j, k\right) \in E\right\} \right|$
+\end{itemize}
+Analysis of $\Delta_n$:
+\begin{align*}
+    \forall i < j < k \in \left[n\right]\ Y_{ijk} &= X_{ij} X_{ik} X_{jk} \\
+    \implies Y_{ijk} \sim Ber \left(p^3\right) \\
+    \Delta_n = \displaystyle\sum_{i < j < k \in \binom{\left[n\right]}{3} }^{}Y_{ijk} \\
+    \E \left[\Delta_n\right] &= \displaystyle\sum_{i < j < k \leq n}^{} \E \left[Y_{ijk}\right] \\
+                             &= \binom{n}{3} p^3 \\
+                             &= \displaystyle\frac{n^3}{6}p^3 \left(1 + O \left(1\right)\right) \\
+    Var \left[\Delta_n\right] &= \displaystyle\sum_{1 \leq i < j < k \leq n, 1 \leq r < s < t \leq n}^{}Cov \left[Y_{ijk}, Y_{rst}\right]\\
+    \text{There are 3 instances.} \\
+\end{align*}
+Instead of Var[] + 2Cov[], we just have the Cov since the instances that $i,j,k = r,s,t$ gives
+    us the variances, and due to $i, j, k$ being able to take the same values as
+    $r,s,t$ at different times gives us the times 2. \\
+There are 3 instances. The first occurs $\binom{n}{3} $ times: \[
+    \left(i, j, k\right) = \left(r, s, t\right) \implies Cov \left[Y_{ijk}, Y_{rst}\right] = Var \left[Y_{ijk}\right] = p^3 \left(1 - p^3\right)
+\]
+The second: \[
+    | \left\{i, j, k\right\} \cap \left\{r, s, t\right\} | \leq 1 \implies Y_{ijk}, Y_{rst} \text{ are independent, and therefore uncoordinated}
+\]
+The third: occurs $\binom{n}{2} \left(n - 2\right)\left(n - 3\right)$ \begin{align*}
+    | \left\{i, j, k\right\} \cap \left\{r, s, t\right\} | &= 2 \\
+    \text{Without loss of generality } Cov \left[Y_{ijk}, Y_{ijt}\right] &= \E \left[Y_{ijk} Y_{ijt}\right] - \E \cdot \E \\
+                                                                         &= \E \left[Y_{ijk} Y_{ijt}\right] - p^6 \\
+    Y_{ijk}Y_{ijt} &\stackrel{d}{=} X_{ij}X_{it}X_{ik}X_{jk}X_{jt} \sim Ber \left(p^5\right) \\
+                   \E \left[Y_{ijk} Y_{ijt}\right] - p^6 &= p^5 \left(1 - p\right)
+                   Var \left[\Delta_n\right] &= \displaystyle\frac{n^3}{6} p^3 \left(1 + O(1)\right) + \displaystyle\frac{n^4}{2} p^6 \left(1 + O(1)\right) \\
+                   \E \left[\displaystyle\frac{\Delta_n}{\E \left[\Delta_n\right]}\right] &= 1 \stackrel{n \to \infty}{\Longrightarrow} 1 \\
+                   Var \left[\displaystyle\frac{\Delta_n}{\E \left[\Delta_n\right]}\right] &= \displaystyle\frac{Var \left[\Delta_n\right]}{\E \left[\Delta_n\right]^2} \\
+                                                                                           &\approx \displaystyle\frac{n^4}{n^6} \stackrel{n \to \infty}{\Longrightarrow} 0 \\
+                   \left(\displaystyle\frac{\Delta_n}{\E \left[\Delta_n\right]}\right) &\stackrel{d}{\to} 1
+\end{align*}
+And the final line is called $\Delta_n$ is centralised around its expected value.
+% subsubsection Erdos-Reyni graphs 36.6 (end)
+% section Covariance (end)
+
+\section{Linear algebra aspects}\label{sec:Linear algebra aspects} % (fold)
+\begin{definition}[]
+    The variance of the random variable $X$ with expected values is \[
+        \E \left[X\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right)
+    \]
+\end{definition}
+\begin{definition}[6.38]
+    The collection of the random variables on $\left(\Omega, \F, \p\right)$ is written
+    $\mathcal{V} = \left\{X : \Omega \to \R\right\}$, where we recognise the random
+    variables $X, Y$ such that $X \stackrel{a.s}{=} Y$
+\end{definition}
+
+\begin{theorem}[Conclusion 6.39]
+    $\mathcal{V}$ is a vector field
+    \begin{proof}[Proof ]
+        % TODO
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[]
+    Subset $L^1 = \left\{X \in \V | \E \left[X\right] < \infty\right\}$
+    \begin{proof}[Proof ]
+        Linearity of expectation.
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[6.40]
+    $L^2 = \left\{X \in \mathcal{V} | \E \left[X^2\right]\right\}$ is the collection
+    of random variables with finite \textbf{second moment}. The mixed moment
+    of $X, Y \in L^2$ is $\E \left[XY\right]$
+\end{definition}
+
+\begin{theorem}[]
+    $L^2$ is a sub vector field of $\V$
+    \begin{proof}[Proof ]
+        % TODO
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[6.44]
+    $\E \left[XY\right] = \left\langle X | Y \right\rangle$ is an inner product on $L^2$
+    \begin{proof}[Proof ]
+        Positivity: $\langle X | X \rangle = \E \left[X^2\right] \geq 0$, with equality \textbf{if and only if}
+        $X \stackrel{a.s}{=} 0$ \\
+        Linearity: \[
+            \langle X + X' | Y \rangle = \E \left[\left(X + X'\right)Y\right] = \E \left[XY\right] + \E \left[X'Y\right] = \langle X | Y \rangle + \langle X' | Y \rangle
+        \]
+        Symmetry: Immediate
+    \end{proof}
+\end{theorem}
+
+This enables us a new way to consider random variables. \begin{itemize}
+    \item $X \bot Y \Leftrightarrow \E \left[XY\right] = 0$
+    \item $X^\bot = \left\{Y \in L^2 | X \bot Y\right\}$ will be a sub vectory field of $L^2$ for every $X \in L^2$
+    \item If $\mathcal{C} = \left\{X \in L^2 : \exists c \in \R \ X \stackrel{a.s}{=} c\right\}$ then $\mathcal{C} = ker_{L^2} \E \left[X\right]$
+\end{itemize}
+
+\begin{theorem}[]
+    The minimised expectation increases by the square: \[
+        \displaystyle\min_{} \left\{\E \left[\left(X - a\right)^2\right] | a \in \R\right\} = \E \left[\left(X - \E \left[X\right]\right)^2\right] = \sigma_X^2
+    \]
+    \begin{proof}[Proof ]
+        Let $\E \left[X\right] = \mu$
+        \begin{align*}
+            \E \left[\left(X - a\right)^2\right] &= \E \left[\left(\left(X - \mu\right) + \left(\mu - a\right)\right)^2\right] \\
+                                                 &= \E \left[\left(X - \mu\right)^2\right] + \E \left[\left(\mu - a\right)^2\right] + 2 \E \left[\left(X - \mu\right) \left(X- a\right)\right] \\
+                                                 &= \E \left[\left(X - \mu\right)^2\right] + \E \left[\left(\mu - a\right)^2\right] \\
+                                                 &\geq \E \left[\left(X - \mu\right)^2\right]
+        \end{align*}
+    \end{proof}
+\end{theorem}
+% section Linear algebra aspects (end)
+\end{document}
