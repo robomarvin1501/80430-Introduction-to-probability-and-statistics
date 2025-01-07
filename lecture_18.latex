@@ -215,7 +215,7 @@ And the final line is called $\Delta_n$ is centralised around its expected value
 
 This enables us a new way to consider random variables. \begin{itemize}
     \item $X \bot Y \Leftrightarrow \E \left[XY\right] = 0$
-    \item $X^\bot = \left\{Y \in L^2 | X \bot Y\right\}$ will be a sub vectory field of $L^2$ for every $X \in L^2$
+    \item $X^\bot = \left\{Y \in L^2 | X \bot Y\right\}$ will be a sub vector field of $L^2$ for every $X \in L^2$
     \item If $\mathcal{C} = \left\{X \in L^2 : \exists c \in \R \ X \stackrel{a.s}{=} c\right\}$ then $\mathcal{C} = ker_{L^2} \E \left[X\right]$
 \end{itemize}
 

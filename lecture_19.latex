@@ -1,0 +1,272 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\V}{\ensuremath{\mathcal{V}}}
+
+\title{Lecture 19}
+\author{Gidon Rosalki}
+\date{2025-01-06}
+
+
+\begin{document}
+\maketitle
+\section{Reminder}\label{sec:Reminder} % (fold)
+Given a random variable $X$, $Proj_\mathcal{C} X = \E \left[X\right] \implies d \left(X, \E \left[X\right]\right) = \displaystyle\min_{} \left\{d \left(X, c\right) | c \in \mathcal{C}\right\} $.
+Additionally $\E \left[\left(X - \E \left[X\right]\right)^2\right] = \displaystyle\min_{} \left\{\E \left[\left(X - a\right)^2\right] | a \in \R\right\} $
+% section Reminder (end)
+
+\section{Projection on more than one random variable}\label{sec:Projection on more than one random variable} % (fold)
+Reminder: The projection of $v$ on $U$, with the orthogonal basis $B$ is defined as \[
+    Proj_U v = \displaystyle\sum_{b \in B}^{}\displaystyle\frac{\langle b, v \rangle }{||b||^2}b
+\]
+
+\begin{definition}[6.54 - standardise is a running of Gram Shmidt on the pair of random variables $\left\{1, Y\right\}$]
+    If $Y \in L^2$ is not constant, then $\left\{1, Y\right\}$ is linearly independent in $L^2$.
+    As we saw $\widetilde{Y} = Y -- \E \left[Y\right] \bot 1$ \textbf{and} $||\widetilde{Y}|| = \sqrt{Var \left[Y\right]} $.
+    In order to normalise, we need to divide by the normal of $\widetilde{Y}$, which
+    is to say \[
+        \overline{Y} = \displaystyle\frac{\widetilde{Y}}{||\widetilde{Y}||} = \displaystyle\frac{Y - \E \left[Y\right]}{\sqrt{Var \left[Y\right]} }
+    \]
+\end{definition}
+
+Remember, covariance is an inner product after throwing
+to centralised random variables \begin{align*}
+    Cov \left[X, Y\right] &= \E \left[\left(X - \E \left[X\right]\right) \left(Y - \E \left[Y\right]\right)\right] \\
+                          &= \left\langle \widetilde{X}, \widetilde{Y} \right\rangle
+\end{align*}
+and so, covariance is insensitive to movement, and therefore \begin{align*}
+    Cov \left[X, Y\right] &= \left\langle X, \widetilde{Y} \right\rangle
+\end{align*}
+
+\begin{theorem}[Conclusion - linear regression]
+    Let there be $X, Y \in L^2$ random variables when $Y$ is not constant. We will write \begin{align*}
+        \mu_X = \E \left[X\right],&\ \sigma_X = \sqrt{Var \left[X\right]} \\
+        \mu_Y = \E \left[Y\right],&\ \sigma_Y = \sqrt{Var \left[Y\right]} \\
+    \end{align*}
+    and so ($\widetilde{Y} := Y - \mu_Y$) \begin{align*}
+        Proj_{1,Y} \left(X\right) = \mu_X + \displaystyle\frac{Cov \left[X, Y\right]}{\sigma_Y^2}\widetilde{Y}
+    \end{align*}
+
+    \begin{proof}[Proof ]
+        The orthonormal basis for $\left(1, Y\right)$ will be $\left\{1, \displaystyle\frac{\widetilde{Y}}{\sigma_Y} = \overline{Y}\right\}$,
+        and we've already seen that $Proj_1 X = \E \left[X\right]$
+        \begin{align*}
+            Cov \left[X, Y\right] &= \E \left[\left(X - \E \left[X\right]\right) \left(Y - \E \left[Y\right]\right)\right] \\
+                                  &= \langle \widetilde{X}, \widetilde{Y} \rangle  \\
+                                  &= \langle X, \widetilde{Y} \rangle  \\
+                                  &= \E \left[X \widetilde{Y}\right] \\
+            Proj_{1, Y} \left(X\right) &= \displaystyle\frac{\E \left[1 \cdot X\right]}{\E \left[1 \cdot 1\right]} \cdot 1 + \displaystyle\frac{\E \left[X \overline{Y}\right]}{1}\overline{Y}
+            + \displaystyle\frac{\E \left[X \widetilde{Y}\right]}{\sigma_Y^2} \widetilde{Y} \\
+                                       &= \mu_X + \displaystyle\frac{Cov \left[X, Y\right]}{\sigma_Y^2} \left(Y - \mu_Y\right) \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[6.51]
+    Let there be $X, Y \in L^2$ random variables where $Y$ is not constant. \textbf{Then}
+    $Proj_{1, Y} \left(X\right) = \mu_X + Cov \left[X, \overline{Y}\right]\overline{Y}$,
+    and this projection enables the minimal square deviation from $X$ in $span \left(1, Y\right)$,
+    which is to say \begin{align*}
+        \displaystyle\min_{} \left\{\E \left[X - Z\right]^2 | Z \in span \left(1, Y\right)\right\}  &= \E \left[\left(X - Proj_{1, Y} \left(X\right)\right)^2\right] \\
+                                                                                                    &= sigma_X^2 - \displaystyle\frac{Cov \left[X, Y\right]^2}{sigma_Y^2}
+    \end{align*}
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \E \left[\left(X - \mu_X - \displaystyle\frac{Cov \left[X, Y\right]}{sigma_Y^2}\widetilde{Y}\right)^2\right] &=
+            \E \left[\left(X - \mu_X\right)^2\right] + \E \left[\left(\displaystyle\frac{Cov \left[X, Y\right]}{\sigma_Y^2}\widetilde{Y}\right)^2\right]
+            -2 \E \left[\left(X - \mu\right) \left(\displaystyle\frac{Cov \left[X, Y\right]}{\sigma_Y^2}\right)\widetilde{Y}\right] \\
+                                                                                                                         &= sigma_X^2 + \displaystyle\frac{Cov \left[X, Y\right]^2}{\sigma_Y^4}\E \left[\left(Y - \mu_Y\right)^2\right]
+                                                                                                                         - 2 \displaystyle\frac{Cov \left[X, Y\right]}{\sigma_Y^2} \E \left[\left(X - \mu_X\right)\left(Y - \mu_Y\right)\right] \\
+                                                                                                                         &= \sigma_X^2 - \displaystyle\frac{Coov \left[X, Y\right]^2}{\sigma_Y^2} \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[Finally]
+    Look at around 6.54 in the book
+\end{example}
+All you need to know fro linear algebra is is linear regression, the formula (and probably how to prove it)
+% section Projection on more than one random variable (end)
+
+\section{Moments and Chernoff Hoeffding}\label{sec:Moments and Chernoff Hoeffding} % (fold)
+Reminder: Expectation for $X$ is \[\E \left[X\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right)\]
+and the variance is \[ Var \left[X\right] = \E \left[X^2\right] - \E \left[X\right]^2 \]
+
+\begin{definition}[7.1]
+    Let there be a discrete random variable $X$. The $k$th (polynomial) moment of $X$
+    is $m_k \left(X\right) = \E \left[X^k\right]$
+\end{definition}
+
+\begin{theorem}[7.2]
+    If $m_k \left(X\right)$ is defined, \textbf{then} $m_{k - 1}$ is also defined
+\end{theorem}
+
+Note, proving the existence of high power moments is more aggravating than existence
+of Expectation!
+
+\begin{definition}[Centralised moment]
+    The \textbf{centralised moment} (absolute) of a discrete random variable with expectation
+    is the $k$th moment of $X - \E \left[X\right]$ ($|X - \E \left[X\right]|$)
+\end{definition}
+
+\begin{theorem}[7.3 Chebishev inequality]
+    Let $X$ be a discrete random variable with expectation and moment $k$. Then for
+    every $a > 0$: \[
+        \p \left(| X - \E \left[X | \geq a\right]\right) \leq \displaystyle\frac{\E \left[|X - \E \left[X\right]|^k\right]}{a^k}
+    \]
+\end{theorem}
+
+\begin{definition}[7.4]
+    Let there be a discrete random variable $X$. The \textbf{moment generating function} of $X$
+    is \[
+        M_X \left(t\right) = \E \left[e^{tX}\right]
+    \]
+    Random variable $X$ that $M_X \left(t\right)$ defined for $\delta < t < \delta$
+    is said to have \textbf{exponential moment}
+\end{definition}
+
+\begin{example}[]
+    Let $X \sim Ber \left(p\right)$. Find $\E \left[e^{tX}\right]$
+    \begin{proof}[Solution]
+        \begin{align*}
+            \E \left[e^{tX}\right] &= e^{t0} p_X \left(0\right) + e^{t \cdot 1}p_X \left(1\right) \\
+                                   &= 1 \left(1 - p\right) + e^t p \\
+                                   &= 1 - p + p e^t
+        \end{align*}
+
+        Additionally:
+        \begin{align*}
+            M_X \left(t\right) &= 1 - p + pe^t \\
+            M_X' \left(t\right) &= pe^t \implies M_X' \left(0\right) = p e^0 = p = \E \left[X\right] \\
+            M_X^{(k)} \left(t\right) = pe^t \implies  M_X^{(k)} \left(0\right) = p = \E \left[X^2\right]
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{theorem}[7.5]
+    If $X, Y$ are independent random variables with exponential moments, then $M_{X + Y} \left(t\right) = M_X \left(t\right) + M_Y \left(t\right)$
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            M_{X + Y} \left(t\right) &= \E \left[e^{t \left(X + Y\right)}\right] \\
+                                     &= \E \left[e^{tX} e^{tY}\right] \\
+                                     &= \E \left[e^{tX}\right] \E \left[e^{tY}\right] \\
+                                     &= M_X \left(t\right) M_Y \left(t\right) \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\subsubsection{Moment generation for Bernoulli random variables}\label{sec:Moment generation for Bernoulli random variables} % (fold)
+Let there be $X \sim Ber \left(p\right)$: \begin{align*}
+    M_X \left(t\right) &= \E \left[e^{tX}\right] \\
+                       &= e^{t \cdot 1} \p \left(X = 1\right) + e^{t \cdot 0} \p \left(X = 0\right) \\
+                       &= e^t p + 1 - p
+\end{align*}
+% subsubsection Moment generation for Bernoulli random variables (end)
+
+\subsubsection{Moment generation for Binomial random variables}\label{sec:Moment generation for Binomial random variables} % (fold)
+Let there be $X \sim Bin \left(p\right)$:
+We will use the fact that $X \stackrel{d}{=} \displaystyle\sum_{i \in \left[n\right]}^{}X_i$ where every $X_i$ is
+independent, and the theorem $M_{X + Y} \left(t\right) = M_X \left(t\right) M_Y \left(t\right)$
+\begin{align*}
+    M_X \left(t\right) &= \displaystyle\Pi_{i \in \left[n\right]}^{}M_{X_i} \left(t\right) \\
+                       &= \displaystyle\Pi_{i \in \left[n\right]}^{}\left(e^tp + 1 - p\right) \\
+                       &= \left(e^tp + 1 - p\right)^n \\
+\end{align*}
+% subsubsection Moment generation for Binomial random variables (end)
+
+
+\subsubsection{Moment generation for Geometric random variables}\label{sec:Moment generation for Geometric random variables} % (fold)
+Let there be $X \sim Geo \left(p\right)$: \begin{align*}
+    M_X \left(t\right) &= \displaystyle\sum_{n \in \N}^{}e^{tn}p \left(1 - p\right)^{n - 1} \\
+                       &= e^tp \displaystyle\sum_{n \in \N}^{}\left[e^t \left(1 0 p\right)\right]^{n - 1} \\
+                       &= \displaystyle\frac{e^tp}{1 - e^t + e^tp} \\
+                       &= \displaystyle\frac{p}{e^{-t} + p - 1} \\
+\end{align*}
+% subsubsection Moment generation for Geometric random variables (end)
+
+\subsubsection{Moment generation for Poisson random variables}\label{sec:Moment generation for Poisson random variables} % (fold)
+Let there be $X \sim Pois \left(\lambda\right)$: \begin{align*}
+    M_X \left(t\right) &= \displaystyle\sum_{n \in \N_0}^{}e^{tn}e^{-\lambda}\displaystyle\frac{\lambda^n}{n!} \\
+                       &= e^{-\lambda} \displaystyle\sum_{\left(\lambda e^t\right)^n}^{n!} \\
+                       &= e^{-\lambda}e^{\lambda e^t} \\
+                       &= e^{\lambda \left(e^t - 1\right)} \\
+\end{align*}
+% subsubsection Moment generation for Poisson random variables (end)
+
+\subsubsection{Chernoff inequality}\label{sec:Chernoff inequality} % (fold)
+\begin{theorem}[7.8]
+    Let $X$ be a discrete random variable with exponential moment. Then for all $a \in \R$
+    and for all $t > 0$ over which $M_X \left(t\right)$ is defined, it is true that \[
+        \p \left(X \geq a\right) \leq M_X \left(t\right)e^{-ta}
+    \]
+
+    \begin{proof}[Proof]
+        The proof depends on the Markov inequality. We will note that $e^x > 0$
+        for every $x \in \R$, and this is also a monotonically increasing function.
+        For $t > 0$, \begin{align*}
+            \p \left(X \geq a\right) &= \p \left(e^{tX} \geq e^{ta}\right) \\
+                                     &\leq \displaystyle\frac{\E \left[e^{tX}\right]}{e^{ta}} \\
+                                     &= M_X \left(t\right) e^{-ta} \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    \begin{proof}[Solution]
+        $n$ balls are thrown into $n$ baskets. For every ball, there is equal probability
+        to land in each basket, without dependence on the other balls. We will limit
+        from above the standard stress with the stress of the most stressed basket.
+        $S_i$ will be the number of balls that landed in the $i$th basket. we will write
+        $S = \displaystyle\max_{i \in \left[n\right]} \left\{S_i\right\} $. We will write $X_i \sim Ber \left(\displaystyle\frac{1}{n}\right)$
+        the indicator of the event "the $i$th ball landed in the basket number $1$".
+        It is true that $S_1 = \displaystyle\sum_{i \in \left[n\right]}^{}X_i \sim Bin \left(n, \displaystyle\frac{1}{n}\right)$.
+        We saw that $M_{S_1} \left(t\right) = \left(e^t \displaystyle\frac{1}{n} + 1 - \displaystyle\frac{1}{n}\right)^n = \left(1 + \displaystyle\frac{e^t - 1}{n}\right)^n \leq exp \left(e^t - 1\right)$.
+        \begin{align*}
+            \p \left(S_1 \geq a\right) &\leq M_{S_1} \left(t\right) e^{-ta} \\
+                                       &\leq exp \left(e^t - 1 - ta\right) \\
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[Another example (not in presentation)]
+    When tossing a million weighted coins, which toss heads with probability $p$,
+    what is the probability that we get result between $495k$ and $505k$ heads?
+    In this question $k$ indicates thousand.
+    \begin{proof}[Solution]
+        \begin{align*}
+            \p \left(|X - 500k| > 5k\right) &=
+        \end{align*}
+    \end{proof}
+\end{example}
+
+% subsubsection Chernoff inequality (end)
+
+% section Moments and Chernoff Hoeffding (end)
+\end{document}
