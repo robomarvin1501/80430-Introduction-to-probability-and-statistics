@@ -261,7 +261,21 @@ Let there be $X \sim Pois \left(\lambda\right)$: \begin{align*}
     In this question $k$ indicates thousand.
     \begin{proof}[Solution]
         \begin{align*}
-            \p \left(|X - 500k| > 5k\right) &=
+            X \sim Bin \left(10^6, \displaystyle\frac{1}{2}\right) \\
+            \implies M_X \left(t\right) = \left(e^tp + 1 - p\right)^n \\
+            \implies \left(p = \displaystyle\frac{1}{2}\right) &= \left(\displaystyle\frac{e^t - 1}{2} + 1\right)^n \\
+            \p \left(X \geq a\right) \leq M_X \left(t\right)e^{-ta} \\
+                                                               &= \left(\displaystyle\frac{e^t - 1}{2} + 1\right)^n e^{-ta} \\
+                                                               &\stackrel{e^x \geq 1 + x}{\leq} exp \left(n \displaystyle\frac{e^t - 1}{2} - ta\right) \\
+                                                               \text{In order to find the optimal limit, we will minimise the last function by minimising the exponent} \\
+            0 &= \displaystyle\frac{d}{dt} \left(n \displaystyle\frac{e^t - 1}{2} - ta\right)  \\
+              &= \displaystyle\frac{n}{2}e^t - a \\
+            \displaystyle\frac{2a}{n} = e^t &\Leftrightarrow t = \ln \left(\displaystyle\frac{2a}{n}\right) \\
+            exp \left(n \displaystyle\frac{e^t - 1}{2} - ta\right) &= exp \left(n \displaystyle\frac{\displaystyle\frac{2a}{n} - 1}{2} - a ln \left(\displaystyle\frac{2a}{n}\right)\right) \\
+            \text{So when } a = 505,000 \text{ and } n=10^6 \text{ we get the limit } 1.5 \cdot 10^{-11} \\
+            \text{We also need to find that} X \geq 495,000 \text{ Fortunately} n - X \sim Bin \left(n, \displaystyle\frac{1}{2}\right) \\
+            \p \left(\left|X - \displaystyle\frac{10^6}{2}\right| \geq 505,000\right) &= \p \left(X \geq a\right) + \p \left(n - X \geq a\right) \\
+                                                                                      &\leq 3 \cdot 10^{-11}
         \end{align*}
     \end{proof}
 \end{example}

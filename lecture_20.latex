@@ -1,0 +1,253 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\B}{\ensuremath{\mathbbm{B}}}
+
+
+\title{Lecture 20}
+\author{Gidon Rosalki}
+\date{2025-01-12}
+
+
+\begin{document}
+\maketitle
+
+\begin{example}[Another example (Improving the limit of binomial random variables)]
+    When tossing a million weighted coins, which toss heads with probability $p$,
+    what is the probability that we get result between $495k$ and $505k$ heads?
+    In this question $k$ indicates thousand.
+    \begin{proof}[Solution]
+        \begin{align*}
+            X \sim Bin \left(10^6, \displaystyle\frac{1}{2}\right) \\
+            \implies M_X \left(t\right) = \left(e^tp + 1 - p\right)^n \\
+            \implies \left(p = \displaystyle\frac{1}{2}\right) &= \left(\displaystyle\frac{e^t - 1}{2} + 1\right)^n \\
+            \p \left(X \geq a\right) \leq M_X \left(t\right)e^{-ta} \\
+                                                               &= \left(\displaystyle\frac{e^t - 1}{2} + 1\right)^n e^{-ta} \\
+                                                               &\stackrel{e^x \geq 1 + x}{\leq} \exp \left(n \displaystyle\frac{e^t - 1}{2} - ta\right) \\
+                                                               \text{In order to find the optimal limit, we will minimise the last function by minimising the exponent} \\
+            0 &= \displaystyle\frac{d}{dt} \left(n \displaystyle\frac{e^t - 1}{2} - ta\right)  \\
+              &= \displaystyle\frac{n}{2}e^t - a \\
+            \displaystyle\frac{2a}{n} = e^t &\Leftrightarrow t = \ln \left(\displaystyle\frac{2a}{n}\right) \\
+            \exp \left(n \displaystyle\frac{e^t - 1}{2} - ta\right) &= \exp \left(n \displaystyle\frac{\displaystyle\frac{2a}{n} - 1}{2} - a ln \left(\displaystyle\frac{2a}{n}\right)\right) \\
+            \text{So when } a = 505,000 \text{ and } n=10^6 \text{ we get the limit } 1.5 \cdot 10^{-11} \\
+            \text{We also need to find that} X \geq 495,000 \text{ Fortunately} n - X \sim Bin \left(n, \displaystyle\frac{1}{2}\right) \\
+            \p \left(\left|X - \displaystyle\frac{10^6}{2}\right| \geq 505,000\right) &= \p \left(X \geq a\right) + \p \left(n - X \geq a\right) \\
+                                                                                      &\leq 3 \cdot 10^{-11}
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[]
+    \begin{proof}[Solution]
+        $n$ balls are thrown into $n$ baskets. For every ball, there is equal probability
+        to land in each basket, without dependence on the other balls. We will limit
+        from above the standard stress with the stress of the most stressed basket.
+        $S_i$ will be the number of balls that landed in the $i$th basket. we will write
+        $S = \displaystyle\max_{i \in \left[n\right]} \left\{S_i\right\} $. We will write $X_i \sim Ber \left(\displaystyle\frac{1}{n}\right)$
+        the indicator of the event "the $i$th ball landed in the basket number $1$".
+        It is true that $S_1 = \displaystyle\sum_{i \in \left[n\right]}^{}X_i \sim Bin \left(n, \displaystyle\frac{1}{n}\right)$.
+        We saw that $M_{S_1} \left(t\right) = \left(e^t \displaystyle\frac{1}{n} + 1 - \displaystyle\frac{1}{n}\right)^n = \left(1 + \displaystyle\frac{e^t - 1}{n}\right)^n \leq \exp \left(e^t - 1\right)$.
+        \begin{align*}
+            \p \left(S_1 \geq a\right) &\leq M_{S_1} \left(t\right) e^{-ta} \\
+                                       &\leq \exp \left(e^t - 1 - ta\right) \\
+            S &= \displaystyle\max_{} \left\{S_i | i \in \left[n\right]\right\}  \\
+            \p \left(S \geq a\right) &\leq \displaystyle\sum_{i \in \left[n\right]}^{}\p \left(S_i \geq a\right) \\
+                                     &\stackrel{S_i \text{ have equal distribution} }{=}  n \p \left(S_1 \geq a\right) \\
+                                     &\leq n \exp \left(e^t - 1 - ta\right) \\
+            a &= a \left(n\right) \\
+              &= \displaystyle\frac{c \ln \left(n\right)}{\ln \left(\ln \left(n\right)\right)} \\
+        \end{align*}
+        This value for $a$ causes our exponent to tend to 0, and thus we have minimised (findable through calculation)
+    \end{proof}
+\end{example}
+
+\begin{theorem}[The lemma of Hoffding]
+    Let there be $X$, a random variable such that $\left|X\right| \stackrel{a.s}{\leq} 1$, and $\E \left[X\right] = 0$.
+    \textbf{Then} for every $t \in \R$, it is true that \[
+        M_X \left(t\right) = \E \left[e^{tX}\right] \leq exp \left(\displaystyle\frac{t^2}{2}\right)
+    \]
+    \begin{proof}[Proof ]
+        In tutorial
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[7.12 - Hoffding inequality]
+    Let there be $\left(X_k\right)_{k \in \left[n\right]}$ a series of independent
+    random variables such that $\E \left[X_k\right] = 0$ and for all $k \in \left[n\right]$,
+    $\left|X_k\right| \stackrel{a.s}{\leq} 1$. \textbf{Then} for every $a > 0$ \[
+        \p \left(\displaystyle\sum_{k \in \left[n\right]}^{}X_k \geq a\right) \leq \exp \left(- \displaystyle\frac{a^2}{2n}\right)
+    \]
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \text{From the independence } &M_{\displaystyle\sum_{}^{}X_k} \left(t\right) = \displaystyle\Pi_{k \in \left[n\right]} M_{X_k} \left(t\right) \\
+            \displaystyle\Pi_{k \in \left[n\right]} M_{X_k} \left(t\right) &\leq \displaystyle\Pi_{k \in \left[n\right]} \exp \left(\displaystyle\frac{t^2}{2}\right) \\
+                                                                           &= exp \left(\displaystyle\frac{nt^2}{2}\right) \\
+            \p \left(X \geq a\right) &\leq M_{\displaystyle\sum_{X_k}^{}} \left(t\right)e^{-ta} \\
+                                     &\leq \exp \left(\displaystyle\frac{nt^2}{2} - ta\right) \\
+            0 &= \displaystyle\frac{d}{dt} \left(\displaystyle\frac{nt^2}{2} - ta\right) \\
+              &= nt - a \\
+            t = \displaystyle\frac{a}{n} &\implies \exp \left(\displaystyle\frac{t^2n}{2} - ta\right) \\
+            &= \exp \left(- \displaystyle\frac{a^2}{2n}\right)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[7.13 - Conclusion]
+    Let there be $\left(X_k\right)_{k \in \left[n\right]}$ a series of independent
+    random variables such that $\left|X_k - \E \left[X_k\right]\right| \stackrel{a.s}{\leq}  M$
+    for every $k \in \left[n\right]$. If we write $X = \displaystyle\sum_{k \in \left[n\right]}^{}X_k$ \textbf{then}
+    for every $a > 0$ \begin{align*}
+        \p \left(X - \E \left[X\right] \geq a\right) &\leq \exp \left(- \displaystyle\frac{a^2}{2Mn}\right) \\
+        \p \left(\left|X - \E \left[X\right]\right| \geq a\right) &\leq 2 \exp \left(- \displaystyle\frac{a^2}{2Mn}\right)
+    \end{align*}
+\end{theorem}
+
+\begin{example}[7.15]
+    Let us once again throw $10^6$ coins, and find the limit of the probability!
+    We will write $X = \displaystyle\sum_{i = 1}^{10^6} X_i$ where $X_i \sim Unif \left(\left\{ -1, 1\right\}\right)$.
+    $X$ is the difference between the amount of heads and tails. The question, is
+    how to limit the probability that $\left|X\right| \geq 10^4$.
+    \begin{align*}
+        \p \left(\left|X\right| \geq 10^4\right) &\stackrel{7.13}{\leq}  2 \exp \left(- \displaystyle\frac{10^8}{2 \cdot 10^6}\right) \\
+                                                 &= 2 \exp \left(-50\right) \\
+                                                 &\approx 10^{-22} \\
+    \end{align*}
+\end{example}
+
+\section{Continuous random variables}\label{sec:Continuous random variables} % (fold)
+\subsubsection{The problem with continuous distribution on [0, 1]}\label{sec:The problem with continuous distribution on [0, 1]} % (fold)
+Let us assume a line in the sand, and we want the probability that a raindrop falls
+on a certain point. This naturally would be uniform, however this gives us infinite
+points of equal probability $\alpha$, and the sum of these does not converge.
+We can however say that the probability of falling on the first half of the line to be
+$\displaystyle\frac{1}{2}$, and so on.
+
+An additional problem, it is impossible to asssume that $\p$ will be defined for
+every $2^\Omega$, which can cause contradictions with mathematical axioms.
+% subsubsection The problem with continuous distribution on [0, 1] (end)
+
+\begin{definition}[]
+    $\F$ the collection of events is $\sigma$-algebra of sets, which is to say, the collection
+    of subsets of $\Omega$ that is closed to inverses, and finite unions.
+\end{definition}
+
+\begin{definition}[]
+    On $\R$ we will write $\B \left(\R\right) \subseteq 2^\R$, to the be the smallest $\sigma$-algebra
+    that contains all the open segments $\left(a, b\right)$. In the same method
+    we will define $\B \left(\left[0, 1\right]\right)$
+\end{definition}
+
+\begin{definition}[]
+    A random variable on $\left(\Omega, \F, \p\right)$ is the function $X : \Omega \to \R$ such
+    that for all $A \in \B \left(\R\right)$ such that $X^{-1} \left(A\right) \in \F$
+\end{definition}
+
+\begin{definition}[Correct probability space]
+    The \textbf{correct probability space} is $\left(\left[0, 1\right], \B \left(\left[0, 1\right]\right), \p\right)$
+    where $\p \left(\left(a, b\right)\right) = b - a$ for all $0 \leq a \leq b \leq 1$
+\end{definition}
+
+\begin{definition}[8.12]
+    Let ther ebe $X$ a random variable on $\left(\Omega, \F, \p\right)$. The \textbf{cumulative distribution function}
+    of $X$ is \[
+        F_X : \R \to \R_{\geq 0}\ F_X \left(t\right) = \p \left(X \leq t\right)
+    \]
+    and \textbf{the residual distribution function} is \[
+        \overline{F}_X \left(t\right) = 1 - F_X \left(t\right) = \p \left(X > t\right)
+    \]
+\end{definition}
+
+\subsubsection{Examples}\label{sec:Examples} % (fold)
+\begin{itemize}
+    \item $X \sim Ber \left(p\right) \implies F_X = \left(1 - p\right) \cdot \1_{[0, \infty)} + p \1_{[1, \infty)}$
+    \item $X \sim Unif \left(\left[n\right]\right) \implies F_X = \displaystyle\frac{1}{n}\displaystyle\sum_{k = 1}^{n}\1_{\left[k, \infty\right]}$
+    \item $X \sim Geo \left(p\right) \implies \overline{F}_X \left(t\right) = \p \left(X > t\right) = \left(1 0 p\right)^{\left\lfloor t \right\rfloor}$
+    \item In general, for $X$ a discrete random variable, $F_X \left(t\right) = \displaystyle\sum_{x \in Supp \left(X\right) \cap \left(-\infty, t\right]}^{}p_X \left(x\right)$
+\end{itemize}
+% subsubsection Examples (end)
+
+\begin{theorem}[8.13]
+    $F: \R \to \R$ is a cumulative distribution function of some random variable \textbf{if and only if}
+    $F$ is monotonically increasing, continuous from the right, and enables the following: \begin{align*}
+        \displaystyle\lim_{t \to -\infty} F \left(t\right) = 0 \\
+        \displaystyle\lim_{t \to \infty} F \left(t\right) = 1
+    \end{align*}
+    \begin{proof}[Proof ]
+        We are only doing one direction. \\
+        \begin{enumerate}
+            \item If $t < w$, then $\left(X \leq t\right) \subseteq \left(X \leq w\right)$.
+                This implies \[
+                    F_X \left(t\right) = \p \left(X \leq t\right) \leq \p \left(X \leq w\right) = F_X \left(w\right)
+                \]
+            \item We will choose $X_n \stackrel{n \to \infty}{\longrightarrow} -\infty$.
+                So $B_n = \displaystyle\bigcap_{k \in \left[n\right]}^{}\left(-\infty, X_k\right)$. $B_n$ is a descending
+                series of events, and also $\displaystyle\bigcap_{n \in \N}^{}B_n = \emptyset$,
+                and so
+                \begin{align*}
+                    \p \left(\emptyset\right) &= 0  \\
+                                              &= \p \left(\displaystyle\bigcap_{n \in \N}^{}B_n\right) \\
+                                              &= \displaystyle\lim_{n \to \infty} \p \left(B_n\right) \\
+                                              &= \displaystyle\lim_{n \to \infty} F_X \left(\displaystyle\min_{1 \leq k \leq n} \left\{X_k\right\} \right) \\
+                \end{align*}
+                and this is true for all $X_k \stackrel{k \to \infty}{\longrightarrow} -\infty$ and therefore
+                according to the Heine criterion for converging series \[
+                    \displaystyle\lim_{t \to -\infty}F_x \left(t\right) = 0
+                \]
+            \item We will choose $\displaystyle\lim_{n \to \infty}X_n = \infty$,
+                and $A_n = \displaystyle\bigcup_{k \in \left[n\right]}^{} \left(-\infty, X_k\right)$
+                and we have an increasing series of events such that $\displaystyle\bigcup_{n \in \N}^{}A_n = \R$,
+                which implies continuity of the probability function \begin{align*}
+                    1 &= \p_X \left(\R\right) \\
+                     &= \p_X \left(\displaystyle\bigcup_{n \in \N}^{}A_n\right) \\
+                     &= \displaystyle\lim_{n \to \infty} \p \left(A_n\right) \\
+                     &= F_X \left(\displaystyle\max_{1 \leq k \leq n} \left\{X_k\right\} \right)
+                \end{align*}
+            \item We want to show that $\displaystyle\lim_{t \to a^+}F_X \left(t\right) = F_X \left(a\right)$.
+                Let there be $a < X_k \stackrel{k \to \infty}{\longrightarrow} a$,
+                (a series that converges to $a$ from the right). \begin{align*}
+                    B_n &= \displaystyle\bigcap_{k \in \left[n\right]}^{} \left(-\infty, X_k\right)
+                \end{align*}
+                $B_n$ is a descending series of events, such that $\displaystyle\bigcap_{n \in \N}^{}B_n = \left(-\infty, a\right]$.
+                \begin{align*}
+                    F_X \left(a\right) &= \p \left(X \leq a\right) \\
+                                       &= \p_X \left(\left(-\infty, a\right]\right) \\
+                                       &= \p_X \left(\displaystyle\bigcap_{n \in \N}^{}B_n\right) \\
+                                       &= \displaystyle\lim_{n \to \infty} \p_X \left(B_n\right) \\
+                                       &= \displaystyle\lim_{n \to \infty} \p_X \left(-\infty, \displaystyle\min_{1 \leq k \leq n} \left\{X_k\right\} \right) \\
+                                       &= \displaystyle\lim_{n \to \infty} F_X \left(\displaystyle\min_{1 \leq k \leq n} \left\{X_k\right\} \right)
+                \end{align*}
+                and this is true for every series as written above, and therefore we have
+                continuity from the right.
+        \end{enumerate}
+    \end{proof}
+\end{theorem}
+% section Continuous random variables (end)
+
+\end{document}
