@@ -1,0 +1,254 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\B}{\ensuremath{\mathbbm{B}}}
+
+\title{Tutorial 11}
+\author{Gidon Rosalki}
+\date{2025-01-14}
+
+
+\begin{document}
+\maketitle
+
+\section{Moment generating function}\label{sec:Moment generating function} % (fold)
+\begin{definition}[Moment generating function]
+    The \textbf{moment generativing function} of $X$ is \[
+        M_X \left(t\right) = \E \left[e^{tX}\right]
+    \]
+    A random variable with a moment generating function defined around some area
+    of the origin is called \textbf{a random variable with exponential moment}
+\end{definition}
+
+Note, the moment generating function is defined through the expectation of a function
+of the random variable. This calculation is carried out as follows: \\
+Let there be $X$ a random variable, and $g: \R \to \R$ such that $g \left(x\right)$ has
+expectation. The \[
+    \E \left[g \left(x\right)\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}g \left(x\right) p_X \left(x\right)
+\]
+\subsection{Chernoff inequality}\label{sub:Chernoff inequality} % (fold)
+\begin{definition}[]
+    Let there be $X$ a random variable with exponential moment, then for all $t > 0$
+    such that $M_X \left(t\right)$ is finite, and for every $a \in \R$ \[
+        \p \left(X \geq a\right) \leq M_X \left(t\right) e^{-ta}
+    \]
+\end{definition}
+
+\begin{example}[]
+    Let there be $X \sim Pois \left(\lambda\right)$. We saw that $\E \left[X\right] = Var \left[X\right] = \lambda$.
+    Therefore from the Chebishev inequality: \[
+        \p \left(\left|X - \lambda\right| \geq \lambda\right) \leq \displaystyle\frac{\lambda}{\lambda^2} = \displaystyle\frac{1}{\lambda}
+    \]
+    Since $X$ only accepts non negative values, \begin{align*}
+        \left\{\left|X - \lambda\right|\geq \lambda\right\} &= \left\{X = 0\right\} \cup \left\{X > 2\lambda\right\} \\
+        \implies \p \left(\left|X - \lambda\right| \geq \lambda\right) - \p \left(\left\{X = 0\right\}\right) &= \p \left(X > 2\lambda\right) \\
+    \end{align*}
+    and from the Chernoff inequality \begin{align*}
+        \p \left(X \geq 2\lambda\right) &\leq M_X \left(t\right)e^{-2\lambda t} \\
+        M_X \left(t\right) &= \E \left[e^{tX}\right] \\
+                           &= \displaystyle\sum_{n = 0}^{\infty}e^{tn} \p \left(X = n\right) \\
+                           &= \displaystyle\sum_{n = 0}^{\infty}e^{tn} \displaystyle\frac{e^{-\lambda} \lambda^n}{n!} \\
+                           &= e^{-\lambda} \displaystyle\sum_{n = 0}^{\infty}\displaystyle\frac{\left(e^t \lambda\right)^n}{n!} \\
+                           &= e^{-\lambda} \cdot e^{e^t \lambda} \\
+                           &= e^{\lambda \left(e^t - 1\right)} \\
+        \implies \p \left(X > 2\lambda\right) &\leq e^{\lambda \left(e^t - 1\right)} e^{-2 \lambda t} \\
+        \implies \p \left(\left|X - \lambda\right| \geq \lambda\right) &\leq e^{\lambda \left(e^t - 1\right) - 2 \lambda t} + \p \left(\left\{X = 0\right\}\right) \\
+                                                                       &= e^{\lambda \left(e^t - 1\right) - 2 \lambda t} + e^{-\lambda} \\
+        f \left(t\right) &= e^{\lambda \left(e^t - 2t - 1\right)} \\
+        f' \left(t\right) &= e^{\lambda \left(e^t - 2t - 1\right)} \cdot \lambda \left(e^t - 2\right) \\
+        e^t - 2 = 0 &\implies t = \ln \left(2\right) \\
+        \implies e^{\lambda \left(e^t - 1\right) - 2 \lambda t} + e^{-\lambda} &\approx e^{-0.39 \lambda} + e^{-\lambda} \\
+    \end{align*}
+\end{example}
+% subsection Chernoff inequality (end)
+
+\subsection{Hoffding inequality}\label{sub:Hoffding inequality} % (fold)
+\begin{definition}[]
+    Let there be $\left\{X_i\right\}_{i = 1}^n$ a series of independent random variables
+    such that $Supp \left(X_i\right) \subseteq \left[-1, 1\right]$, and $\E \left[X_i\right] = 0$.
+    For every $a > 0$ \[
+        \p \left(\displaystyle\sum_{i = 1}^{n} X_i \geq a\right) \leq \exp \left(-\displaystyle\frac{a^2}{2n}\right)
+    \]
+    Note: In order to use Hoffding, it is sufficient that $\left\{X_i\right\}_{i = 1}^n$ are independent
+    random variables, and bound.
+\end{definition}
+
+\begin{definition}[Hoffding - general formula]
+    $\left\{X_i\right\}_{i = 1}^n$ is a series of independent random variables, such that \[
+        \left|X_k - \E \left[X_k\right]\right| \stackrel{a.s}{\leq} M
+    \]
+    We will write \[
+        X = \displaystyle\sum_{k = 1}^{n}X_k
+    \]
+    Then it is true that \begin{align*}
+        \p \left(X - \E \left[X\right] \geq a\right) &\leq \exp \left(- \displaystyle\frac{a^2}{2nM^2}\right) \\
+        \p \left(\left|X - \E \left[X\right]\right| \geq a\right) &\leq 2 \exp \left(- \displaystyle\frac{a^2}{2nM^2}\right) \\
+    \end{align*}
+\end{definition}
+
+\begin{exercise}
+    We toss a fair coin $n$ times, where $n$ is odd. Let there be $X$, the number of times
+    that we threw 2 heads in a row $\left(HH\right)$. Use Hoffding in order to get
+    an upper limit on \[
+        \p \left(\left|X = \displaystyle\frac{n - 1}{4}\right| \geq a\right)
+    \]
+
+    \begin{proof}[Solution]
+        We will define a series of indicators $\left\{X_{i,i+1}\right\}_{i \in \left[n - 1\right]}$, where
+        each random variable is of the event that in the positions $i, i + 1$  there
+        is heads. Note, that the indicators are not independent of each other, but
+        we may write \begin{align*}
+            X &= \displaystyle\sum_{i = 1}^{n - 1}X_{i,i+1} \\
+              &= \displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}} X_{2i, 2i + 1} + \displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}} X_{2i - 1, 2i}
+        \end{align*}
+        which are in fact independent. So \begin{align*}
+            \left|X - \displaystyle\frac{n - 1}{4}\right| &\leq \left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 2}{2}}X_{2i, 2i + 1} - \displaystyle\frac{n - 1}{8}\right|
+            + \left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i - 1, 2i} - \displaystyle\frac{n - 1}{8}\right| \\
+        \end{align*}
+        In order to ensure that the left hand side is greater than $a$, we need at least
+        one of the sums on the right to be greater than $\displaystyle\frac{a}{2}$. Therefore \begin{align*}
+            \left\{\left|X - \displaystyle\frac{n - 1}{4}\right| \geq a\right\} &\subseteq \left\{\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i,2i+1} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right\}
+                \cup \left\{\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i-1,2i} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right\} \\
+                \implies \p \left(\left|X - \displaystyle\frac{n - 1}{4}\right| \geq a\right) &\leq \p \left(\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}} X_{2i,2i+1} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right)
+                + \p \left(\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i - 1,2i} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right) \\
+        \end{align*}
+        We will note that $X_{i,i+1} \sim Ber \left(\displaystyle\frac{1}{4}\right)$, so $\E \left[X_{i,i+1}\right] = \displaystyle\frac{1}{4}$. So \begin{align*}
+            \E \left[\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i - 1, 2i}\right] &= \displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}\E \left[X_{2i - 1, 2i}\right] \\
+                                                                                                   &= \displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}} \displaystyle\frac{1}{4} \\
+                                                                                                   &= \displaystyle\frac{n - 1}{2} \cdot \displaystyle\frac{1}{4} \\
+                                                                                                   &= \displaystyle\frac{n - 1}{8} \\
+        \end{align*}
+        and similarly \begin{align*}
+            \E \left[\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i, 2i + 1}\right] &= \displaystyle\frac{n - 1}{8} \\
+        \end{align*}
+        Since both sums are over independent series: \begin{align*}
+            \p \left(\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}} X_{2i,2i+1} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right) &\leq 2 \exp \left(-\displaystyle\frac{a^2}{4 \left(n - 1\right)}\right) \\
+            \p \left(\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i - 1,2i} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right) &\leq 2 \exp \left(-\displaystyle\frac{a^2}{4 \left(n - 1\right)}\right) \\
+        \end{align*}
+        and therefore \begin{align*}
+                \p \left(\left|X - \displaystyle\frac{n - 1}{4}\right| \geq a\right) &\leq \p \left(\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}} X_{2i,2i+1} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right)
+                + \p \left(\left|\displaystyle\sum_{i = 1}^{\displaystyle\frac{n - 1}{2}}X_{2i - 1,2i} - \displaystyle\frac{n - 1}{8}\right| \geq \displaystyle\frac{a}{2}\right) \\
+                                                                                              &= 4 \exp \left(-\displaystyle\frac{a^2}{4 \left(n - 1\right)}\right) \\
+        \end{align*}
+    \end{proof}
+\end{exercise}
+% subsection Hoffding inequality (end)
+
+% section Moment generating function (end)
+
+\section{Continuous random variables}\label{sec:Continuous random variables} % (fold)
+\begin{definition}[]
+    The random variable $X$ is absolutely continuous if there exists a function $f_X:\R \to \left[0, \infty\right)$ such
+    that for all $-\infty \leq a \leq b \leq \infty$: \[
+        \p \left(a \leq X \leq b\right) = \displaystyle\int_{a}^{b}f_X \left(t\right)dt
+    \]
+    the function $f_X$ is called the \textbf{density} function of $X$.
+\end{definition}
+
+\begin{theorem}[]
+    Let there be $X$ an absolutely continuous random variable, therefore \begin{enumerate}
+        \item $\forall a \in \R\ \p \left(X = a\right) = \displaystyle\int_{a}^{a}f_X \left(t\right) dt = 0$
+        \item $\forall -\infty \leq a \leq b \leq \infty\ \p \left(a < X \leq b\right) = \p \left(a \leq X < b\right) = \p \left(a < X < b\right) = \displaystyle\int_{a}^{b}f_X \left(t\right) dt$
+        \item $\displaystyle\int_{-\infty}^{\infty}f_X \left(t\right) dt = 1$
+        \item $F \left(t\right) = \p \left(X \leq t\right)$, the cumulative function of $X$.
+            It is true that $F' \left(t\right) = f_X \left(t\right)$
+    \end{enumerate}
+\end{theorem}
+
+\begin{exercise}
+    Given $X$ with the density function \[
+        f_X \left(t\right) = \begin{cases}
+            2C \left(2t - t^2\right), &\text{ if }t \in \left[0, 2\right]\\
+            0, &\text{ otherwise } \\
+        \end{cases}
+    \]
+    where $C$ is some constant.
+    \begin{enumerate}
+        \item Find $C$
+        \item Calculate the cumulative function $F \left(t\right) = \p \left(X \leq t\right)$
+    \end{enumerate}
+
+    \begin{proof}[Solution]
+        \begin{enumerate}
+            \item \begin{align*}
+                    1 &= \displaystyle\int_{-\infty}^{\infty}f_X \left(t\right) dt \\
+                      &= \displaystyle\int_{-\infty}^{0}0 dt  + \displaystyle\int_{0}^{2}2C \left(2t - t^2\right)dt + \displaystyle\int_{2}^{\infty}0 dt \\
+                      &= \displaystyle\int_{0}^{2}2C \left(2t - t^2\right)dt \\
+                      &= \left[2Ct^2 - \displaystyle\frac{1}{3}t^3\right]_{0}^{2} \\
+                    \implies 1 &= C \displaystyle\frac{8}{3} \\
+                    \implies C = \displaystyle\frac{3}{8} \\
+                \end{align*}
+            \item \begin{align*}
+                    \p \left(X \leq t\right) &= \begin{cases}
+                        0, &\text{ if }t \leq 0\\
+                        \displaystyle\int_{0}^{t}\displaystyle\frac{3}{4}\left(2x - x^2\right)dx, &\text{ if }t \in \left[0, 2\right]\\
+                        0, &\text{ if }t > 2
+                    \end{cases}\\
+                                             &= \begin{cases}
+                        0, &\text{ if }t \leq 0\\
+                        \displaystyle\frac{3}{4}\left(t^2 - \displaystyle\frac{t^3}{3}\right), &\text{ if }t \in \left[0, 2\right]\\
+                        0, &\text{ if }t > 2
+                    \end{cases}\\
+            \end{align*}
+        \end{enumerate}
+    \end{proof}
+\end{exercise}
+
+\begin{definition}[]
+    Let there be $X$ a continuous random variable. The expectation of  $X$ is defined
+    by the expression \[
+        \E \left[X\right] = \displaystyle\int_{-\infty}^{\infty}t f_X \left(t\right)dt
+    \]
+\end{definition}
+
+\begin{definition}[]
+    We will say that the absolutely continuous random variable $X$ distributes uniformly in
+    $\left[a, b\right]$, and we will write $X \sim Unif \left(\left[a, b\right]\right)$ if
+    its density function holds that \[
+        f_X \left(t\right) = \begin{cases}
+            \displaystyle\frac{1}{b - a}, &\text{ if }t \in \left[a, b\right]\\
+            0, &\text{ otherwise } \\
+        \end{cases}
+    \]
+    In this case the cumulative function of $X$ enables \[
+        F_X \left(t\right) = \begin{cases}
+            \displaystyle\frac{t - a}{b - a}, &\text{ if }t \in \left[a, b\right]\\
+            0, &\text{ if }t < a \\
+            1, &\text{ if }t > b \\
+
+        \end{cases}
+    \]
+\end{definition}
+
+Also, note that for an absolutely continuous random variable $X$ \[
+    \E \left[X\right] = \displaystyle\frac{a + b}{2}
+\]
+% section Continuous random variables (end)
+
+\end{document}

@@ -1,0 +1,269 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\B}{\ensuremath{\mathbbm{B}}}
+
+\title{Lecture 21}
+\author{Gidon Rosalki}
+\date{2025-01-13}
+
+
+\begin{document}
+\maketitle
+\begin{theorem}[8.13]
+    $F: \R \to \R$ is a cumulative distribution function of some random variable \textbf{if and only if}
+    $F$ is monotonically increasing, continuous from the right, and enables the following: \begin{align*}
+        \displaystyle\lim_{t \to -\infty} F \left(t\right) = 0 \\
+        \displaystyle\lim_{t \to \infty} F \left(t\right) = 1
+    \end{align*}
+    \begin{proof}[Proof ]
+        Last lecture
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[8.14]
+    If $X, Y$ are random variables such that $F_X = F_Y$ then $X \stackrel{d}{=} Y$
+
+    \begin{proof}[Proof ]
+        Let there be $X, Y$ random variables, such that $X^{-1} \left(a, b\right) \in \F$ (this is standard,
+        means random variable, need nothing else). Let us also assume that $F_X \equiv F_Y$.
+        We need to prove that $X \stackrel{d}{=} Y \Leftrightarrow \p_X \equiv \p_Y$. \\
+        Let there be $a < b \in \R$: \begin{align*}
+            \p_X \left(\left(a, b\right]\right) &= \p_X \left(\left(-\infty, b\right] \setminus \left(-\infty, a\right]\right) \\
+                                                &= \p_X \left(\left(-\infty, b\right]\right) - \p_X \left(\left(-\infty, a\right]\right) \\
+                                                &= F_X \left(b\right) - F_X \left(a\right) \\
+                                                &\stackrel{F_X \equiv F_Y}{=}  F_Y \left(b\right) - F_Y \left(a\right) \\
+                                                &= \p_Y \left(\left(a, b\right]\right) \\
+            \p_X \left(\left\{b\right\}\right) &= \p_X \left(\displaystyle\bigcap_{n \in \N}^{}\left(b - \displaystyle\frac{1}{n}, b\right]\right) \\
+            \text{Continuity of the probability function} &= \displaystyle\lim_{n \to \infty} \p_X \left(\left(b - \displaystyle\frac{1}{n}, b\right]\right) \\
+                                                          &= \displaystyle\lim_{n \to \infty}\p_Y \left(\left(b - \displaystyle\frac{1}{n}, b\right]\right) \\
+                                                          &= \p_Y \left(\left\{b\right\}\right) \\
+            \p_X \left(\left(a, b\right)\right) &= \p_X \left(\left(a, b\right] \setminus \left\{b\right\}\right) \\
+                                                &= \p_X \left(\left(a, b\right]\right) - \p_X \left(\left\{b\right\}\right) \\
+                                                &= \p_Y \left(\left(a, b\right]\right) - \p_Y \left(\left\{b\right\}\right) \\
+                                                &= \p_Y \left(\left(a, b\right)\right) \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[8.15]
+    $X$ is a random variable on $\left(\Omega, \F, \p\right)$ with \textbf{discrete} distribution
+    if there exists a finite $A \subseteq \R$ where $\p \left(X^{-1} \left(A\right)\right) = 1$
+\end{definition}
+
+\begin{definition}[8.16]
+    $X$ is a random variable on $\left(\Omega, \F, \p\right)$ with \textbf{continuous} distribution if
+    for every $x \in \R$ it is true that $\p \left(X = x\right) = 0$
+\end{definition}
+
+Note, we will generally say that the random variable is continuous. This does not
+mean that the random variable is continuous, but rather the cumulative function.
+
+\subsubsection{An example without discrete or continuous distribution}\label{sec:An example without discrete or continuous distribution} % (fold)
+On $\left(\left[0, 1\right], \B \left(\left[0, 1\right], \p\right)\right)$ is a
+corrected probability space, and we will define $X \left(\omega\right) = \displaystyle\min_{} \left\{\omega, \displaystyle\frac{1}{2}\right\} $.
+\[
+    F_X \left(t\right) = \begin{cases}
+        0, &\text{ if }t < 0 \leftrightarrow \p \left(-\infty, 0\right) = ?\\
+        t, &\text{ if } 0 \leq t \leq \displaystyle\frac{1}{2}\\
+        1, &\text{ if }t > \displaystyle\frac{1}{2} \text{ since } \left(-\infty, \displaystyle\frac{1}{2}\right] \subseteq \left(-\infty, t\right)\\
+
+    \end{cases}
+\]
+Second case explained:
+\begin{align*}
+    0 \leq t \leq \displaystyle\frac{1}{2} \\
+    F_X \left(t\right) &\stackrel{def}{=} \p \left(X \leq t\right) \\
+                       &= \p \left(\left(-\infty, t\right]\right) \\
+                       &= \p \left(\left(-\infty, 0\right) \cup \left[0, t\right]\right) \\
+                       &= \p \left(\left[0, t\right]\right) \\
+                       &= t - 0  \\
+                       &= t
+\end{align*}
+
+\begin{align*}
+    \p_X \left(\left\{\displaystyle\frac{1}{2}\right\}\right) &\stackrel{def}{=} \p \left(X = \displaystyle\frac{1}{2}\right) \\
+                                                              &= \p \left(\left[\displaystyle\frac{1}{2}, 1\right]\right) \\
+                                                              &= 1 - \displaystyle\frac{1}{2} \\
+                                                              &= \displaystyle\frac{1}{2} \\
+    a \ne \displaystyle\frac{1}{2}\ \p_X \left(\left\{a\right\}\right) &= \begin{cases}
+        0, &\text{ if }a > \displaystyle\frac{1}{2}\\
+        F_X \left(a\right) - \displaystyle\lim_{t \to a^-}F_X \left(t\right) = a - \displaystyle\lim_{t \to a^-}t = 0, &\text{ if }0 \leq a < \displaystyle\frac{1}{2}\\
+    \end{cases}
+\end{align*}
+% subsubsection An example without discrete or continuous distribution (end)
+
+\begin{definition}[9.1]
+    The random variable $X$ is called \textbf{absolutely continuous} if there exists
+    a function $f_X : \R \to \R_{\geq 0}$ such that for all $\infty \leq a \leq b \leq \infty$
+    it is true that \[
+        \p \left(X \in \left(a, b\right)\right) = \displaystyle\int_{a}^{b}f_X \left(x\right) dx
+    \]
+    This $f_X$ is called the \textbf{density function} of $X$
+\end{definition}
+
+\begin{theorem}[9.2 - Conclusion]
+    If $X$ is an absolutely continuous random variable, then \begin{align*}
+        F_X \left(s\right) &= \displaystyle\int_{-\infty}^{s}f_X \left(x\right)dx \\
+        \overline{F}_X \left(s\right) &= \displaystyle\int_{s}^{\infty}f_X \left(x\right)dx
+    \end{align*}
+\end{theorem}
+
+Reminder: $X$ is discrete if $F_X \left(t\right) = \displaystyle\sum_{x \in Supp \left(X\right) \cap \left(-\infty, t\right]}^{} p_X \left(x\right)$. \\
+The function $p_X$ was the point distribution if $\displaystyle\sum_{x \in Supp \left(X\right)}^{}p_X \left(x\right) = 1$. \\
+
+\begin{theorem}[9.3]
+    If $f: \R \to \R_{\geq 0}$ holds that $\displaystyle\int_{-\infty}^{\infty}f \left(x\right) dx = 1$, then $f$
+    is a density function of some random variable $X$.
+
+    \begin{proof}[Proof ]
+        We will define $F_X \left(s\right) = \displaystyle\int_{-\infty}^{s}f_X \left(x\right) dx$.
+        From the non negativity of $f$, $F_X$ is continuous rising in $s$.
+        \begin{align*}
+            \displaystyle\lim_{s \to -\infty}F_X \left(s\right) &= \displaystyle\lim_{s \to -\infty} \displaystyle\int_{\infty}^{s}f_X \left(x\right)dx = 0 \\
+            \displaystyle\lim_{s \to \infty}F_X \left(s\right) &= \displaystyle\lim_{s \to \infty}\displaystyle\int_{-\infty}^{s}f_X \left(x\right)dx \\
+                                                               &= \displaystyle\int_{-\infty}^{\infty} f_X \left(x\right) dx \\
+                                                               &= 1 \\
+        \displaystyle\lim_{s \to a^+} F_X \left(s\right) &= \displaystyle\inf_{s \geq a} F_X \left(s\right) \\
+                                                         &= F_X \left(a\right)
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}[9.4]
+    Let there be $X$ an absolutely continuous random variable with density $f_X$. Then
+    for every $a < b \in \R$ \[
+        \p \left(X \in \left[a, b\right]\right) = F_X \left(b\right) - F_X \left(a\right)
+    \]
+    additionally, for every $a \in \R$, it is true that $\p \left(X = a\right) = 0$
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \p \left(X = \left\{a\right\}\right) &= \p \left(\displaystyle\bigcap_{n \in \N}^{}\left(a - \displaystyle\frac{1}{n}, a\right]\right) \\
+                                                 &\stackrel{\text{continuous prob function} }{=} \displaystyle\lim_{n \to \infty} \p \left(\left(a - \displaystyle\frac{1}{n}, a\right]\right) \\
+                                                 &= \displaystyle\lim_{n \to \infty}F_X \left(a\right) - F_X \left(a - \displaystyle\frac{1}{n}\right) \\
+                                                 &= F_X \left(a\right) - \displaystyle\lim_{n \to \infty} F_X \left(a - \displaystyle\frac{1}{n}\right) \\
+                                                 &= F_X \left(a\right) - \displaystyle\lim_{t \to a^-} F_X \left(t\right)
+        \end{align*}
+        Let us assume that $X$ is absolutely continuous with density function $f_X$
+        \begin{align*}
+            \p_X \left(\left\{a\right\}\right) &= F_X \left(a\right) - \displaystyle\lim_{t \to a^-} F_X \left(t\right) \\
+                                               &= \displaystyle\int_{-\infty}^{a} f_X \left(x\right) dx - \displaystyle\lim_{t \to a^-} \displaystyle\int_{-\infty}^{t}f_X \left(x\right)dx \\
+                                               &= \displaystyle\lim_{t \to a^-} \displaystyle\int_{t}^{a}f_X \left(x\right) dx \\
+                                               &= \displaystyle\int_{a}^{a}f_X \left(x\right) dx \\
+                                               &= 0
+            \p_X \left(\left[a, b\right]\right) &\stackrel{\p_X \left(\left\{a\right\}\right) = \p_X \left(\left\{b\right\}\right) = 0}{=} \p_X \left(a, b\right) \\
+                                                &= \displaystyle\int_{a}^{b}f_X \left(x\right) dx \\
+                                                &= \displaystyle\int_{-\infty}^{b}f_X \left(x\right)dx - \displaystyle\int_{-\infty}^{a}f_X \left(x\right)dx \\
+                                                &= F_X \left(b\right) - F_X \left(a\right) \\
+        \end{align*}
+    \end{proof}
+\end{theorem}
+
+\begin{exercise}[9.5]
+    Let there be $X$ a random variable with density $f_X = \displaystyle\frac{x + 1}{2}\1_{\left[-1, 1\right]}$. Calculate
+    $\p \left(X \geq \displaystyle\frac{1}{2}\right)$ and the density of $Y = 5X$ and $Z = X^2$
+    \begin{proof}[Solution]
+        \begin{align*}
+            \displaystyle\int_{-\infty}^{\infty}f_X \left(x\right)dx &= \displaystyle\int_{-\infty}^{\infty} \displaystyle\frac{x + 1}{2} \1_{\left[-1, 1\right]} \left(x\right) dx \\
+                                                                     &= \displaystyle\int_{-1}^{1}\displaystyle\frac{x + 1}{2}dx \\
+                                                                     &= \left[\displaystyle\frac{x^2}{4} + \displaystyle\frac{x^2}{2}\right]_{-1}^1
+                                                                     &= \displaystyle\frac{1}{4} + \displaystyle\frac{1}{2} - \displaystyle\frac{1}{4} + \displaystyle\frac{1}{2} \\
+                                                                     &= 1
+            \p \left(X \geq \displaystyle\frac{1}{2}\right) &= \displaystyle\int_{\displaystyle\frac{1}{2}}^{\infty}f_X \left(x\right) dx \\
+                                                            &= \displaystyle\int_{\displaystyle\frac{1}{2}}^{1} \displaystyle\frac{x + 1}{2}dx \\
+                                                            &= \left[\displaystyle\frac{x^2}{4} + \displaystyle\frac{x}{2}\right]_{\displaystyle\frac{1}{2}}^1 \\
+                                                            &= \displaystyle\frac{1}{4} + \displaystyle\frac{1}{2} - \displaystyle\frac{1}{16} - \displaystyle\frac{1}{4} \\
+                                                            &= \displaystyle\frac{7}{16} \\
+            F_Y \left(y\right) &\stackrel{def}{=} \p \left(Y \leq y\right) \\
+                               &\stackrel{def}{=} \p \left(5X \leq y\right) \\
+                               &= \p \left(X \leq \displaystyle\frac{y}{5}\right) \\
+                               &= F_X \left(\displaystyle\frac{y}{5}\right) \\
+            y > 5 &\implies F_Y \left(y\right) = 1 \\
+            y < -5 &\implies F_Y \left(y\right) = 0 \\
+            -5 \leq y \leq 5,\ F_X \left(\displaystyle\frac{y}{5}\right) &= \p \left(X \leq \displaystyle\frac{y}{5}\right) \\
+                                                                         &=\displaystyle\int_{-\infty}^{\displaystyle\frac{y}{5}} f_X \left(x\right) dx \\
+                                                                         &=\displaystyle\int_{-\infty}^{\displaystyle\frac{y}{5}}\displaystyle\frac{x + 1}{2}dx \\
+                                                                         &= \left[\displaystyle\frac{x^2}{4} + \displaystyle\frac{x}{2}\right]_{-1}^{\displaystyle\frac{y}{5}} \\
+                                                                         &= \displaystyle\frac{y^2}{100} + \displaystyle\frac{y}{10} - \displaystyle\frac{1}{4} + \displaystyle\frac{1}{2} \\
+            f_Y \left(y\right) &= F_Y' \left(y\right) \\
+                               &= \displaystyle\frac{y}{50} + \displaystyle\frac{1}{10} \\
+            \implies f_Y \left(y\right) &= \left(\displaystyle\frac{y}{50} + \displaystyle\frac{1}{10}\right)\1_{\left[-5, 5\right]} \left(y\right) \\
+            F_Z \left(z\right) &= \p \left(Z \leq z\right) \\
+                               &= \p \left(X^2 \leq Z\right) \\
+                               &= \p \left(-\sqrt{Z} \leq X \leq \sqrt{Z} \right) \\
+            z < 0 &\implies F_Z \left(z\right) = 0 \\
+            z > 1 &\implies F_Z \left(z\right) = 1 \\
+            Z \in \left[0, 1\right],\ \p \left(-\sqrt{Z} \leq X \leq \sqrt{Z} \right) &= \displaystyle\int_{-\sqrt{Z} }^{\sqrt{Z} } \displaystyle\frac{x + 1}{2} dx \\
+                                                                                      &= \left[\displaystyle\frac{x^2}{4} + \displaystyle\frac{x}{2}\right]_{-\sqrt{Z}}^{\sqrt{Z} } \\
+                                                                                      &= \displaystyle\frac{\sqrt{Z} }{2} + \displaystyle\frac{\sqrt{Z} }{2}
+            F_Z \left(z\right) &= \sqrt{Z}
+            \implies f_Z \left(z\right) &= \displaystyle\frac{1}{2 \sqrt{Z} } \1_{\left[0, 1\right]}
+        \end{align*}
+    \end{proof}
+\end{exercise}
+
+\begin{theorem}[9.6]
+    Let there be $X$ an absolutely continuous random variable with density $f_X$. Let there
+    be $g$, a differentiable function that is monotonous. We will write $Y = g \left(X\right)$.
+    Then $Y$ is absolutely continuous, with density \[
+        f_Y \left(y\right) = \displaystyle\frac{f_X \left(x\right)}{\left|g' \left(x\right)\right|}
+    \]
+    where $x = g^{-1} \left(y\right)$
+\end{theorem}
+
+\subsection{Density of a point in a triangle}\label{sub:Density of a point in a triangle} % (fold)
+\begin{exercise}
+    Let there be $\Delta = \left\{\left(x, y\right) \in \R^2 | 0 \leq x, y,\ x + y \leq 1\right\}$. This
+    is essentially a triangle, right angle at the origin, 45 degrees on other points, each
+    edge hitting its axis at 1.
+    We take a random point $\left(x, y\right)$, and let there be $X \left(x, y\right) = x$.
+    Calculate $f_X$
+    \begin{proof}[Solution]
+        \begin{align*}
+            F_X \left(t\right) &= \begin{cases}
+                0, &\text{ if }t < 0\\
+                -, &\text{ if } 0 \leq t \leq 1
+                1, &\text{ if } t > 1
+            \end{cases}
+            F_X \left(t\right) &= \p \left(X \leq t\right) \\
+                               &= 2 \cdot \text{area of the trapeze}  \\
+                               &= t \left(1 + 1 - t\right) \\
+                               &= \left(2 - t\right)t
+            f_X \left(t\right) &= F_X' \left(t\right) \\
+                               &= \left(2 - 2t\right)\1_{\left[0, 1\right]} \\
+            \displaystyle\int_{-\infty}^{\infty}f_X \left(t\right) dt &= \displaystyle\int_{0}^{1}2 - 2t dt \\
+                                                                      &= \left[2t - t^2\right]_{0}^1 \\
+                                                                      &= 2 - 1 \\
+                                                                      &= 1
+        \end{align*}
+    \end{proof}
+\end{exercise}
+% subsection Density of a point in a triangle (end)
+
+\end{document}
