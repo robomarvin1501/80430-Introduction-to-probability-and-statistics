@@ -293,7 +293,7 @@ Let there be $X, Y$ 2 discrete random variables with expectation: \begin{align*}
 \begin{theorem}[6.34]
     Let there be $\left(X_i\right)_{i \in \left[n\right]}$ discrete random variables
     with variance. So \[
-        Var \left[\displaystyle\sum_{i \in \left[n\right]}^{}X_i\right] &= \displaystyle\sum_{i \in \left[n\right]}^{}Var \left[X_i\right] + 2 \displaystyle\sum_{i < j \in \left[n\right]}^{}Cov \left[X_i, X_j\right] = \displaystyle\sum_{i, j \in \left[n\right]}^{} Cov \left[X_i, X_j\right]
+        Var \left[\displaystyle\sum_{i \in \left[n\right]}^{}X_i\right] = \displaystyle\sum_{i \in \left[n\right]}^{}Var \left[X_i\right] + 2 \displaystyle\sum_{i < j \in \left[n\right]}^{}Cov \left[X_i, X_j\right] = \displaystyle\sum_{i, j \in \left[n\right]}^{} Cov \left[X_i, X_j\right]
     \]
 \end{theorem}
 % section Covariance (end)

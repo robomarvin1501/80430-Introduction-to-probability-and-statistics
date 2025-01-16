@@ -248,9 +248,9 @@ The function $p_X$ was the point distribution if $\displaystyle\sum_{x \in Supp 
         \begin{align*}
             F_X \left(t\right) &= \begin{cases}
                 0, &\text{ if }t < 0\\
-                -, &\text{ if } 0 \leq t \leq 1
-                1, &\text{ if } t > 1
-            \end{cases}
+                \text{something} , &\text{ if } 0 \leq t \leq 1 \\
+                1, &\text{ if } t > 1 \\
+            \end{cases} \\
             F_X \left(t\right) &= \p \left(X \leq t\right) \\
                                &= 2 \cdot \text{area of the trapeze}  \\
                                &= t \left(1 + 1 - t\right) \\

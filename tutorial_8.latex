@@ -1,0 +1,240 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+
+\title{Tutorial 8}
+\author{Gidon Rosalki}
+\date{2024-12-17}
+
+
+\begin{document}
+\maketitle
+\section{Poisson}\label{sec:Poisson} % (fold)
+
+\begin{definition}[Poisson distribution]
+    We will say that $X$ is of the Poisson distribution, with probability $\lambda \geq 0$
+    if for all $n \in \N$ it is true that \[
+        p_X \left(n\right) = \displaystyle\frac{e^{-\lambda} \lambda^n}{n!}
+    \]
+    In this case, we write $X \sim Pois \left(\lambda\right)$
+\end{definition}
+
+\begin{theorem}[]
+    Let $X \sim Pois \left(\lambda\right)$ and $Y \sim Pois \left(\eta\right)$
+    be independent. So $X + Y \sim Pois \left(\lambda + \eta\right)$
+
+    \begin{proof}[Proof ]
+        \begin{align*}
+            \p \left(X + Y = n\right) &= \displaystyle\sum_{i \in \N_0}^{} \p \left(X = i\right) \p \left(Y = n - i\right) \\
+                                      &= \displaystyle\sum_{i = 0}^{n} \displaystyle\frac{e^{-\lambda}\lambda^i}{i!} \cdot \displaystyle\frac{e^{-\eta} \eta^{n - i}}{(n - i)!} \\
+                                      &= \displaystyle\frac{e^{-\lambda-\eta}}{n!} \displaystyle\sum_{i = 0}^{n} \binom{n}{i} \lambda^i \eta^{n-i}
+                                      &= \displaystyle\frac{e^{-\lambda-\eta} \cdot \left(\lambda + \eta\right)^n}{n}
+        \end{align*}
+        Therefore $X + Y \sim Pois \left(\lambda + \eta\right)$
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    In the Sprinzack cafe there are on average 10 customers every hour. What is the
+    probability that at a given hour there will be 20 customers, if it is known
+    that the number of customers is distributed by the Poisson distribution.
+
+    \begin{proof}[Solution]
+        Let there be $X$ a random variable which shows the number of customers
+        that arrived to the cafe at the given hour. $X \sim Pois(10)$
+        \begin{align*}
+            p_X \left(20\right) = \displaystyle\frac{e^{-10} \cdot 10^{20}}{20!} \approx 0.002
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[]
+    It is known that every minute of the day, the number of callers to line 144 is distributed
+    by $Pois \left(5\right)$, independently between the minutes.
+    \begin{enumerate}
+        \item What is the probability that between 1000 and 1001 there were no callers?
+        \item What is the probability that between 1000 and 1005 there were exactly 4 callers?
+    \end{enumerate}
+
+    \begin{proof}[Solution]
+        \begin{enumerate}
+            \item We will write $X_1$ to be the random variable that counts the number of callers in the first minute.
+                $X_1 \sim Pois \left(5\right)$ We will calculate \[
+                    \p \left(X_1 = 0\right) = \displaystyle\frac{e^{-5} \cdot 5^0}{0!} = e^{-5}
+                \]
+            \item Let there be $\forall i \in [5]\ X_i$, random variables that count the number of calls at
+                the $i$th minute from 1000. We want to find $\p \left(\displaystyle\sum_{i = 1}^{5}X_i = 4\right)$.
+                From the theorem we saw above $\p \left(\displaystyle\sum_{i= 1}^{5}\right)\sim \p \left(25\right)$.
+                So \begin{align*}
+                    \p \left(\displaystyle\sum_{i = 1}^{5}X_i = 4\right) = \displaystyle\frac{e^{-25} \cdot 25^4}{4!}
+                \end{align*}
+        \end{enumerate}
+    \end{proof}
+\end{example}
+
+\begin{example}[]
+    The number of eggs that a lizard lays at a given hour is distributed by the Poisson
+    distribution with the parameter $\lambda > 0$. All the eggs hatch with the
+    probability $0 < p < 1$, independently of the others. Let us define the
+    random variable $X$ to be the number of eggs that were laid at a certain hour, and
+    hatched. How is $X$ distributed?
+    \begin{proof}[Solution]
+        $\p \left(X = k\right)$ where $k \in \N_0$. Let $Y$ be the random variable
+        of how many eggs are laid. \begin{align*}
+            \p \left(X = k\right) &= \displaystyle\sum_{n = 0}^{\infty} \p \left(X = k | Y = n\right) \cdot \p \left(Y = n\right) \\
+                                  &= \displaystyle\sum_{n = k}^{\infty} \p \left(X = k | Y = n\right) \cdot \displaystyle\frac{e^{-\lambda} \lambda^n}{n!} \\
+                                  &= \displaystyle\sum_{n = k}^{\infty}\binom{n}{k} p^k \left(1 - p\right)^{n - k} \cdot \displaystyle\frac{e^{-\lambda} \lambda^n}{n!} \\
+                                  &= e^{-\lambda} \displaystyle\sum_{n = k}^{\infty} \displaystyle\frac{1}{k! \left(n-k\right)!} p^k \left(1 - p\right)^{n - k} \lambda^n \\
+                                  &= e^{-\lambda} \displaystyle\sum_{n = k}^{\infty} \displaystyle\frac{1}{k! \left(n-k\right)!} p^k \left(1 - p\right)^{n - k} \lambda^{n - k} \lambda^k \\
+                                  &= \displaystyle\frac{e^{-\lambda} \left(p\lambda\right)^k}{k!} \displaystyle\sum_{n = k}^{\infty} \displaystyle\frac{\left(\left(1 - p\right)\lambda\right)^{n - k}}{\left(n - k\right)!}\\
+                                  &= \displaystyle\sum_{i = 0}^{\infty} \displaystyle\frac{\left(\left(1 - p\right)\lambda\right)^i}{i!} \\
+                                  &= e^{\left(1 - p\right)\lambda} \\
+                                  &= \displaystyle\frac{e^{-\lambda p} \left(p\lambda\right)^k}{k!}
+        \end{align*}
+        Therefore $X \sim Pois \left(\lambda, p\right)$. Note, it is still true
+        that for a Poisson random variables, and that the average number of eggs
+        laid is $p$ times the number of eggs laid $\lambda$
+    \end{proof}
+\end{example}
+% section Poisson (end)
+
+\section{Expectation}\label{sec:Expectation} % (fold)
+\begin{definition}[Expectation]
+    Let $X$ be a discrete random variable on $\left(\Omega, \F, \p\right)$.
+    The expected value of $X$ is \[
+        \E \left[X\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{} x \p_X \left(x\right)
+    \]
+    where the series absolutely converges. Otherwise we will say that
+    $X$ has no finite expectation.
+
+    Properties: \begin{enumerate}
+        \item To random varibales with the same distribution, there is the same
+            expected value, even if they are defined on different probability
+            distributions
+        \item Linearity: $\E \left[aX + bY\right] = a\E \left[X\right] + b \E \left[Y\right]$
+        \item Positivity: $X \stackrel{a.s}{\geq} 0 \implies \E \left[X\right] \geq 0$. Additionally,
+            if $\p \left(X > 0\right) \implies \E \left[X\right] > 0$
+        \item Monotonicity: $X \stackrel{a.s}{\geq} Y \implies \E \left[X\right] \geq \E \left[Y\right]$
+        \item If $X, Y$ are independent random variables with finite expected values,
+            then $\E \left[X \cdot Y\right] = \E \left[X\right] \cdot \E \left[Y\right]$
+        \item Let there be $X$ a random variable, and $f: \R \to \R$ such that
+            for the random variable $f \left(X\right)$ there is an expected value, then \[
+                \E \left[f \left(X\right)\right] = \displaystyle\sum_{x \in Supp \left(X\right)}^{}f \left(x\right) \p_X \left(x\right)
+            \]
+    \end{enumerate}
+\end{definition}
+% section Expectation (end)
+
+\begin{example}[]
+    Students in Harman are going to nap in the beanbag room, such that the length of the nap
+    is random from $\left\{30, \dots, 60\right\}$ minutes. What is the expected nap time?
+
+    \begin{proof}[Solution]
+        It is given that $X \sim Unif \left(\left\{30, \dots, 60\right\}\right)$. Therefore \begin{align*}
+            \E \left[X\right] &= \displaystyle\sum_{n = 30}^{60} n \p \left(X = n\right) \\
+                              &= \displaystyle\sum_{n = 30}^{60}n \cdot \displaystyle\frac{1}{31} \\
+                              &= \displaystyle\frac{1395}{31} \\
+                              &= 45 \\
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{theorem}[Tail]
+    Let there be a random variable $X$, supported by the naturals, so \[
+        \E \left[X\right] = \displaystyle\sum_{n \in \N}^{}\p \left(X \geq n\right)
+    \]
+    \begin{proof}[]
+        Will be proven in the lecture
+    \end{proof}
+\end{theorem}
+
+\begin{example}[]
+    $k$ friends are playing by throwing a fair die. What is the expected value
+    of the lowest throw?
+
+    \begin{proof}[Solution]
+        Let there be a random variable $X$, who's value is the lowest expected throw.
+        So \begin{align*}
+            \p \left(X \geq n\right) &= \displaystyle\sum_{n = 1}^{6} \p \left(X \geq n\right) \\
+                                     &= \displaystyle\sum_{n = 1}^{6} \left(\displaystyle\frac{7 - n}{6}\right)^k
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{example}[]
+    We will calculate the expected area of a square with a side that distributes
+    equally over the integers from $1$ to $n$. So $X \sim Unif \left(\left\{1, \dots, n\right\}\right)$
+    is the random variable of the length of a side. \begin{align*}
+        \E \left[X^2\right] &= \displaystyle\sum_{k = 1}^{n}k^2 \p \left(X = k\right) \\
+                            &= \displaystyle\sum_{k = 1}^{n} \displaystyle\frac{k^2}{n} \\
+                            &= \displaystyle\frac{1}{n} \displaystyle\sum_{k = 1}^{n}k^2 \\
+                            &= \displaystyle\frac{1}{n} \displaystyle\frac{n \left(n + 1\right) \left(2n + 1\right)}{6} \\
+                            &= \displaystyle\frac{\left(n + 1\right) \left(2n + 1\right)}{6}
+    \end{align*}
+\end{example}
+
+\subsubsection{Expected values of known random variables}\label{sec:Expected values of known random variables} % (fold)
+\begin{enumerate}
+    \item Bernoulli: \[
+        X \sim Ber \left(p\right)\ \E \left[X\right] = 0 \cdot p_X \left(0\right) + 1 \cdot p_X \left(1\right) = p
+        \]
+    \item Uniform: $X \sim Unif \left(\left[n\right]\right)$: \[
+        \E \left[X\right] = \displaystyle\sum_{k \in [n]}^{}\displaystyle\frac{k}{n} = \displaystyle\frac{n \left(n + 1\right)}{2n} = \displaystyle\frac{n + 1}{2}
+        \]
+    \item Binomial: $X \sim Bin \left(n, p\right)$: \begin{align*}
+            \E \left[X\right] &= \displaystyle\sum_{k = 0}^{n}k \cdot \binom{n}{k} p^k \left(1 - p\right)^{n - k} \\
+                              &= \displaystyle\sum_{k = 1}^{n}k \displaystyle\frac{n!}{\left(k - 1\right)! \left(n - k\right)!}p^k \left(1 - p\right)^{n - k} \\
+                              &= \displaystyle\sum_{m = 0}^{n - 1} \displaystyle\frac{n!}{m! \left(n - \left(m + 1\right)\right)!}p^{m + 1} \left(n - l\right)^{n - \left(m + 1\right)} \\
+                              &= pn \displaystyle\sum_{\left(n - 1\right)!}^{m! \left(n - 1 - m\right)!}p^m \left(1 - p\right)^{n - 1 - m} \\
+                              &= pn \left(p + \left(1 - p\right)\right)^{n - 1} \\
+                              &= np
+    \end{align*}
+    \item Poisson: $X \sim Pois \left(\lambda\right)$
+        \begin{align*}
+            \E \left[X\right] &= \displaystyle\sum_{x \in Supp \left(X\right)}^{}x p_X \left(x\right) \\
+                              &= \displaystyle\sum_{k \in \N_0}^{}k p_X \left(k\right) \\
+       k = 0 \text{ Doesn't do anything to the sum} &= \displaystyle\sum_{k = 1}^{\infty}k \cdot e^{-\lambda} \cdot \displaystyle\frac{\lambda^k}{k!} \\
+                                                    &= e^{-\lambda} \displaystyle\sum_{k = 1}^{\infty}\displaystyle\frac{\lambda^k}{\left(k - 1\right)!} \\
+                                                    &= e^{-\lambda} \cdot \lambda \displaystyle\sum_{k = 1}^{\infty} \displaystyle\frac{\lambda^{k - 1}}{ \left(k - 1\right)!} \\
+                                                    &= \lambda \cdot e^{-\lambda} \cdot e^{\lambda} \\
+                                                    &= \lambda
+        \end{align*}
+
+    \item Geometry: $X \sim Geo \left(p\right)$
+        \begin{align*}
+            \E \left[X\right] &= \displaystyle\sum_{n \in \N_0}^{}\p \left(X \geq n\right) \\
+                              &= \displaystyle\sum_{k = 0}^{\infty} \left(1 - p\right)^k \\
+                              &= \displaystyle\frac{1}{1 - \left(1 - p\right)} \\
+                              &= \displaystyle\frac{1}{p}
+        \end{align*}
+\end{enumerate}
+% subsubsection Expected values of known random variables (end)
+
+% TODO Erdos Renyi graphs
+\end{document}

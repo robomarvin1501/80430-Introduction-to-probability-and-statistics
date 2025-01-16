@@ -322,7 +322,6 @@ Question model: \begin{itemize}
             \p \left(|X - \E \left[X\right] | \geq a\right) &\leq \p \left(\left(X - \E \left[X\right]\right)^2 \geq a^2\right) \\
                                                             &\leq \displaystyle\frac{\E \left[\left(X - \E \left[X\right]\right)^2\right]}{a^2} \\
                                                             &= \displaystyle\frac{Var \left[X\right]}{a^2}
-
         \end{align*}
     \end{proof}
 \end{theorem}

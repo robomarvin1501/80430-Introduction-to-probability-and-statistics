@@ -1,0 +1,162 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+
+\title{Tutorial 3}
+\author{Gidon Rosalki}
+\date{2024-11-12}
+
+
+\begin{document}
+\maketitle
+\section{Multi step experiments}\label{sec:Multi step experiments} % (fold)
+Example: In the first step, we draw an integer $n \in \N$. According to the
+experiment from last week, such that $p(n) = 2^{-n}$, and at the second step,
+a random number is chosen uniformly within $[n]$. What is the chance that the second draw is
+the number 1? \\
+\textit{ Sol. } Our event space is $\Omega = \N \times \N$, the function that defines the first
+draw is the function $p(n) = 2^{-n}$, and afterwards
+\[
+    p_n(m) = \begin{cases}
+        \displaystyle\frac{1}{m}, &\text{ if } m \in [n]\\
+        0, & \text{ if } m \notin [n]
+    \end{cases}
+\]
+The event for which we are looking is $A = \left\{\left(n, 1\right) | n \in \N\right\} \subseteq \Omega$.
+So $\p(A) = \displaystyle\sum_{n = 1}^{\infty} q \left(\left(n, 1\right)\right) = \displaystyle\sum_{n = 1}^{\infty}p(b) \cdot p_n(1)
+= \displaystyle\sum_{n = 1}^{\infty}2^{-n} \cdot \displaystyle\frac{1}{n} = \displaystyle\sum_{n = 1}^{\infty}\displaystyle\frac{1}{2^n \cdot n}$
+From infi, we know that this converges to $\log(2)$.
+
+Example: We take 4 cards from a pack of cards, one at a time, without returns.
+What is the probability that the third card we draw is a queen? \\
+\textit{ Sol. } Let us call the pack of cards $C$. Then $\Omega = \left\{\left(c_1, c_2, c_3, c_4\right) | c_i \in C\right\}$
+We are looking for $A = \left\{\left(c_1, c_2, Q, c_4\right) | c_i \in C\right\}$.
+So we want $\p(A) = \displaystyle\frac{|A|}{|\Omega|}$. So: $|\Omega| = \displaystyle\frac{52!}{48!}$.
+Let us define $B = \left\{\left(Q, c_2, c_3, c_4\right)\right\}$. We want the probability
+of $A$ and $B$ to be equal, since $B$ is easier to calculate than $A$, and we
+shall prove this through the use of a one to one "on" function between them.
+$f \left(c_1, c_2, c_3, c_4\right) = \left(c_3, c_4, c_1, c_2\right)$. Since this
+function is one to one, and "on", $|A| = |B| \implies \p(A) = \p(B)$.
+$\p(B)$ is easy to calculate: $\p(B) = \displaystyle\frac{4}{52} = \displaystyle\frac{1}{13}$.
+% section Multi step experiments (end)
+
+\section{Multiplicative spaces}\label{sec:Multiplicative spaces} % (fold)
+\begin{definition}[]
+    Let there be the probability spaces
+    $\left(\Omega_1, \F_1, \p_1=\p_{p_1}\right), \left(\Omega_2, \F_2, \p_2=\p_{p_2}\right)$,
+    with point probability function $p_1, p_2$. Their multiplicative space is
+    $\left(\Omega_1 \times \Omega_2, \F_1 \times \F_2, \p=\p_{p_1 \times p_2}\right)$., where
+    $p_1 \times p_2 \left(\left(\omega_1, \omega_2\right)\right) = p_1 \left(\omega_1\right) \cdot p_2 \left(\omega_2\right)$.
+    We saw in class that for every pair of events $A \in \F_1 \land B \in \F_2$,
+    it is true that $\p \left(A \times B\right) = \p_1 \left(A\right) \cdot \p_2 \left(B\right)$
+\end{definition}
+
+\begin{definition}[Marginal/Multiplicative events]
+    Let there be the probability spaces
+    $\left(\Omega_1, \F_1, \p_1=\p_{p_1}\right), \left(\Omega_2, \F_2, \p_2=\p_{p_2}\right)$,
+    and let there be the multiplicative space $\left(\Omega_1 \times \Omega_2, \F_1 \times \F_2, \p=\p_{p_1 \times p_2}\right)$.
+    The events of the type $A \times \Omega_2 \lor \Omega_1 \times B$ are called
+    marginal events. Events of the type $A \times B$ are called multiplicative events.
+\end{definition}
+
+Example: We will make a multiplicative space, given an experiment that contains
+tossing a fair coin,
+$\left(\Omega_1 = \left\{H, T\right\}, \F_1 = 2^{\left\{H, T\right\}}, \p_{p_1}\right)$,
+and throwing a fair die, $\left(\Omega_2 = \left\{1, 2, 3, 4, 5, 6\right\}, \F_2 = 2^{[6]}, \p_{p_2}\right)$.
+
+\begin{table}[h!] % TODO wrong location
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        - & H & T  \\ \hline
+        1 & $p_2 \times p_2 \left(\left(H, 1\right)\right) = \displaystyle\frac{1}{2} \cdot \displaystyle\frac{1}{6} = \displaystyle\frac{1}{12}$ & $p_1 \times p_2 \left(\left(T, 1\right)\right) = \displaystyle\frac{1}{12}$ \\ \hline
+        2 & $\vdots$ & $\vdots$ \\ \hline
+        3 & $\vdots$ & $\vdots$ \\ \hline
+        4 & $\vdots$ & $\vdots$ \\ \hline
+        5 & $\vdots$ & $\vdots$ \\ \hline
+        6 & $\vdots$ & $\vdots$ \\ \hline
+    \end{tabular}
+    \caption{}
+\end{table}
+We will note that the completed event of $A \times B$, ie $\left(A \times B\right)^c$,
+is not necessarily a multiplicative event. For example: $A = \left\{H\right\} \land B = \left\{5, 6\right\}$.
+So what is in $\left(A \times B\right)^c$? If $\left(A \times B\right)^c$ is a
+multiplicative set, then $\left(A \times B\right)^c = u \times v | u \in \Omega_1 \land v \in \Omega_2$.
+We will note that $\left(H, 3\right) \notin A \times B \implies \left(H, 3\right) \in \left(A \times B\right)^c
+\implies H \in u \land 3 \in v$. Therefore, $\left(T, 5 \notin A \times B\right) \implies
+T \in u \land 5 \in v$, but then $\left(H, 5\right) \in \left(A \times B\right)^c$,
+which is a contradiction.
+% section Multiplicative spaces (end)
+
+\section{The complete probability formula}\label{sec:The complete probability formula} % (fold)
+\begin{definition}[]
+    A countable division for a given event space $\Omega$ is the countable collection of
+    disjoint sets, whose union is $\Omega$
+\end{definition}
+
+\begin{theorem}[]
+    Let there be $\left\{A_1, \dots\right\}$ division of $\Omega$, and
+    $B \subseteq \Omega$, \textbf{then} $\p(B) = \displaystyle\sum_{i = 1}^{\infty}\p \left(B \cap A_i\right)$
+\end{theorem}
+
+Exercise: Randomly choose a number within the set $[20]$. Afterwards we toss
+3 coins, and add to the resultant number tails tossed. What is the probability
+that the resultant sum will be in the set $\left\{2, 7, 8\right\}$?
+
+In the first experiment, $\Omega_1 = [20]$, and $\forall \omega \in \Omega_1\ p_1(\omega) \displaystyle\frac{1}{20}$.
+For the second experiment, $\Omega_2 = \left\{H, T\right\}^3$, and also $\forall \omega in \Omega_2\ p_2(\omega) = \displaystyle\frac{1}{8}$.
+We are interested in the event $A = \left\{\left(n_1, \left(x_1, x_2, x_3\right)\right) \in \Omega_1 \times \Omega_2 | n + x_1 + x_2 + x_3 \in \left\{2, 7, 8\right\}\right\}$.
+For every $k \in \left\{0, 1, 2, 3\right\}$, we will write $C_k = \left\{\left(n, \left(x_1, x_2, x_3\right)\right) \in \Omega_1 \times \Omega_2
+| x_1 + x_2 + x_3 = k\right\}$. We can also define $D_k = C_k \cap A$.
+So $\p(A) = \displaystyle\sum_{k = 0}^{3}\p \left(A \cap C_k\right) = \displaystyle\sum_{k = 0}^{3}\p \left(D_k\right)$.
+\begin{align*}
+    D_0 &= \left\{\left(2, \left(0, 0, 0\right)\right), \left(7, \left(0, 0, 0\right)\right), \left(8, \left(0, 0, 0\right)\right)\right\} = \displaystyle\frac{3}{20} \cdot \displaystyle\frac{1}{8}\\
+    D_1 &= \left\{\left\{1, 6, 7\right\} \times \left\{\left(0, 1, 0\right), \left(1, 0, 0\right), \left(0, 0, 1\right)\right\}\right\} = \displaystyle\frac{3}{20} \cdot \displaystyle\frac{3}{8}
+\end{align*}
+% section The complete probability formula (end)
+
+\section{Union block - Boole inequality}\label{sec:Union block - Boole inequality} % (fold)
+\begin{definition}[]
+    Let there be a probability space $\left(\Omega, \F, \p\right)$. Then if $A, B \in \F$, then
+    $\p \left(A \cup B\right) \leq \p(A) + \p(B)$, and in general terms: $\p \left(\displaystyle\bigcup_{i = 1}^{n}A_i\right) \leq \displaystyle\sum_{i = 1}^{n}\p \left(A_i\right)$
+    for a finite series of events, and for an infinite series of events: $\p \left(\displaystyle\bigcup_{i = 1}^{\infty}A_i\right) \leq \displaystyle\sum_{i = 1}^{\infty} \p \left(A_i\right)$.
+\end{definition}
+
+Exercise: Given $\left(\Omega, \F, \p\right)$, and a series of events $\left(A_n\right)_{n = 1}^\infty$
+such that are almost always, which is to say $\p(A_n) = 1$. We will prove that
+$\displaystyle\bigcap_{n = 1}^{\infty}A_n$ also happens "almost always". \\
+Proof: $\p \left(\left(\displaystyle\bigcap_{n = 1}^{\infty}A_n\right)^c\right) = \p \left(\displaystyle\bigcup_{n = 1}^{\infty} A_n^c\right)
+\leq \displaystyle\sum_{n = 1}^{\infty} \p \left(A_n^c\right) = \displaystyle\sum_{n = 1}^{\infty} 1 - \p \left(A_n\right) = 0
+\implies \p \left(\text{For what we were looking}\right) = 1 - 0$.
+
+% section Union block - Boole inequality (end)
+
+\section{IEP}\label{sec:IEP} % (fold)
+For $A_1, \dots, A_n$ events, $\p \left(\displaystyle\bigcup_{i = 1}^{n}A_i\right) = \displaystyle\sum_{i = 1}^{n} \p \left(A_i\right)
+- \displaystyle\sum_{1 \leq i < j \leq n}^{} \p \left(A_i \cap A_j\right) + \displaystyle\sum_{1 \leq i < j < k \leq n}^{} \p \left(A_i \cap A_j \cap A_k\right) - \dots
++ (-1)^{n + 1} \displaystyle\sum_{}^{}\p \left(\displaystyle\bigcap_{i = 1}^{n}A_i\right)$
+
+% section IEP (end)
+
+\end{document}
