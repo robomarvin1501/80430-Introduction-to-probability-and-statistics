@@ -1,0 +1,275 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\B}{\ensuremath{\mathbbm{B}}}
+
+\title{Lecture 23}
+\author{Gidon Rosalki}
+\date{2025-01-20}
+
+
+\begin{document}
+\maketitle
+\section{Independence through residual density}\label{sec:Independence through residual density} % (fold)
+\begin{theorem}[Lemma 8.45]
+    2 random variables that are absolutely continuous $X, Y$ on $\left(\Omega, \F, \p\right)$ are
+    independent \textbf{if and only if} $f_{X, Y} = f_X f_Y$
+
+    \begin{proof}[Proof]
+        In the first direction \begin{align*}
+            \p \left(X \in A, Y \in B\right) &= \displaystyle\int_{}^{}\displaystyle\int_{A \times B}^{} f_{X, Y} \left(x, y\right) dy dx \\
+                                             &= \displaystyle\int_{A}^{} \displaystyle\int_{B}^{} f_X \left(x\right) f_Y \left(y\right) dy dx \\
+                                             &= \displaystyle\int_{A}^{} f_X \left(x\right) dx \displaystyle\int_{B}^{} f_Y \left(y\right) dy \\
+                                             &= \p \left(X \in A\right) \p \left(Y \in B\right)
+        \end{align*}
+        And in the other direction we simply follow the maths in the other direction.
+    \end{proof}
+\end{theorem}
+
+\subsection{Examples}\label{sub:Examples} % (fold)
+\begin{example}[Area of a square]
+    We saw that $f_{X, Y} = \1_{\left[0, 1\right]^2}$ the residual density of $X$ was $f_X = \1_{\left[0, 1\right]}$,
+    and so from symmetry also $f_Y$. Indeed $\1_{\left[0, 1\right]}^2 = \1_{\left[0, 1\right]^2}$
+
+    Where $f_{X, Y} \left(x, y\right) = \left(x + y\right)\1_{\left[0, 1\right]^2}$, we calculated that
+    $f_X \left(x\right) = \left(x + \displaystyle\frac{1}{2}\right)\1_{\left[0, 1\right]}$.
+    From symmetry $f_Y \left(y\right) = \left(y + \displaystyle\frac{1}{2}\right)\1_{\left[0, 1\right]}$.
+    \begin{align*}
+        f_X \left(x\right) f_Y \left(y\right) &= \left(x + \displaystyle\frac{1}{2}\right)\left(y + \displaystyle\frac{1}{2}\right) \\
+                                              &= xy + \displaystyle\frac{1}{2}\left(x + y\right) + \displaystyle\frac{1}{4} \\
+                                              &> x + y \\
+                                              &= f_{X, Y} \left(x, y\right)\ \forall 0 \leq x, y \leq \displaystyle\frac{1}{8}
+    \end{align*}
+    so $X$ and $Y$ are \textbf{not} independent.
+\end{example}
+
+\begin{example}[]
+    Let there be $X, Y \sim Exp \left(1\right)$ independent. Find $f_Z$ where $z = \displaystyle\min_{} \left\{X, Y\right\} $.
+    Note that \begin{align*}
+        f_X \left(x\right) &= e^{-x} \1_{\left[0, \infty\right)} \left(x\right) \\
+        f_Y \left(y\right) &= e^{-y} \1_{\left[0, \infty\right)} \left(y\right) \\
+    \end{align*}
+
+    \begin{proof}[Solution]
+        \begin{align*}
+            \overline{F}_Z \left(z\right) &= \p \left(Z > z\right) \\
+                                          &= \p \left(X > z, Y > z\right) \\
+                                          &= \p \left(X > z\right) \p \left(Y > z\right) \\
+                                          &= e^{-z} e^{-z} \\
+                                          &= e^{-2z} \\
+            \implies F_Z \left(z\right) &= 1 - e^{-2z} \\
+            \implies f_Z \left(z\right) &= F_Z' \left(z\right) \\
+                                        &= 2e^{-2z} \\
+                                        \implies Z \sim Exp \left(2\right) \\
+        \end{align*}
+    \end{proof}
+\end{example}
+% subsection Examples (end)
+
+\subsection{Distribution of a sum of independent random variables}\label{sub:Distribution of a sum of independent random variables} % (fold)
+\begin{example}[]
+    Let there be $X, Y \sim Exp \left(1\right)$, independent. Calculate $f_W$ where $W = X + Y$.
+    \begin{proof}[Solution]
+        From the given: \begin{align*}
+            f_{X, Y} \left(x, y\right) &= f_X \left(x\right) f_Y \left(y\right) \\
+                                       &= e^{-x} \1_{\R_{\geq 0}} \cdot e^{-y} \1_{\R_{\geq 0}} \\
+                                       &= e^{-(x + y)} \1_{\R_{\geq 0}^2}
+        \end{align*}
+        Where $t \in \R_{\geq 0}$ we will write \[
+            A_t = \left\{\left(x, y\right) \in \R^2 | 0 \leq x, y \land x + y \leq t\right\}
+        \]
+        so \begin{align*}
+            \p \left(W \leq t\right) = \displaystyle\int_{}^{}\displaystyle\int_{A_t}^{}f_{X, Y} \left(x, y\right) dy dx
+        \end{align*}
+
+        \begin{align*}
+            \displaystyle\int_{0}^{\infty} \displaystyle\int_{0}^{t-x} e^{- \left(x + y\right)} dy dx &= \displaystyle\int_{0}^{t} \displaystyle\int_{0}^{t - x} \left(e^{-x} e^{-y} dy\right)dx \\
+                                                                                                      &= \displaystyle\int_{0}^{t} \left[-e^{-x} e^{-y}\right]_0^{t-x} dx \\
+                                                                                                      &= \displaystyle\int_{0}^{t}-e^{-x} \left(e^{x-t} - 1\right) dx \\
+                                                                                                      &= \displaystyle\int_{0}^{t} e^{-x} - e^{-t} dx \\
+                                                                                                      &= \left[-e^{-x} - x e^{-t}\right]_0^t \\
+                                                                                                      &= -e^{-t} -t e^{-t} + 1 \\
+            f_W \left(t\right) &= F_W' \left(t\right) \\
+                               &= e^{-t} - e^{-t} + t e^{-t} \\
+                               &= -t e^{-t} \\
+        \end{align*}
+        Which is to say \[
+            f_w \left(t\right) = \displaystyle\int_{0}^{\infty} f_X \left(x\right) f_Y \left(t - x\right) dx
+        \]
+    \end{proof}
+\end{example}
+
+\begin{theorem}[Lemma 8.49]
+    If $X, Y$ are independent random variables on $\left(\Omega, \F, \p\right)$ \textbf{then} \begin{align*}
+        f_{X + Y} \left(z\right) = \displaystyle\int_{\R}^{}f_X \left(x\right) f_Y \left(z - x\right) dx
+    \end{align*}
+\end{theorem}
+% subsection Distribution of a sum of independent random variables (end)
+
+% section Independence through residual density (end)
+
+\section{Normal distribution}\label{sec:Normal distribution} % (fold)
+\begin{definition}[9.26]
+    $X$ has \textbf{normal distribution with expectation} $\mu$ \textbf{and standard deviation} $\sigma$
+    $X \sim N \left(\mu, \sigma^2\right)$ if \[
+        f_X \left(x\right) = \displaystyle\frac{1}{\sqrt{2 \pi \sigma^2} }e^{- \displaystyle\frac{\left(x - \mu\right)^2}{2\sigma^2}}
+    \]
+    and $N \left(0, 1\right)$ is called the standardised normal distribution.
+\end{definition}
+
+\begin{definition}[9.27]
+    If $X \sim N \left(0, 1\right)$, then we will write $\Phi \left(x\right) = F_X \left(x\right) = \p \left(X \leq x\right)$
+\end{definition}
+
+\begin{theorem}[9.29]
+    Let there be $X \sim N \left(\mu, \sigma^2\right)$: \begin{enumerate}
+        \item $F_X \left(x\right) = \Phi \left(\displaystyle\frac{x - \mu}{\sigma}\right)$
+        \item $\E \left[X\right] = \mu \land Var \left[X\right] = \sigma^2$
+        \item $M_X \left(t\right) = exp \left(\mu t + \displaystyle\frac{\sigma^2 t^2}{2}\right)$
+        \item $\alpha X + \beta \sim N \left(\alpha \mu + \beta, \alpha^2 \sigma^2\right)$
+    \end{enumerate}
+
+    \begin{proof}[Proof]
+        \begin{enumerate}
+            \item Let there be $Y \sim N \left(0, 1\right),\ X = \sigma Y + \mu $ \begin{align*}
+                    F_X \left(x\right) &= \p \left(X \leq x\right) \\
+                                       &= \p \left(\sigma Y + \mu \leq X\right) \\
+                                       &= \p \left(Y \leq \displaystyle\frac{x - \mu}{\sigma}\right) \\
+                                       &= \Phi \left(\displaystyle\frac{x - \mu}{\sigma}\right) \\
+                    f_X \left(x\right) &= F_X' \left(x\right) \\
+                                       &= \Phi' \left(\displaystyle\frac{x - \mu}{\sigma}\right) \cdot \displaystyle\frac{1}{\sigma} \\
+                                       &= \displaystyle\frac{1}{\sqrt{2 \pi \sigma^2} } e^{- \displaystyle\frac{\left(x - \mu\right)^2}{2 \sigma^2}} \\
+
+            \end{align*}
+            \item \begin{align*}
+                    \displaystyle\int_{-\infty}^{\infty} e^{-x^2} &= \sqrt{\pi}  \\
+                    \sqrt{2\pi} \overline{F}_X \left(t\right) &= \displaystyle\int_{t}^{\infty} e^{- \displaystyle\frac{y^2}{2}} dy \\
+                                      &= - \displaystyle\int_{t}^{\infty}- e^{- \displaystyle\frac{y^2}{2}} dy \\
+                    \left(x = -y\right) &= \displaystyle\int_{-t}^{-\infty}e^{- \displaystyle\frac{x^2}{2}} dx \\
+                                        &= \displaystyle\int_{-\infty}^{-t}e^{-\displaystyle\frac{x^2}{2}} dx \\
+                                        &= \sqrt{2 \pi} \cdot F_X \left(-t\right) \\
+                    \E \left[X\right] &= \displaystyle\int_{0}^{\infty} \overline{F}_X \left(t\right) dt - \displaystyle\int_{-\infty}^{0}F_X \left(t\right) dt \\
+                                      &= \displaystyle\int_{0}^{\infty}F_X \left(-t\right) dt - \displaystyle\int_{-\infty}^{0}F_X \left(t\right) dt \\
+                    \displaystyle\int_{-\infty}^{\infty} \left|x\right| e^{- \displaystyle\frac{x^2}{2}} dx &= 2 \displaystyle\int_{0}^{\infty}x e^{- \displaystyle\frac{x^2}{2}} dx \\
+                    y = \displaystyle\frac{x^2}{2}\ dy = x dx &= 2\displaystyle\int_{0}^{\infty} e^{-y} dy \\
+                                                              &= 2 \left[- e^{-y}\right]^{\infty}_0 \\
+                                                              &= 2 \left(0 - \left(-1\right)\right) \\
+                                                              &= 2 \\
+                \end{align*}
+                % TODO variance is 1, in the things from Ori, but wait for correction
+            \item
+            \item
+        \end{enumerate}
+
+    \end{proof}
+\end{theorem}
+
+\begin{definition}[10.1]
+    Let there be $\left(X_n\right)_{n \in \N}$ a series of random variables, and $X$ a random variable.
+    We will say that $X_n$ converges to $X$ in distribution (written $X_n \stackrel{d}{\to} X$)
+    if for all $a$, a continuous point of $F_X$, it is true that $\displaystyle\lim_{n \to \infty}F_{X_n} \left(a\right) = F_X \left(a\right)$
+\end{definition}
+
+\begin{example}[]
+    If $X_n$ is of equal distribution, then we write $X = X_1$ and we get $X_n \stackrel{d}{\to} X$
+\end{example}
+
+\begin{example}[]
+    If $X_n \stackrel{d}{=} c_n \land X \stackrel{a.s}{=} c$, then $X_n \stackrel{d}{=} X \Leftrightarrow c_n \stackrel{n \to \infty}{\widerightarrow} c$
+    \begin{proof}[Solution]
+        The only non continuous point of $F_X$ is $c$. \\
+        Let there be $y < c$. We will assume that $c_n \stackrel{n \to \infty}{\widerightarrow} c$ exists
+        $N$ such that for all $n > N$, $c_n > y$. Which implies \[
+            \forall n > N\ F_{X_n} \left(y\right) = 0 = F_X \left(y\right)
+            \]
+            Let us assume that $X_n \stackrel{d}{\to} X \implies$ for every $a \ne c$, $F_{X_n} \left(a\right) = F_X \left(a\right)$,
+            Let us assume that $a < c$, since $F_{X_n} \left(a\right) \in \left\{0, 1\right\} \implies$ there exists $N$
+            such that for all $n > N$ $F_{X_n} \left(a\right) = 0 \implies \forall a > N\ a < c_n$. And the inverse.
+    \end{proof}
+\end{example}
+
+\begin{example}[]
+    $X_n \sim Unif \left[- \displaystyle\frac{1}{n}, \displaystyle\frac{1}{n}\right]$, and $X \stackrel{a.s}{=} 0$, so $X_n \stackrel{d}{\to} X$
+
+    \begin{proof}[Solution]
+        $X \stackrel{a.s}{=} 0$ is non continuous only at $0$. Let there be $a \ne 0 \implies$
+        that there exists $N$ such that $\displaystyle\frac{1}{N} < \left|a\right|$
+        and so \[
+            \forall n > N F_{X_n} \left(a\right) = \begin{cases}
+                1, &\text{ if }a > 0\\
+                0, &\text{ if }a < 0\\
+            \end{cases}
+        \]
+    \end{proof}
+\end{example}
+
+\begin{theorem}[10.5]
+    Let there e $\left(X_n\right)_{n \in \N}$ random variables supported by $\Z$. $X_n \stackrel{d}{\to} X$
+    \textbf{if and only if} for all $k \in \N$ it holds that \[
+        \displaystyle\lim_{n \to \infty} \p \left(X_n = k\right) = \p \left(X = k\right)
+    \]
+
+    \begin{proof}[Proof ]
+        % TODO
+    \end{proof}
+\end{theorem}
+
+
+\subsection{Convergence of distributions}\label{sub:Convergence of distributions} % (fold)
+\subsubsection{Convergence of binomial to Poisson}\label{sec:Convergence of binomial to Poisson} % (fold)
+Let us write that \begin{itemize}
+    \item $Y_n \sim Bin \left(n, \displaystyle\frac{1}{n}\right)$
+    \item $Y \sim Pois \left(1\right)$
+    \item Prove that $Y_n \stackrel{d}{\to} Y$
+\end{itemize}
+
+\begin{align*}
+    \forall k \in \N_0,\ \displaystyle\lim_{n \to \infty} \p \left(X_n = k\right) &= \p \left(X \leq k\right) \\
+    \binom{n}{k} \left(\displaystyle\frac{1}{n}\right)^k \left(1 - \displaystyle\frac{1}{n}\right)^{n - k} &= \displaystyle\frac{n!}{k! \left(n - k\right)!n^k}
+    \left(1 - \displaystyle\frac{1}{n}\right)^n \left(1 - \displaystyle\frac{1}{n}\right)^{-k} \\
+                           &= \displaystyle\frac{1}{k!} \displaystyle\frac{n \left(n - 1\right) \dots \left(n - k + 1\right)}{n^k} \left(1 - \displaystyle\frac{1}{n}\right)^n \left(1 - \displaystyle\frac{1}{n}\right)^{-k} \\
+
+                           &= \displaystyle\frac{e^{-1} \cdot 1^k}{k!}
+\end{align*}
+% subsubsection Convergence of binomial to Poisson (end)
+
+\subsubsection{Uniform independent random variables to a continuous random variable}\label{sec:Uniform independent random variables to a continuous random variable} % (fold)
+\begin{itemize}
+    \item For all $n \in \N$, let $X_n \sim Unif \left(\left\{\displaystyle\frac{k}{n} : k \in \left[n\right]\right\}\right)$
+    \item $X \sim Unif \left(\left[0, 1\right]\right)$
+    \item Prove $X_n \stackrel{d}{\to} X$
+\end{itemize}
+% subsubsection Uniform independent random variables to a continuous random variable (end)
+
+% subsection Convergence of distributions (end)
+
+
+% section Normal distribution (end)
+
+\end{document}

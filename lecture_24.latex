@@ -1,0 +1,224 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\h}{\ensuremath{\mathcal{H}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\B}{\ensuremath{\mathbbm{B}}}
+
+\title{Lecture 24}
+\author{Gidon Rosalki}
+\date{2025-01-26}
+
+
+\begin{document}
+\maketitle
+\begin{definition}[]
+    If $\left(X_n\right)$ and $X$ are random variables, we will say that $X_n \stackrel{d}{=} X$ if
+    \[
+        F_{X_n} \left(a\right) \stackrel{n \to \infty}{\longrightarrow} F_X \left(a\right)
+    \]
+    for every point $a \in \R$ which is a continuous point of $F_X$.
+\end{definition}
+
+\begin{example}[]
+    If $X_n \sim Unif \left(\left\{\displaystyle\frac{k}{n} : k \in \left[n\right]\right\}\right)$,
+    then $X_n \stackrel{d}{\to} X$ when $X \sim Unif \left(\left[0, 1\right]\right)$
+    \begin{proof}[Solution]
+        $F_X$ has no non continuous points since $X \sim Unif \left(\left[0, 1\right]\right)$
+        is absolutely continuous. \begin{align*}
+            F_{X_n} \left(a\right) &= \p \left(X_n \leq a\right) \\
+                                   &= \p \left(n X_n \leq \left\lfloor na \right\rfloor\right) \\
+        \end{align*}
+        Since we need $\displaystyle\frac{\left\lfloor na \right\rfloor - 1}{n} < X_n \leq \displaystyle\frac{\left\lfloor na \right\rfloor}{n}$
+        \begin{align*}
+            \displaystyle\frac{\left\lfloor na \right\rfloor }{n} \leq &X_n < \displaystyle\frac{\left\lfloor na \right\rfloor + 1}{n} \\
+            \implies a - \displaystyle\frac{1}{n} = \displaystyle\frac{na - 1}{n}\leq F_{X_n} \left(a\right) = &\displaystyle\frac{\left\lfloor na \right\rfloor }{n} < \displaystyle\frac{na}{n} = a \\
+        \end{align*}
+        So from the sandwich theorem we get that $F_{X_n} \left(a\right) \stackrel{n \to \infty}{\longrightarrow} F_X \left(a\right)$,
+        for every $a \in \left[0, 1\right]$, and since
+        \begin{align*}
+            F_X \left(a\right) &=\begin{cases}
+                1, &\text{ if }a > 1\\
+                a, &\text{ if }a \in \left[0, 1\right]\\
+                0, &\text{ if }a < 1\\
+            \end{cases}
+        \end{align*}
+        When $a > 1 \implies F_{X_n} \left(a\right) = 1$, since $X_n$ accumulates distribution between $0$ to $1$ \\
+        When $a < - \implies F_{X_n} = 0$, since $X_n$ accumulates distribution between $0$ to $1$ \\
+        We have got that $X_n \stackrel{d}{\to} X$ from the definition
+    \end{proof}
+\end{example}
+
+Importance: If we need to find $F_{X_n} \left(a\right)$ when $a = \displaystyle\frac{1}{\sqrt{\pi} }$,
+and $n = 1,235,994$, then due to the convergence that we just proved, a
+good expansion of this cumulative distribution is \[
+    F_X \left(\displaystyle\frac{1}{\sqrt{\pi} }\right) = \displaystyle\frac{1}{\sqrt{\pi} }
+\]
+
+\begin{theorem}[Central limit theorem]
+    Let there be $\left(X_n\right)_{n \in \N}$, a series of independent random variables of equal
+    distribution, with expectation $0$, and variance $1$. Then \begin{gather*}
+        \displaystyle\frac{1}{\sqrt{n} } \displaystyle\sum_{k \in \left[n\right]}^{}X_k \stackrel{d}{\to} X \sim N \left(0, 1\right)
+    \end{gather*}
+\end{theorem}
+
+\begin{example}[]
+    Let us assume that $X_n \sim Bin \left(n, \displaystyle\frac{1}{2}\right) $.
+    $\E \left[X_n\right] = \displaystyle\frac{n}{2}$, and $Var \left[X_n\right] = \displaystyle\frac{n}{4}$.
+    Let us assume that $n = 10^6$, and we want to find the probability that \begin{gather*}
+        495,000 < X_n < 505,000
+    \end{gather*}
+
+    \begin{proof}[Solution]
+        We proved that $X_n = \displaystyle\sum_{k \in \left[n\right]}^{}Y_k$ when $Y_k \sim Ber \left(\displaystyle\frac{1}{2}\right)$, and
+        are independent. \begin{align*}
+            Z_k &= \displaystyle\frac{Y_k - \displaystyle\frac{1}{2}}{0.25} \\
+        \end{align*}
+        We will perform the calculation when $n = 10^6$ and $\sqrt{n}  = 1000$
+        \begin{align*}
+            \displaystyle\sum_{k \in \left[n\right]}^{}Z_k &= \displaystyle\sum_{k \in \left[n\right]}^{}\displaystyle\frac{Y_k - \displaystyle\frac{1}{2}}{0.25} \\
+                                                           &= \displaystyle\frac{\displaystyle\sum_{}^{}Y_k - \displaystyle\frac{n}{2}}{0.25} \\
+                                                           &= \displaystyle\frac{X_n - \displaystyle\frac{n}{2}}{0.25} \\
+            \p \left(495,000 < X_{10^6} < 505,000\right) &= \p \left(\displaystyle\frac{-5000}{0.25} < \displaystyle\frac{X_{10^6} - 500,000}{0.25} < \displaystyle\frac{5000}{0.25}\right) \\
+                                                         &= \p \left(-20 < \displaystyle\frac{1}{1000} \displaystyle\frac{X_{10^6} - 500,000}{0.25} < 20\right) \\
+        \end{align*}
+        From the central limit theorem, we may find this probability through $\Phi \left(20\right) - \Phi \left(-20\right)$
+    \end{proof}
+\end{example}
+
+\section{Introduction to statistics}\label{sec:Introduction to statistics} % (fold)
+\subsection{Separating simple hypotheses}\label{sub:Separating simple hypotheses} % (fold)
+We have a situation where we have 2 hypotheses, which we will write $\h_0, \h_1$,
+and they will be called the null hypothesis, and the alternative hypothesis.
+The hypotheses present an assumption on the distribution of a collection of data.
+Which is to say, for every hypothesis $\h_i$, there is a probability function $\p_i$,
+where $i = 0, 1$ on $\Omega$, which is the sample space that represents our
+data. A complicated hypothesis is for every collection of parameters $a_1, \dots, a_n \in \R$,
+we have a  probability function $\p_{i, a_1, \dots, a_n}$
+
+\begin{example}[]
+    We throw a die a single time. We want to find if it is fair (null hypothesis),
+    or if it is biased heads at a ration of $2:1$. So \[
+        \Omega = \left\{H, T\right\}
+    \]
+\end{example}
+
+\begin{definition}[Deterministic test]
+    Given $\Omega$, the \textbf{deterministic test} is a random variable $T: \Omega \to \left\{0, 1\right\}$
+\end{definition}
+
+Meaning: The result of $T$ is whether or not we rejected the null hypothesis (result is $1$),
+or if we got it (result is $0$)
+
+In our example, there are 4 tests that we may have: \begin{itemize}
+    \item $T_1 \left(\omega\right) = 0,\ \omega = H,T$
+    \item $T_2 \left(\omega\right) = 1,\ \omega = H,T$
+    \item $T_3 \left(H\right) = 1 \land T_3 \left(T\right) = 0$
+    \item $T_4 \left(H\right) = 0 \land T_4 \left(T\right) = 1$
+\end{itemize}
+
+\begin{definition}[False positive]
+    A \textbf{false positive}  is the situation where the null hypothesis is true, and $T = 1$.
+    A \textbf{false negative} is when the null hypothesis is false, but $T = 0$ \\
+    The \textbf{distinction} of the test $T$ is $\alpha = \alpha_T = \p_0 \left(T = 1\right)$ \\
+    The \textbf{power} of the test $T$ is $\pi = \p_1 \left(T = 1\right)$
+\end{definition}
+Note: It is accepted to write $\beta = \p_1 \left(T = 0\right)$, and then $\pi = 1 - \beta$
+
+\begin{definition}[]
+    We will say that the test $T$ is preferable to $T'$ if $\alpha_T \leq \alpha_{T'}$, and also $\beta_T \leq \beta_{T'}$.
+    We will write $T \leq T'$. This is the partial order ration on the collection
+    of tests.
+\end{definition}
+
+\begin{example}[]
+    In the same situation of our coin, we will toss the coin 3 times, and then decide.
+    \begin{proof}[Solution]
+        \begin{align*}
+            \begin{bmatrix}
+                \omega & \p_0 & \p_1 & \Lambda \\
+                HHH & \displaystyle\frac{1}{8} & \displaystyle\frac{8}{27} & \displaystyle\frac{64}{27} \\
+                HHT & \displaystyle\frac{1}{8} & \displaystyle\frac{4}{27} & \displaystyle\frac{32}{27} \\
+                HTH & \displaystyle\frac{1}{8} & \displaystyle\frac{4}{27} &  \displaystyle\frac{32}{27}\\
+                THH & \displaystyle\frac{1}{8} & \displaystyle\frac{4}{27}&  \displaystyle\frac{32}{27} \\
+                HTT & \displaystyle\frac{1}{8} & \displaystyle\frac{2}{27} & \displaystyle\frac{16}{27} \\
+                THT & \displaystyle\frac{1}{8} & \displaystyle\frac{2}{27}  & \displaystyle\frac{16}{27} \\
+                TTH & \displaystyle\frac{1}{8} & \displaystyle\frac{2}{27}  & \displaystyle\frac{16}{27} \\
+                TTT & \displaystyle\frac{1}{8} & \displaystyle\frac{1}{27}  & \displaystyle\frac{8}{27} \\
+            \end{bmatrix}
+        \end{align*}
+        We need to choose for which $\omega$s the test returns $1$, and for which $\omega$s it returns $0$.
+        In this situation, the \textbf{distinction} will decide by how many $\omega$s
+        enable $T \left(\omega\right) = 1$. However, the \textbf{power} will decide according to
+        what is written in the right column the same points that we chose. For example,
+        $T_1 \left(HHH\right) = 1$, and otherwise $T_1 \left(\omega\right) = 0$. However,
+        $T_2 \left(THH\right) = 1$, and all the others are $0$. We will also take $T_3 \left(\left\{HHH, THH\right\}\right) = 1$,
+        and otherwise $0$.
+        \begin{align*}
+            \begin{bmatrix}
+                & T_1 & T_2 & T_3 \\
+                \alpha & \displaystyle\frac{1}{8} & \displaystyle\frac{1}{8} & \displaystyle\frac{2}{8} \\
+                \pi & \displaystyle\frac{8}{27} & \displaystyle\frac{4}{27} & \displaystyle\frac{12}{27} \\
+                \beta & \displaystyle\frac{19}{27} & \displaystyle\frac{23}{27} & \displaystyle\frac{15}{27} \\
+            \end{bmatrix}
+        \end{align*}
+    \end{proof}
+\end{example}
+
+Note: In this case it is impossible to compare $T_3$ to the two prior tests, since it is better in $\beta$,
+but worse in $\alpha$. On the other hand, if we choose that we are interested in a level
+of distinction of $\displaystyle\frac{1}{8}$, then from the ordering of the table,
+it is true that $\left\{HHH\right\}$ is the best \textbf{point of rejection}.
+
+We may give the additional test $T_4$ where its point of rejection is $\left\{HHH, THH, HTH, HHT\right\}$,
+where for this test there is a distinction of $0.5$, but power of $\displaystyle\frac{20}{27}$.
+
+\begin{definition}[]
+    For $\omega \in \Omega$, the \textbf{likelihood} of $\omega$ according to $\h_i$
+    is \[
+        \mathcal{L} \left(\omega ; \h_i\right) = \p_i \left(\left\{\omega\right\}\right)
+    \]
+\end{definition}
+Note, if the probability $\p_i$ is absolutely continuous, we will define $\mathcal{L} \left(\omega; \h_i\right) = f_i \left(\omega\right)$
+
+\begin{definition}[]
+    For $\omega \in \Omega$ the \textbf{likelihood ratio} of $\omega$ is \[
+        \Lambda{\h_1 : \h_0} \left(\omega\right) = \displaystyle\frac{\mathcal{L} \left(\omega; \h_1\right)}{\mathcal{L} \left(\omega; \h_0\right)}
+    \]
+\end{definition}
+
+Procedure: \begin{enumerate}
+    \item We order $\Omega$ by the likelihood ratio
+    \item We choose $\omega$ with the highest ratio until the sum of likelihoods accpording to $\h_0$ is less
+        than or equal to the required $\alpha$
+    \item This is the are cancelation
+\end{enumerate}
+% subsection Separating simple hypotheses (end)
+% section Introduction to statistics (end)
+
+\end{document}

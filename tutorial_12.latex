@@ -1,0 +1,265 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bbm}
+\graphicspath{ {./images/} }
+\usepackage[bottom=0.5cm, right=1.5cm, left=1.5cm, top=1.5cm]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\B}{\ensuremath{\mathbbm{B}}}
+
+\title{Tutorial 12}
+\author{Gidon Rosalki}
+\date{2025-01-21}
+
+
+\begin{document}
+\maketitle
+\section{Codistribution}\label{sec:Codistribution} % (fold)
+\begin{definition}[]
+    Let there be $X, Y$ a pair of rabdom variables on $\left(\Omega, \F, \p\right)$.
+    The \textbf{joined cumulative distribution function} of $X, Y$ is
+    $F_{X, Y} : \R^2 \to \left[0, 1\right]$, which is defined \[
+        F_{X, Y} \left(s, t\right) = \p \left(X \leq s, Y \leq t\right)
+    \]
+\end{definition}
+
+\begin{definition}[]
+    Let ther ebe $X, Y$ random variables on the same $\left(\Omega, \F, \p\right)$, we
+    will say that they have joined distribution if there exists $f_{X, Y} : \R^2 \to \R$
+    which is integratable, and non negative, such that for all $s, t \in \R$: \[
+        F_{X, Y} \left(s, t\right) = \displaystyle\int_{-\infty}^{t} \displaystyle\int_{-\infty}^{s} f_{X, Y} \left(x, y\right) dx dy
+    \]
+\end{definition}
+
+\begin{theorem}[]
+    Let us assume for $X, Y$ there is joined distribution. \begin{enumerate}
+        \item For all $a < b, c < d$ \[
+                \p \left(a \leq X \leq b, c \leq Y \leq d\right) = \displaystyle\int_{c}^{d} \displaystyle\int_{a}^{v} f_{X, Y} \left(x, y\right) dx dy
+            \]
+        \item \[
+                \displaystyle\int_{-\infty}^{\infty} \displaystyle\int_{-\infty}^{\infty} f_{X, Y} \left(x, y\right) dy dx = 1
+            \]
+        \item Continuity, and differentiability: the joined cumulative distribution function $F_{X, Y}$
+            is continuous. Additionally, for every point $\left(s, t\right) \in \R^2$ where
+            $f_{X, Y}$ is continuous \[
+                \displaystyle\frac{d^2}{ds dt}F_{X, Y} \left(s, t\right) = f_{X, Y} \left(s, t\right)
+            \]
+        \item Residual density: $X, Y$ are absolutely continuous random variables with
+            residual density functions. \begin{gather*}
+                f_X \left(x\right) = \displaystyle\int_{-\infty}^{\infty} f_{X, Y} \left(x, y\right) dy \\
+                f_Y \left(y\right) = \displaystyle\int_{-\infty}^{\infty} f_{X, Y} \left(x, y\right) dx \\
+            \end{gather*}
+        \item For $X, Y$ absolutely continuous random variables with expectation, for
+            every function $g: \R^2 \to \R$ \[
+                \E \left[g \left(X, Y\right)\right] = \displaystyle\int_{-\infty}^{\infty} \displaystyle\int_{-\infty}^{\infty} g \left(x, y\right) f_{X, Y} \left(x, y\right) dy dx
+            \]
+        \item If $X, Y$ are independent absolutely continuous random variables,
+            then the joined density function of $\left(X, Y\right)$ is the product of
+            the residual density functions of $X, Y$. \[
+                f_{X, Y} \left(x, y\right)= f_X \left(x\right) f_Y \left(y\right)
+            \]
+    \end{enumerate}
+\end{theorem}
+
+\begin{definition}[]
+    We will say that $\left(X, Y\right)$ are uniformly distributed on $D \subseteq \R^2$ if
+    the density enables \[
+        f_{X, Y} \left(x, y\right) = \begin{cases}
+            \displaystyle\frac{1}{\text{Area of  } D}, &\text{ if }\left(x, y\right) \in D\\
+            0, &\text{ else }  \\
+        \end{cases}
+    \]
+\end{definition}
+
+\begin{theorem}[Fubini]
+    Let there be \begin{gather*}
+        D = \left\{\left(x, y\right) | a \leq x \leq b, g \left(x\right) \leq y \leq h \left(x\right)\right\} \\
+        f : \R^2 \to \R
+    \end{gather*}
+    where $g, h$ are some functions. So \[
+        \displaystyle\int_{}^{} \displaystyle\int_{D}^{} f \left(x, y\right) dx dy = \displaystyle\int_{a}^{b} \left[\displaystyle\int_{g \left(x\right)}^{h \left(x\right)} f \left(x, y\right) dy\right] dx
+    \]
+    which is to say we can calculate the 2D integral through 2 1D integrals, one after the other.
+    The theorem is also correct for the area \[
+        D = \left\{\left(x, y\right) : a \leq y \leq b, g \left(y\right) \leq x \leq h \left(y\right)\right\}
+    \]
+    and so \[
+        \displaystyle\int_{}^{} \displaystyle\int_{D}^{} f \left(x, y\right) dx dy = \displaystyle\int_{a}^{b} \left[\displaystyle\int_{g \left(y\right)}^{h \left(y\right)} f \left(x, y\right) dx\right] dy
+    \]
+\end{theorem}
+
+\begin{exercise}
+    A women waits for a secretary to become available in a bank. In a bank of 2 secretaries,
+    the time until either one of them will become free is distributed uniformly on
+    $\left[0, 10\right]$. What is the expected wait time?
+
+    \begin{proof}[Solution]
+        Let $X$ be the time until the first secretary becomes free, and $Y$ be
+        the same for the second. Let there be \[
+            Z = \displaystyle\min_{} \left\{X, Y\right\}
+        \]
+        so \[
+            f_X \left(t\right) = f_Y \left(t\right) = \begin{cases}
+                \displaystyle\frac{1}{10}, &\text{ if }0 \leq t \leq 10\\
+                0, &\text{ else } \\
+            \end{cases}
+        \]
+        So \begin{align*}
+            \E \left[Z\right] &= \E \left[\displaystyle\min_{} \left\{X, Y\right\} \right] \\
+                              &= \displaystyle\int_{-\infty}^{\infty} \displaystyle\int_{-\infty}^{\infty} \displaystyle\min_{} \left\{x, y\right\} f_{X, Y} \left(x, y\right) dx dy \\
+                              &= \displaystyle\int_{-\infty}^{\infty} \displaystyle\int_{-\infty}^{\infty} \displaystyle\min_{} \left\{x, y\right\} f_X \left(x\right) f_Y \left(y\right) dx dy \\
+        \end{align*}
+        Let there be \begin{gather*}
+            A_1 = \left\{\left(x, y\right) : 0 \leq x \leq 10, x \leq y \leq 10\right\} \\
+            A_2 = \left\{\left(x, y\right) : 0 \leq y \leq 10, y \leq x \leq 10\right\}
+        \end{gather*}
+        and so \begin{align*}
+            \displaystyle\frac{1}{100}\displaystyle\int_{}^{} \displaystyle\int_{A_1}^{} x dx + \displaystyle\frac{1}{100}\displaystyle\int_{}^{} \displaystyle\int_{A_2}^{} y dy &= \displaystyle\frac{1}{100}\displaystyle\int_{0}^{10} \displaystyle\int_{x}^{10} x dy dx + \displaystyle\frac{1}{100}\displaystyle\int_{0}^{10} \displaystyle\int_{y}^{10} y dx dy \\
+            I = \displaystyle\int_{0}^{10} \displaystyle\int_{x}^{10} x dy dx &= \displaystyle\int_{0}^{10} \left[xy\right]_x^{10} dx \\
+                                                                          &= \displaystyle\int_{0}^{10}10x - x^2 dx \\
+                                                                          &= \left[5x^2 - \displaystyle\frac{x^3}{3}\right]_{0}^{10} \\
+                                                                          &= 500 - \displaystyle\frac{1000}{3} \\
+            \E \left[Z\right] &= \displaystyle\frac{2I}{100} \\
+                              &= \displaystyle\frac{I}{50} \\
+                              &= 10 - \displaystyle\frac{20}{3} \\
+                              &= \displaystyle\frac{10}{3} \\
+        \end{align*}
+    \end{proof}
+\end{exercise}
+
+\begin{exercise}
+    In the tutorial
+\end{exercise}
+
+\begin{exercise}
+    Let us assume that $X, Y$ have uniform distribution on a circle of radius $1$,
+    centred on $\left(0, 0\right)$. This is to say that the density function is \[
+        f_{X, Y} = \begin{cases}
+            \displaystyle\frac{1}{\pi}, &\text{ if }x^2 + y^2 < 1\\
+            0, &\text{ else }
+        \end{cases}
+    \]
+    \begin{enumerate}
+        \item Find the density of $X$
+        \item Find $\p \left(X^2 + Y^2 \leq \displaystyle\frac{1}{2}\right)$
+    \end{enumerate}
+
+    \begin{proof}[Solution]
+        \begin{enumerate}
+            \item \begin{align*}
+                    f_X \left(t\right) &= \displaystyle\int_{-\infty}^{\infty} f_{X, Y} \left(t, y\right) dy \\
+                    t < -1 \lor 1 < t \implies f_X \left(t\right) &= 0 \\
+                    -1 \leq t \leq 1 \implies \displaystyle\int_{-\sqrt{1 - t^2} }^{\sqrt{1 - t^2} } \displaystyle\frac{1}{\pi} dy &= \displaystyle\frac{2 \sqrt{1 - t^2} }{\pi}\\
+                    f_X \left(x\right) f_Y \left(y\right) = \displaystyle\frac{2 \sqrt{1 - x^2} }{\pi} \displaystyle\frac{2 \sqrt{1 - y^2} }{\pi}
+                \end{align*}
+            \item There are 2 solutions. This is effectively a smaller internal circle of radius $\displaystyle\frac{1}{2}$.
+                So \[
+                    \displaystyle\frac{\displaystyle\frac{\pi}{2}}{\pi} = \displaystyle\frac{1}{2}
+                \]
+                or \begin{align*}
+                    B_{\displaystyle\frac{1}{\sqrt{2} }} &= \left\{0 \leq r \leq \displaystyle\frac{1}{\sqrt{2} }, 0 \leq \theta \leq 2\pi\right\} \\
+                    \displaystyle\int_{}^{}\displaystyle\int_{B_{\displaystyle\frac{1}{\sqrt{2} }}}^{}f_{X, Y} \left(x, y\right) dx dy &=
+                            \displaystyle\int_{0}^{2 \pi} \displaystyle\int_{0}^{\displaystyle\frac{1}{\sqrt{2} }}\displaystyle\frac{1}{\pi} r dr d\theta \\
+                                                                                                                                          &= \displaystyle\int_{0}^{2\pi} \left[\displaystyle\frac{r^2}{2\pi}\right]_0^{\displaystyle\frac{1}{\sqrt{2} }} d\theta \\
+                                                                                                                                          &= \displaystyle\int_{0}^{2\pi} \displaystyle\frac{1}{4\pi} d\theta \\
+                                                                                                                                          &= \displaystyle\frac{1}{2} \\
+                \end{align*}
+        \end{enumerate}
+    \end{proof}
+\end{exercise}
+
+\begin{exercise}
+    Let there be 2 random variables $X_1 \sim Unif \left(\left[0, 1\right]\right), X_2 \sim Ber \left(\displaystyle\frac{1}{3}\right)$.
+    Reminder $f_{X_1} = \1_{\left[0, 1\right]}$.
+    \begin{enumerate}
+        \item Show that $Y = X_1 + X_2$ is absolutely continuous, and find its density.
+        \item Find the density of $Z = Y^3$
+    \end{enumerate}
+
+    \begin{proof}[Solution]
+        \begin{enumerate}
+            \item \begin{align*}
+                    F_Y \left(t\right) &= \p \left(X_1 + X_2 \leq t\right) \\
+                                       &= \begin{cases}
+                                        0, &\text{ if }0 \leq t\\
+                                        1, &\text{ if }2 \leq t\\
+                                        \p \left(X_2 = 0 \land X_1 \leq t\right) = \p \left(X_2 = 0\right) \p \left(X_1 \leq t\right) = \displaystyle\frac{2}{3}t, &\text{ if }0 \leq t < 1\\
+                                        \p \left(X_2 = 0, X_1 \in \left[0, 1\right]\right) + \p \left(X_2 = 1, X_1 \leq t - 1\right) = \displaystyle\frac{2}{3} + \displaystyle\frac{1}{3} \left(t - 1\right), &\text{ if }1 \leq t \leq 2\\
+                                       \end{cases}
+                    f_Y \left(t\right) &= \begin{cases}
+                        0, &\text{ if }t < 0 \lor t > 2\\
+                        \displaystyle\frac{2}{3}, &\text{ if }0 \leq t \leq 1\\
+                        \displaystyle\frac{1}{3}, &\text{ if } 1 < t \leq 2
+                    \end{cases}
+                \end{align*}
+            \item \begin{align*}
+                    F_{Y^3} \left(t\right) &= \p \left(Y^3 \leq t\right) \\
+                                           &= \p \left(Y \leq \sqrt[3]{t} \right) \\
+                                           &= \begin{cases}
+                                            0, &\text{ if }t < 0\\
+                                            \displaystyle\frac{2}{3}\sqrt[3]{t} , &\text{ if }0 \leq t \leq 1\\
+                                            \displaystyle\frac{2}{3} + \displaystyle\frac{1}{3} \left(\sqrt[3]{t} - 1\right), &\text{ if } 1 \leq t \leq 8 \\
+                                            0, &\text{ if }t \geq 8\\
+                                           \end{cases}
+            \end{align*}
+            and then we need to find the derivative for $f_{Y^3}$. That is left as
+            an exercise for the reader.
+        \end{enumerate}
+    \end{proof}
+\end{exercise}
+
+\begin{exercise}
+    In an archery competition between 3 people, the competitors shoot arrows at an infinite target
+    board. the success is according to the distance from the origin. It is given that $X, Y$
+    the coordinates where Robin Hood hit are independent, and that they have distribution \begin{align*}
+        X, Y \sim N \left(1, 0\right)
+        f_Y \left(t\right) = f_X \left(t\right) = \displaystyle\frac{1}{\sqrt{2\pi} }e^{-\displaystyle\frac{x^2}{2}}
+    \end{align*}
+
+    \begin{enumerate}
+        \item The first 2 competitors, 1 and 2, hit the target at distances $r_1 < r_2$.
+            What is the probability that Robin Hood will finish second?
+    \end{enumerate}
+
+    \begin{proof}[Solution]
+        \begin{enumerate}
+            \item \begin{align*}
+                    \p \left(\left(X, Y\right) \in D\right) &= \displaystyle\int_{}^{} \displaystyle\int_{D}^{} f_{X, Y} \left(x, y\right) dx dy \\
+                                                            &= \displaystyle\int_{}^{} \displaystyle\int_{D}^{}f_X \left(x\right) f_Y \left(y\right) dx dy \\
+                                                            &= \displaystyle\int_{}^{} \displaystyle\int_{D}^{} \displaystyle\frac{1}{\sqrt{2 \pi} } e^{-\displaystyle\frac{x^2}{2}} \displaystyle\frac{1}{\sqrt{2\pi} } e^{-\displaystyle\frac{y^2}{2}} dx dy \\
+                                                            &= \displaystyle\frac{1}{2\pi} \displaystyle\int_{}^{} \displaystyle\int_{}^{}e^{- \displaystyle\frac{\left(x^2 + y^2\right)}{2}} dx dy \\
+                    D &= \left\{r_1 \leq r \leq r_2, 0 \leq \theta \leq 2\pi\right\} \\
+                      &= \displaystyle\frac{1}{2\pi} \displaystyle\int_{r_1}^{r_2} \displaystyle\int_{0}^{2\pi} e^{-\displaystyle\frac{r^2}{2}} r d\theta dr \\
+                      &= \displaystyle\int_{r_1}^{r_2} e^{- \displaystyle\frac{r^2}{2}} \cdot r dr  \\
+                      &= \left[-e^{-\displaystyle\frac{r^2}{2}}\right]_{r_1}^{r_2} \\
+                      &= -e^{-\displaystyle\frac{r_2^2}{2}} + e^{-\displaystyle\frac{r_1^2}{2}} \\
+            \end{align*}
+        \end{enumerate}
+    \end{proof}
+
+\end{exercise}
+% section Codistribution (end)
+
+\end{document}
